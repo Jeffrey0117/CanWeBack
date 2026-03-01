@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can We Back? | 挽回改造計畫</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans TC', -apple-system, sans-serif;
+      background: #0a0a1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #c56cf0, #6c5ce7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .plan-badge {
+      display: block;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .plan-badge span {
+      display: inline-block;
+      background: rgba(197,108,240,0.15);
+      border: 1px solid rgba(197,108,240,0.3);
+      color: #c56cf0;
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .chapter {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .chapter-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c56cf0, #6c5ce7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .chapter-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .chapter-desc {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .chapter-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .topic-tag {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.78rem;
+      color: #999;
+    }
+    .chapter-status {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #555;
+      font-size: 0.8rem;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .back-link a {
+      color: #888;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-link a:hover { color: #fff; }
+
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px; }
+      h1 { font-size: 1.5rem; }
+      .chapter { padding: 20px 16px; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>挽回改造計畫</h1>
+    <p class="subtitle" id="planSubtitle">載入中...</p>
+
+    <div class="plan-badge"><span>&#x1F48E; 專屬改造方案</span></div>
+
+    <div id="planContent">
+      <div style="text-align:center;padding:40px;color:#888">載入中...</div>
+    </div>
+
+    <div class="back-link">
+      <a href="/">&#x2190; 返回首頁</a>
+    </div>
+
+    <div class="footer">
+      <p>Can We Back? &copy; 2026</p>
+    </div>
+  </div>
+
+  <script>
+    const chapters = [
+      {
+        title: '認識分手的真相',
+        desc: '在開始挽回之前，你需要先真正理解這段關係為什麼走到了這一步。大多數人急於行動，卻忽略了最關鍵的第一步——面對真相。',
+        topics: ['分手的 5 種核心原因', '自我檢視清單', '對方真正在意的是什麼', '避免常見的致命錯誤'],
+      },
+      {
+        title: '冷靜期的黃金法則',
+        desc: '斷聯不是放棄，而是策略。這個階段是整個挽回過程中最重要、也最容易做錯的環節。',
+        topics: ['最佳斷聯時長計算', '斷聯期間該做什麼', '如果對方先聯繫你', '社群媒體管理策略'],
+      },
+      {
+        title: '自我改造計畫',
+        desc: '挽回的本質不是追回對方，而是讓自己變成對方會後悔離開的人。這一章根據你的五行屬性，量身打造改造方案。',
+        topics: ['外在形象升級指南', '內在心態重塑', '社交圈經營', '個人價值提升路徑'],
+      },
+      {
+        title: '重新建立聯繫',
+        desc: '當時機成熟，如何自然而不尷尬地重新出現在對方的世界裡。每一次互動都是一次機會，也可能是一次扣分。',
+        topics: ['破冰訊息範本', '不同情境的回覆策略', '約見面的最佳時機', '肢體語言與氛圍營造'],
+      },
+      {
+        title: '復合後的關係經營',
+        desc: '成功挽回只是起點。如何避免重蹈覆轍、建立更健康的相處模式，才是長期幸福的關鍵。',
+        topics: ['建立新的溝通模式', '衝突處理框架', '信任重建計畫', '長期關係維護'],
+      },
+    ]
+
+    async function loadPlan() {
+      const params = new URLSearchParams(window.location.search)
+      const id = params.get('id')
+
+      if (!id) {
+        document.getElementById('planContent').innerHTML = '<div style="text-align:center;padding:40px;color:#e17055">找不到訂單，請從報告頁面進入。</div>'
+        return
+      }
+
+      try {
+        const res = await fetch('/api/plan?id=' + id)
+        const data = await res.json()
+
+        if (data.error) {
+          document.getElementById('planContent').innerHTML = '<div style="text-align:center;padding:40px;color:#e17055">' + data.error + '</div>'
+          return
+        }
+
+        const f = data.fortune
+        document.getElementById('planSubtitle').textContent = f.myName + ' & ' + f.partnerName + ' 的專屬改造方案'
+
+        document.getElementById('planContent').innerHTML = chapters.map((ch, i) => {
+          let personalizedDesc = ch.desc
+          if (i === 2) {
+            personalizedDesc = personalizedDesc + ' ' + f.myName + '（五行屬' + f.myElement + '、' + f.myConstellation + '）的改造重點如下：'
+          }
+
+          return '<div class="chapter">' +
+            '<div class="chapter-header">' +
+              '<div class="chapter-num">' + (i + 1) + '</div>' +
+              '<div class="chapter-title">' + ch.title + '</div>' +
+            '</div>' +
+            '<div class="chapter-desc">' + personalizedDesc + '</div>' +
+            '<div class="chapter-topics">' +
+              ch.topics.map(t => '<span class="topic-tag">' + t + '</span>').join('') +
+            '</div>' +
+            '<div class="chapter-status">完整內容準備中，敬請期待</div>' +
+          '</div>'
+        }).join('')
+
+      } catch (err) {
+        document.getElementById('planContent').innerHTML = '<div style="text-align:center;padding:40px;color:#e17055">載入失敗，請重試</div>'
+      }
+    }
+
+    loadPlan()
+  </script>
+</body>
+</html>

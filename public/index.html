@@ -83,9 +83,7 @@
       backdrop-filter: blur(10px);
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+    .form-group { margin-bottom: 20px; }
 
     label {
       display: block;
@@ -94,13 +92,8 @@
       margin-bottom: 8px;
     }
 
-    .input-row {
-      display: flex;
-      gap: 12px;
-    }
-    .input-row .form-group {
-      flex: 1;
-    }
+    .input-row { display: flex; gap: 12px; }
+    .input-row .form-group { flex: 1; }
 
     input[type="text"] {
       width: 100%;
@@ -116,9 +109,7 @@
       border-color: #f5c842;
       box-shadow: 0 0 0 3px rgba(245,200,66,0.15);
     }
-    input[type="text"]::placeholder {
-      color: rgba(255,255,255,0.25);
-    }
+    input[type="text"]::placeholder { color: rgba(255,255,255,0.25); }
 
     .section-label {
       font-size: 0.8rem;
@@ -130,11 +121,7 @@
       border-bottom: 1px solid rgba(197,108,240,0.2);
     }
 
-    .hint {
-      font-size: 0.75rem;
-      color: #666;
-      margin-top: 4px;
-    }
+    .hint { font-size: 0.75rem; color: #666; margin-top: 4px; }
 
     .btn {
       width: 100%;
@@ -153,8 +140,19 @@
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,200,66,0.3); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* Preview Section */
-    #preview { display: none; margin-top: 32px; }
+    .btn-pay {
+      background: linear-gradient(135deg, #00b894, #00cec9);
+      color: white;
+    }
+    .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,184,148,0.3); }
+    .btn-pay:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-premium {
+      background: linear-gradient(135deg, #c56cf0, #6c5ce7);
+      color: white;
+    }
+    .btn-premium:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(197,108,240,0.3); }
+    .btn-premium:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .preview-header {
       text-align: center;
@@ -174,49 +172,12 @@
       gap: 16px;
       margin-bottom: 24px;
     }
-    .vs-person {
-      text-align: center;
-      flex: 1;
-    }
-    .vs-person .name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-    .vs-person .details {
-      font-size: 0.8rem;
-      color: #999;
-      line-height: 1.5;
-    }
-    .vs-icon {
-      font-size: 1.4rem;
-      color: #ff6b6b;
-      flex-shrink: 0;
-    }
+    .vs-person { text-align: center; flex: 1; }
+    .vs-person .name { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .vs-person .details { font-size: 0.8rem; color: #999; line-height: 1.5; }
+    .vs-icon { font-size: 1.4rem; color: #ff6b6b; flex-shrink: 0; }
 
-    .info-row {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .info-badge {
-      background: rgba(245,200,66,0.1);
-      border: 1px solid rgba(245,200,66,0.2);
-      border-radius: 10px;
-      padding: 12px 20px;
-      text-align: center;
-      flex: 1;
-      min-width: 80px;
-    }
-    .info-badge .label { font-size: 0.75rem; color: #999; margin-bottom: 4px; }
-    .info-badge .value { font-size: 1.2rem; font-weight: 700; color: #f5c842; }
-
-    .luck-meter {
-      margin-bottom: 16px;
-    }
+    .luck-meter { margin-bottom: 16px; }
     .luck-meter .luck-label {
       display: flex;
       justify-content: space-between;
@@ -235,12 +196,7 @@
       transition: width 1s ease;
     }
 
-    .traits-list {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
+    .traits-list { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
     .trait {
       background: rgba(197,108,240,0.15);
       border: 1px solid rgba(197,108,240,0.25);
@@ -250,9 +206,30 @@
       color: #c56cf0;
     }
 
-    /* Full Report */
-    #fullReport { display: none; margin-top: 32px; }
+    /* Blur paywall */
+    .blur-section { position: relative; margin-top: 24px; }
+    .blur-content {
+      filter: blur(6px);
+      pointer-events: none;
+      user-select: none;
+    }
+    .blur-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,10,26,0.6);
+      border-radius: 12px;
+      z-index: 2;
+    }
+    .blur-overlay .lock-icon { font-size: 2rem; margin-bottom: 12px; }
+    .blur-overlay p { color: #ccc; margin-bottom: 16px; text-align: center; line-height: 1.5; }
+    .price-tag { font-size: 1.8rem; font-weight: 800; color: #00b894; margin-bottom: 8px; }
+    .price-original { text-decoration: line-through; color: #666; font-size: 0.9rem; }
 
+    /* Report sections */
     .report-section {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08);
@@ -267,11 +244,7 @@
       align-items: center;
       gap: 8px;
     }
-    .report-section p {
-      color: #bbb;
-      line-height: 1.7;
-      font-size: 0.95rem;
-    }
+    .report-section p { color: #bbb; line-height: 1.7; font-size: 0.95rem; }
     .report-section .action-plan {
       white-space: pre-line;
       color: #bbb;
@@ -284,19 +257,48 @@
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       gap: 10px;
     }
-    .lucky-item {
-      text-align: center;
-      padding: 12px;
-      background: rgba(245,200,66,0.05);
-      border-radius: 8px;
-    }
+    .lucky-item { text-align: center; padding: 12px; background: rgba(245,200,66,0.05); border-radius: 8px; }
     .lucky-item .li-label { font-size: 0.75rem; color: #888; }
     .lucky-item .li-value { font-size: 1rem; color: #f5c842; font-weight: 600; margin-top: 4px; }
 
-    .loading {
+    /* Upsell card */
+    .upsell-card {
+      background: linear-gradient(135deg, rgba(197,108,240,0.1), rgba(108,92,231,0.1));
+      border: 1px solid rgba(197,108,240,0.3);
+      border-radius: 16px;
+      padding: 32px;
+      margin-top: 24px;
       text-align: center;
-      padding: 40px;
     }
+    .upsell-card h3 {
+      font-size: 1.3rem;
+      color: #c56cf0;
+      margin-bottom: 12px;
+    }
+    .upsell-card .upsell-desc {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .upsell-features {
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .upsell-features .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .upsell-features .feature-item:last-child { border-bottom: none; }
+    .feature-check { color: #c56cf0; flex-shrink: 0; font-weight: 700; }
+    .upsell-pricing { margin-bottom: 20px; }
+
+    .loading { text-align: center; padding: 40px; }
     .spinner {
       width: 40px; height: 40px;
       border: 3px solid rgba(255,255,255,0.1);
@@ -307,12 +309,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .footer {
-      text-align: center;
-      margin-top: 48px;
-      color: #555;
-      font-size: 0.8rem;
-    }
+    .footer { text-align: center; margin-top: 48px; color: #555; font-size: 0.8rem; }
 
     .back-btn {
       display: inline-block;
@@ -326,15 +323,24 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    .back-btn:hover {
-      background: rgba(255,255,255,0.12);
-      color: #fff;
+    .back-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    .success-badge {
+      display: inline-block;
+      background: rgba(0,184,148,0.15);
+      border: 1px solid rgba(0,184,148,0.3);
+      color: #00b894;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
     }
 
     @media (max-width: 480px) {
       .container { padding: 24px 16px; }
       h1 { font-size: 1.8rem; }
       .card { padding: 24px 18px; }
+      .upsell-card { padding: 24px 18px; }
       .input-row { flex-direction: column; gap: 0; }
     }
   </style>
@@ -348,11 +354,10 @@
 
     <div class="card" id="inputCard">
       <div class="section-label">你的資料</div>
-
       <div class="input-row">
         <div class="form-group">
-          <label for="myName">你的名字</label>
-          <input type="text" id="myName" placeholder="選填">
+          <label for="myName">你的名字 *</label>
+          <input type="text" id="myName" placeholder="請輸入姓名">
         </div>
         <div class="form-group">
           <label for="myBirthday">你的生日</label>
@@ -362,11 +367,10 @@
       </div>
 
       <div class="section-label" style="margin-top:8px">對方的資料</div>
-
       <div class="input-row">
         <div class="form-group">
-          <label for="partnerName">對方名字</label>
-          <input type="text" id="partnerName" placeholder="選填">
+          <label for="partnerName">對方名字 *</label>
+          <input type="text" id="partnerName" placeholder="請輸入對方姓名">
         </div>
         <div class="form-group">
           <label for="partnerBirthday">對方生日</label>
@@ -388,7 +392,8 @@
       </div>
     </div>
 
-    <div id="fullReport"></div>
+    <div id="previewSection" style="display:none"></div>
+    <div id="fullReport" style="display:none"></div>
 
     <div class="footer">
       <p>Can We Back? &copy; 2026</p>
@@ -396,12 +401,23 @@
   </div>
 
   <script>
+    let currentOrderId = null
+    let currentFortune = null
+
+    function getColor(score) {
+      if (score >= 80) return '#00b894'
+      if (score >= 60) return '#f5c842'
+      if (score >= 40) return '#e17055'
+      return '#d63031'
+    }
+
     async function getFortune() {
       const myBirthday = document.getElementById('myBirthday').value.trim()
       const partnerBirthday = document.getElementById('partnerBirthday').value.trim()
-      const myName = document.getElementById('myName').value.trim() || '你'
-      const partnerName = document.getElementById('partnerName').value.trim() || '對方'
+      const myName = document.getElementById('myName').value.trim()
+      const partnerName = document.getElementById('partnerName').value.trim()
 
+      if (!myName || !partnerName) return alert('請輸入雙方的名字')
       if (!myBirthday || !partnerBirthday) return alert('請輸入雙方的生日')
 
       const cleaned1 = myBirthday.replace(/\D/g, '')
@@ -430,10 +446,13 @@
           return
         }
 
+        currentOrderId = data.orderId
+        currentFortune = data.fortune
+
         await new Promise(r => setTimeout(r, 2000))
 
         document.getElementById('loadingSection').style.display = 'none'
-        renderFullReport(data.fortune)
+        renderPreview(data.preview, data.fortune)
       } catch (err) {
         alert('分析失敗，請重試')
         btn.disabled = false
@@ -442,11 +461,110 @@
       }
     }
 
-    function getColor(score) {
-      if (score >= 80) return '#00b894'
-      if (score >= 60) return '#f5c842'
-      if (score >= 40) return '#e17055'
-      return '#d63031'
+    function renderPreview(p, f) {
+      const el = document.getElementById('previewSection')
+
+      el.innerHTML = `
+        <div class="card">
+          <div class="preview-header">
+            <h2>挽回指數分析預覽</h2>
+            <p>${f.myName} & ${f.partnerName} 的緣分解析</p>
+          </div>
+
+          <div class="vs-row">
+            <div class="vs-person">
+              <div class="name">${f.myName}</div>
+              <div class="details">
+                ${p.myConstellation} / ${p.myZodiac}<br>
+                五行屬${p.myElement}
+              </div>
+            </div>
+            <div class="vs-icon">&hearts;</div>
+            <div class="vs-person">
+              <div class="name">${f.partnerName}</div>
+              <div class="details">
+                ${p.partnerConstellation} / ${p.partnerZodiac}<br>
+                五行屬${p.partnerElement}
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <p style="color:#aaa;font-size:0.85rem;margin-bottom:8px">${f.myName} 的性格特質</p>
+            <div class="traits-list">
+              ${p.myTraits.map(t => '<span class="trait">' + t + '</span>').join('')}
+            </div>
+          </div>
+
+          <div class="luck-meter">
+            <div class="luck-label"><span>挽回指數</span><span style="color:${getColor(p.reconciliation)}">${p.reconciliation}/100</span></div>
+            <div class="luck-bar"><div class="luck-fill" style="width:${p.reconciliation}%;background:${getColor(p.reconciliation)}"></div></div>
+          </div>
+
+          <div style="text-align:center;margin:20px 0;padding:16px;background:rgba(245,200,66,0.08);border-radius:12px;border:1px solid rgba(245,200,66,0.2)">
+            <div style="font-size:0.8rem;color:#999;margin-bottom:4px">緣分判定</div>
+            <div style="font-size:1.4rem;font-weight:800;color:#f5c842">${f.destinyLevel}</div>
+          </div>
+
+          <div class="blur-section">
+            <div class="blur-content">
+              <div class="report-section">
+                <h3>&#x1F52E; 挽回分析</h3>
+                <p>根據你們的五行與星座配對分析，這段關係存在修復的可能性。你們之間的能量場顯示...</p>
+              </div>
+              <div class="report-section">
+                <h3>&#x1F4AC; 溝通建議</h3>
+                <p>你們的溝通方式需要調整，根據命盤顯示最有效的溝通策略是...</p>
+              </div>
+              <div class="report-section">
+                <h3>&#x23F0; 最佳時機</h3>
+                <p>星象分析顯示最有利的復合時間點即將到來...</p>
+              </div>
+              <div class="report-section">
+                <h3>&#x1F4CB; 行動方案</h3>
+                <p>四階段挽回計畫：冷靜期、輕度接觸、自然互動、深度溝通...</p>
+              </div>
+            </div>
+            <div class="blur-overlay">
+              <div class="lock-icon">&#x1F512;</div>
+              <p>解鎖完整挽回分析報告<br>包含溝通策略、最佳時機、行動方案</p>
+              <div class="price-original">原價 NT$599</div>
+              <div class="price-tag">NT$299</div>
+              <button class="btn btn-pay" style="width:auto;padding:14px 40px" onclick="unlockReport()">
+                立即解鎖完整報告
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+
+      el.style.display = 'block'
+    }
+
+    async function unlockReport() {
+      if (!currentOrderId) return
+
+      const btn = event.target
+      btn.textContent = '處理中...'
+      btn.disabled = true
+
+      try {
+        const res = await fetch('/api/pay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: currentOrderId, product: 'report' }),
+        })
+        const data = await res.json()
+
+        if (data.success) {
+          document.getElementById('previewSection').style.display = 'none'
+          renderFullReport(currentFortune)
+        }
+      } catch (err) {
+        alert('付款失敗，請重試')
+        btn.textContent = '立即解鎖完整報告'
+        btn.disabled = false
+      }
     }
 
     function renderFullReport(f) {
@@ -465,11 +583,14 @@
         </div>
       `).join('')
 
-      document.getElementById('fullReport').innerHTML = `
+      const el = document.getElementById('fullReport')
+
+      el.innerHTML = `
         <div class="card">
           <div class="preview-header">
+            <span class="success-badge">&#x2713; 報告已解鎖</span>
             <h2>挽回指數分析報告</h2>
-            <p>${f.myName} & ${f.partnerName} 的緣分解析</p>
+            <p>${f.myName} & ${f.partnerName} 的完整緣分解析</p>
           </div>
 
           <div class="vs-row">
@@ -493,13 +614,23 @@
           <div style="margin-bottom:20px">
             <p style="color:#aaa;font-size:0.85rem;margin-bottom:8px">${f.myName} 的性格特質</p>
             <div class="traits-list">
-              ${f.myTraits.map(t => `<span class="trait">${t}</span>`).join('')}
+              ${f.myTraits.map(t => '<span class="trait">' + t + '</span>').join('')}
             </div>
           </div>
 
           ${luckBars}
 
-          <div class="report-section" style="margin-top:20px">
+          <div class="report-section" style="margin-top:20px;border-color:rgba(245,200,66,0.3);background:rgba(245,200,66,0.05)">
+            <h3 style="color:#f5c842">&#x2728; 緣分判定：${f.destinyLevel}</h3>
+            <p>${f.destinyDesc}</p>
+          </div>
+
+          <div class="report-section">
+            <h3>&#x1F9E0; ${f.partnerName} 的內心世界</h3>
+            <p>${f.partnerPsychology}</p>
+          </div>
+
+          <div class="report-section">
             <h3>&#x1F52E; 挽回分析</h3>
             <p>${f.reconciliationAdvice}</p>
           </div>
@@ -544,14 +675,80 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <div style="text-align:center">
-            <button class="back-btn" onclick="location.reload()">重新分析</button>
+        <div class="upsell-card">
+          <h3>&#x1F48E; 挽回改造計畫</h3>
+          <p class="upsell-desc">
+            報告只是起點。真正讓對方回頭的，是你的蛻變。<br>
+            根據 ${f.myName} 與 ${f.partnerName} 的命盤量身打造的完整改造方案。
+          </p>
+
+          <div class="upsell-features">
+            <div class="feature-item">
+              <span class="feature-check">&#x2713;</span>
+              <span>21天挽回行動日曆 — 每天一個具體任務，循序漸進重建連結</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-check">&#x2713;</span>
+              <span>對方星座心理解析 — 深入了解 ${f.partnerConstellation} 的核心需求與地雷</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-check">&#x2713;</span>
+              <span>溝通話術範本 — 不同情境下的最佳回覆策略</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-check">&#x2713;</span>
+              <span>自我提升指南 — 根據你的五行屬性打造個人魅力方案</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-check">&#x2713;</span>
+              <span>復合後經營手冊 — 避免重蹈覆轍的長期關係維護策略</span>
+            </div>
           </div>
+
+          <div class="upsell-pricing">
+            <div class="price-original">原價 NT$4,980</div>
+            <div class="price-tag">NT$2,680</div>
+          </div>
+
+          <button class="btn btn-premium" onclick="buyPlan()">
+            取得我的專屬改造計畫
+          </button>
+          <p style="color:#666;font-size:0.75rem;margin-top:12px">付款後立即取得完整改造方案</p>
+        </div>
+
+        <div style="text-align:center">
+          <button class="back-btn" onclick="location.reload()">重新分析</button>
         </div>
       `
 
-      document.getElementById('fullReport').style.display = 'block'
+      el.style.display = 'block'
+    }
+
+    async function buyPlan() {
+      if (!currentOrderId) return
+
+      const btn = event.target
+      btn.textContent = '處理中...'
+      btn.disabled = true
+
+      try {
+        const res = await fetch('/api/buy-plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: currentOrderId }),
+        })
+        const data = await res.json()
+
+        if (data.success) {
+          window.location.href = '/plan.html?id=' + currentOrderId
+        }
+      } catch (err) {
+        alert('購買失敗，請重試')
+        btn.textContent = '取得我的專屬改造計畫'
+        btn.disabled = false
+      }
     }
   </script>
 </body>

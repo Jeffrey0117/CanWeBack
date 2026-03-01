@@ -88,8 +88,21 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
   const partnerElement = elements[partnerSeed % 5]
 
   const zodiacAnimals = ['鼠', '牛', '虎', '兔', '龍', '蛇', '馬', '羊', '猴', '雞', '狗', '豬']
-  const myZodiac = zodiacAnimals[myDate.getFullYear() % 12]
-  const partnerZodiac = zodiacAnimals[partnerDate.getFullYear() % 12]
+  // 農曆新年約在 1/21~2/20，1月出生大概率算前一年生肖
+  // 用近似值：2月5日前算前一年（農曆新年平均落在此附近）
+  const lunarNewYearCutoff = { month: 2, day: 5 }
+  function getZodiacYear(date) {
+    const y = date.getFullYear()
+    const m = date.getMonth() + 1
+    const d = date.getDate()
+    if (m < lunarNewYearCutoff.month || (m === lunarNewYearCutoff.month && d < lunarNewYearCutoff.day)) {
+      return y - 1
+    }
+    return y
+  }
+  // 基準：2020 = 鼠年，(year-4) % 12 → 0=鼠 1=牛 2=虎 ...
+  const myZodiac = zodiacAnimals[(getZodiacYear(myDate) - 4) % 12]
+  const partnerZodiac = zodiacAnimals[(getZodiacYear(partnerDate) - 4) % 12]
 
   const constellations = [
     '摩羯座', '水瓶座', '雙魚座', '牡羊座', '金牛座', '雙子座',
@@ -160,6 +173,39 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     `第一步：斷聯修復（2-3週）— 給彼此喘息空間\n第二步：朋友圈經營 — 展現積極正向的生活\n第三步：輕鬆破冰 — 以朋友的身份重新互動\n第四步：循序漸進 — 慢慢恢復信任與親密感`,
   ]
 
+  // 對方心理深度分析（根據星座）
+  const partnerPsychology = {
+    '牡羊座': `${partnerName}（牡羊座）內心其實比外表更脆弱。看似灑脫的離開，其實是因為累積的委屈到了臨界點。牡羊座最怕的不是吵架，而是感覺自己不被重視。如果你能讓${partnerName}感受到「你真的懂了」，復合的可能性極高。`,
+    '金牛座': `${partnerName}（金牛座）是十二星座中最念舊的。即使分手了，金牛座會反覆回想你們在一起的每個細節。${partnerName}現在的沉默不是不在乎，而是在內心掙扎。金牛座需要安全感，你必須用穩定的行動而非甜言蜜語來打動對方。`,
+    '雙子座': `${partnerName}（雙子座）表面看起來已經放下，甚至可能馬上出現新的社交動態。但這只是雙子座的防禦機制。${partnerName}內心其實非常矛盾，一部分想聯繫你，另一部分在害怕受傷。給一個有趣的理由讓對方回覆你，是突破口。`,
+    '巨蟹座': `${partnerName}（巨蟹座）分手後會把自己縮回殼裡。巨蟹座是最重感情的星座，${partnerName}此刻的冷漠只是保護自己的方式。巨蟹座最軟的地方是「家」的感覺——提起你們共同的美好回憶，會觸動對方最深的情感。`,
+    '獅子座': `${partnerName}（獅子座）即使心裡很想你，自尊心也不允許主動聯繫。獅子座分手後最在意的是面子，${partnerName}需要一個「台階」才能回頭。你需要做的是讓對方覺得復合是雙方的選擇，而不是對方在「低頭」。`,
+    '處女座': `${partnerName}（處女座）分手後會不斷分析這段關係的每個問題。處女座是完美主義者，${partnerName}可能正在列一張「你的缺點清單」。但反過來說，如果你能展現出針對性的改變，處女座會是最容易被說服的星座。`,
+    '天秤座': `${partnerName}（天秤座）是最猶豫不決的星座。分手的決定可能讓${partnerName}反覆煎熬。天秤座害怕衝突，更害怕後悔。如果你能以優雅而不施壓的方式出現，天秤座很容易重新被吸引。`,
+    '天蠍座': `${partnerName}（天蠍座）表面冷漠，內心翻江倒海。天蠍座是最深情的星座，一旦愛過就很難真正放下。但天蠍座也是最記仇的——你必須真正理解問題出在哪裡，並展現徹底的改變。半吊子的道歉只會讓情況更糟。`,
+    '射手座': `${partnerName}（射手座）分手後可能立刻去旅行或嘗試新事物，看起來毫不在乎。但射手座只是在用「忙碌」來麻痺自己。${partnerName}最怕束縛，你需要展現出「我變得更有趣了」而不是「我離不開你」。`,
+    '摩羯座': `${partnerName}（摩羯座）做決定前會深思熟慮，分手通常不是衝動之舉。這意味著你需要付出更多努力。但摩羯座也最看重一個人的上進心和實際行動——如果你能展現出事業或生活上的具體進步，${partnerName}會重新評估你的價值。`,
+    '水瓶座': `${partnerName}（水瓶座）是最理性的星座，分手後會試圖用邏輯說服自己這是對的。但水瓶座也最重視靈魂上的連結——如果你能在思想層面給${partnerName}帶來新的刺激和共鳴，這會比任何浪漫舉動都有效。`,
+    '雙魚座': `${partnerName}（雙魚座）是最容易心軟的星座。分手後${partnerName}一定會偷偷看你的社群動態，甚至可能在深夜偷偷哭泣。雙魚座渴望浪漫的愛情故事，你需要營造一個「命中注定」的重逢氛圍，讓對方相信這段感情值得再給一次機會。`,
+  }
+
+  // 緣分等級判定
+  const reconciliationScore = luckScores.reconciliation
+  let destinyLevel, destinyDesc
+  if (reconciliationScore >= 85) {
+    destinyLevel = '命中註定'
+    destinyDesc = `${myName}與${partnerName}的命盤顯示極高的緣分指數。你們之間的連結遠超一般情侶，這段感情的能量場非常強烈。分離只是暫時的考驗，宇宙正在為你們的重逢做準備。`
+  } else if (reconciliationScore >= 70) {
+    destinyLevel = '緣分深厚'
+    destinyDesc = `${myName}與${partnerName}之間有著深厚的緣分基礎。五行${myElement}與${partnerElement}的組合具備修復的潛力，只要方法正確，這段感情是可以重新點燃的。`
+  } else if (reconciliationScore >= 55) {
+    destinyLevel = '需要經營'
+    destinyDesc = `${myName}與${partnerName}的命盤配對屬於需要用心經營的類型。挑戰存在，但並非不可克服。關鍵在於雙方都需要做出改變，尤其是溝通方式的調整。`
+  } else {
+    destinyLevel = '逆勢挽回'
+    destinyDesc = `${myName}與${partnerName}的組合需要更大的努力。但命理學告訴我們，越是困難的配對，一旦克服障礙，反而能建立最堅固的關係。不要放棄，但策略必須正確。`
+  }
+
   const luckyItems = {
     color: ['粉紅色', '薰衣草紫', '天空藍', '珊瑚橘', '翡翠綠', '暖白色', '玫瑰金'][combinedSeed % 7],
     number: ((combinedSeed * 7) % 9) + 1,
@@ -177,6 +223,9 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     myTraits,
     luckScores,
     luckyItems,
+    destinyLevel,
+    destinyDesc,
+    partnerPsychology: partnerPsychology[partnerConstellation] || `${partnerName}的星座配置顯示對方內心仍有牽掛，但需要看到你真正的改變。`,
     reconciliationAdvice: reconciliationAdvice[combinedSeed % reconciliationAdvice.length],
     communicationAdvice: communicationAdvice[combinedSeed % communicationAdvice.length],
     timingAdvice: timingAdvice[combinedSeed % timingAdvice.length],
@@ -244,6 +293,28 @@ const server = http.createServer(async (req, res) => {
       message: '付款成功（測試模式）',
       redirectUrl: `/report.html?id=${body.orderId}`,
     })
+  }
+
+  if (pathname === '/api/buy-plan' && req.method === 'POST') {
+    const body = await parseBody(req)
+    const order = orders.get(body.orderId)
+    if (!order) return sendJson(res, { error: '找不到此訂單' }, 404)
+
+    // Test mode: auto-approve
+    order.planPurchased = true
+    return sendJson(res, {
+      success: true,
+      message: '購買成功（測試模式）',
+      redirectUrl: `/plan.html?id=${body.orderId}`,
+    })
+  }
+
+  if (pathname === '/api/plan' && req.method === 'GET') {
+    const orderId = url.searchParams.get('id')
+    const order = orders.get(orderId)
+    if (!order) return sendJson(res, { error: '找不到此訂單' }, 404)
+    if (!order.planPurchased) return sendJson(res, { error: '請先購買改造計畫' }, 402)
+    return sendJson(res, { fortune: order.fortune })
   }
 
   if (pathname === '/api/webhook/payment' && req.method === 'POST') {
