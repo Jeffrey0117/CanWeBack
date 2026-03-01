@@ -336,6 +336,77 @@
       margin-bottom: 16px;
     }
 
+    /* Score counter animation */
+    .score-counter {
+      font-size: 3.2rem; font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      display: inline-block;
+    }
+
+    /* Blurred hint teaser */
+    .hint-teaser {
+      margin: 16px 0;
+      padding: 14px 18px;
+      background: rgba(255,107,107,0.06);
+      border: 1px solid rgba(255,107,107,0.15);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .hint-teaser .hint-label { color: #ff6b6b; font-weight: 600; margin-bottom: 4px; }
+    .hint-teaser .hint-blur {
+      display: inline;
+      filter: blur(5px);
+      user-select: none;
+      color: #ff6b6b;
+      font-weight: 700;
+    }
+
+    /* Countdown timer */
+    .countdown-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 14px;
+      font-size: 0.85rem; color: #ff6b6b;
+    }
+    .countdown-bar .timer { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    /* Live viewer notification */
+    .live-viewer {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; color: #888;
+      margin-top: 10px; justify-content: center;
+      animation: fadeInSlide 0.5s ease;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ff6b6b;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    @keyframes fadeInSlide {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Share button */
+    .share-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #aaa; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.3s;
+      margin-top: 12px;
+    }
+    .share-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* Share canvas */
+    #shareCanvas { display: none; }
+
     @media (max-width: 480px) {
       .container { padding: 24px 16px; }
       h1 { font-size: 1.8rem; }
@@ -409,9 +480,12 @@
     </div>
   </div>
 
+  <canvas id="shareCanvas" width="1080" height="1080"></canvas>
+
   <script>
     let currentOrderId = null
     let currentFortune = null
+    let countdownInterval = null
 
     function getColor(score) {
       if (score >= 80) return '#00b894'
@@ -470,8 +544,75 @@
       }
     }
 
+    // Blurred psychology hints
+    const psychHints = [
+      '正在猶豫是否主動聯繫',
+      '內心其實很想念卻不敢說',
+      '故意在社群上裝作很好',
+      '偷偷關注你的動態',
+      '等待一個台階下',
+      '害怕再次受傷所以退縮',
+    ]
+
+    // Fake live viewer constellations
+    const constellationPairs = [
+      '獅子座 × 天秤座', '雙魚座 × 天蠍座', '白羊座 × 射手座',
+      '巨蟹座 × 摩羯座', '處女座 × 金牛座', '水瓶座 × 雙子座',
+    ]
+
+    function animateScore(el, target, duration) {
+      const start = performance.now()
+      const update = (now) => {
+        const elapsed = now - start
+        const progress = Math.min(elapsed / duration, 1)
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3)
+        const current = Math.round(eased * target)
+        el.textContent = current
+        el.style.color = getColor(current)
+        if (progress < 1) requestAnimationFrame(update)
+      }
+      requestAnimationFrame(update)
+    }
+
+    function startCountdown() {
+      const timerEl = document.getElementById('countdownTimer')
+      if (!timerEl) return
+      let remaining = 15 * 60 // 15 minutes
+      if (countdownInterval) clearInterval(countdownInterval)
+      countdownInterval = setInterval(() => {
+        remaining--
+        if (remaining <= 0) {
+          clearInterval(countdownInterval)
+          timerEl.textContent = '已過期'
+          return
+        }
+        const m = Math.floor(remaining / 60)
+        const s = remaining % 60
+        timerEl.textContent = `${m}:${String(s).padStart(2, '0')}`
+      }, 1000)
+    }
+
+    function showLiveViewer() {
+      const container = document.getElementById('liveViewerArea')
+      if (!container) return
+      const show = () => {
+        const mins = Math.floor(Math.random() * 18) + 2
+        const pair = constellationPairs[Math.floor(Math.random() * constellationPairs.length)]
+        container.innerHTML = `
+          <div class="live-viewer">
+            <span class="live-dot"></span>
+            ${mins} 分鐘前有人查看 ${pair} 配對
+          </div>
+        `
+      }
+      setTimeout(show, 3000)
+      setInterval(show, 12000 + Math.random() * 8000)
+    }
+
     function renderPreview(p, f) {
       const el = document.getElementById('previewSection')
+      const psychHint = psychHints[Math.floor(Math.random() * psychHints.length)]
 
       el.innerHTML = `
         <div class="card">
@@ -506,13 +647,27 @@
           </div>
 
           <div class="luck-meter">
-            <div class="luck-label"><span>挽回指數</span><span style="color:${getColor(p.reconciliation)}">${p.reconciliation}/100</span></div>
-            <div class="luck-bar"><div class="luck-fill" style="width:${p.reconciliation}%;background:${getColor(p.reconciliation)}"></div></div>
+            <div class="luck-label">
+              <span>挽回指數</span>
+              <span><span class="score-counter" id="scoreAnim" style="font-size:1rem;color:${getColor(p.reconciliation)}">0</span><span style="color:${getColor(p.reconciliation)}">/100</span></span>
+            </div>
+            <div class="luck-bar"><div class="luck-fill" id="scoreFill" style="width:0%;background:${getColor(p.reconciliation)};transition:width 1.5s cubic-bezier(0.4,0,0.2,1)"></div></div>
           </div>
 
           <div style="text-align:center;margin:20px 0;padding:16px;background:rgba(245,200,66,0.08);border-radius:12px;border:1px solid rgba(245,200,66,0.2)">
             <div style="font-size:0.8rem;color:#999;margin-bottom:4px">緣分判定</div>
             <div style="font-size:1.4rem;font-weight:800;color:#f5c842">${f.destinyLevel}</div>
+          </div>
+
+          <div class="hint-teaser">
+            <div class="hint-label">&#x1F4A1; 系統偵測到</div>
+            ${f.partnerName} 目前的心理狀態是「<span class="hint-blur">${psychHint}</span>」
+          </div>
+
+          <div style="text-align:center">
+            <button class="share-btn" onclick="generateShareCard('${f.myName}', '${f.partnerName}', ${p.reconciliation}, '${f.destinyLevel}', '${p.myConstellation}', '${p.partnerConstellation}')">
+              &#x1F4F8; 分享我的挽回指數
+            </button>
           </div>
 
           <div class="blur-section">
@@ -537,17 +692,37 @@
             <div class="blur-overlay">
               <div class="lock-icon">&#x1F512;</div>
               <p>解鎖完整挽回分析報告<br>包含溝通策略、最佳時機、行動方案</p>
+              <div class="countdown-bar">
+                <span>&#x23F0; 限時優惠剩</span>
+                <span class="timer" id="countdownTimer">15:00</span>
+                <span>過後恢復原價</span>
+              </div>
               <div class="price-original">原價 NT$599</div>
               <div class="price-tag">NT$299</div>
               <button class="btn btn-pay" style="width:auto;padding:14px 40px" onclick="unlockReport()">
                 立即解鎖完整報告
               </button>
+              <div id="liveViewerArea"></div>
             </div>
           </div>
         </div>
       `
 
       el.style.display = 'block'
+
+      // Animate score counter
+      setTimeout(() => {
+        const scoreEl = document.getElementById('scoreAnim')
+        if (scoreEl) animateScore(scoreEl, p.reconciliation, 1500)
+        const fillEl = document.getElementById('scoreFill')
+        if (fillEl) fillEl.style.width = p.reconciliation + '%'
+      }, 300)
+
+      // Start countdown
+      startCountdown()
+
+      // Show live viewers
+      showLiveViewer()
     }
 
     async function unlockReport() {
@@ -733,6 +908,99 @@
       `
 
       el.style.display = 'block'
+    }
+
+    function generateShareCard(myName, partnerName, score, destiny, myCon, partnerCon) {
+      const canvas = document.getElementById('shareCanvas')
+      const ctx = canvas.getContext('2d')
+      const w = 1080, h = 1080
+
+      // Background
+      const grad = ctx.createLinearGradient(0, 0, 0, h)
+      grad.addColorStop(0, '#0a0a1a')
+      grad.addColorStop(0.5, '#12102a')
+      grad.addColorStop(1, '#0a0a1a')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, w, h)
+
+      // Stars
+      ctx.fillStyle = 'rgba(255,255,255,0.25)'
+      for (let i = 0; i < 50; i++) {
+        const x = Math.random() * w, y = Math.random() * h
+        ctx.beginPath()
+        ctx.arc(x, y, Math.random() * 1.5 + 0.5, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
+      // Title
+      ctx.font = '700 56px "Noto Sans TC", sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#f5c842'
+      ctx.fillText('Can We Back?', w / 2, 160)
+
+      // Names
+      ctx.font = '600 42px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = '#ffffff'
+      ctx.fillText(myName + '  \u2661  ' + partnerName, w / 2, 260)
+
+      // Constellation
+      ctx.font = '400 28px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = '#999999'
+      ctx.fillText(myCon + ' \u00d7 ' + partnerCon, w / 2, 310)
+
+      // Big score circle
+      const cx = w / 2, cy = 520, radius = 140
+      // Outer ring
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'
+      ctx.lineWidth = 8
+      ctx.stroke()
+      // Score arc
+      const angle = (score / 100) * Math.PI * 2 - Math.PI / 2
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius, -Math.PI / 2, angle)
+      ctx.strokeStyle = getColor(score)
+      ctx.lineWidth = 8
+      ctx.lineCap = 'round'
+      ctx.stroke()
+      // Score text
+      ctx.font = '800 80px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = getColor(score)
+      ctx.fillText(score, cx, cy + 10)
+      ctx.font = '400 24px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = '#888'
+      ctx.fillText('/ 100', cx, cy + 50)
+
+      // Label
+      ctx.font = '400 28px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = '#aaa'
+      ctx.fillText('\u633d\u56de\u6307\u6578', cx, cy - radius - 30)
+
+      // Destiny
+      ctx.font = '700 38px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = '#f5c842'
+      ctx.fillText('\u7de3\u5206\u5224\u5b9a\uff1a' + destiny, cx, 740)
+
+      // CTA
+      ctx.font = '400 26px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = 'rgba(255,255,255,0.4)'
+      ctx.fillText('\u4f60\u4e5f\u4f86\u6e2c\u6e2c\u2192 canweback.com', cx, 850)
+
+      // Watermark
+      ctx.font = '400 22px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = 'rgba(245,200,66,0.15)'
+      ctx.fillText('Can We Back? \u00a9 2026', cx, h - 40)
+
+      // Download
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'canweback-score.png'
+        a.click()
+        URL.revokeObjectURL(url)
+      }, 'image/png')
     }
 
     async function buyPlan() {
