@@ -362,6 +362,36 @@
       font-weight: 700;
     }
 
+    /* Teaser section: visible content that fades into blur */
+    .teaser-section {
+      margin-top: 24px;
+    }
+    .teaser-section .report-section { margin-bottom: 16px; }
+    .teaser-visible {
+      color: #bbb; line-height: 1.7; font-size: 0.95rem;
+    }
+    .teaser-fadeout {
+      position: relative; overflow: hidden; max-height: 4.5em;
+    }
+    .teaser-fadeout::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3em;
+      background: linear-gradient(transparent, rgba(10,10,26,0.95));
+      pointer-events: none;
+    }
+    .teaser-lock-hint {
+      text-align: center; margin-top: -4px; margin-bottom: 16px;
+      font-size: 0.78rem; color: #f5c842; opacity: 0.7;
+    }
+
+    /* Locked score bars */
+    .locked-meter .luck-label span:last-child {
+      filter: blur(4px); user-select: none;
+    }
+    .locked-meter .luck-fill {
+      filter: blur(3px);
+    }
+
     /* Countdown timer */
     .countdown-bar {
       display: flex; align-items: center; justify-content: center;
@@ -670,40 +700,79 @@
             </button>
           </div>
 
-          <div class="blur-section">
-            <div class="blur-content">
-              <div class="report-section">
-                <h3>&#x1F52E; 挽回分析</h3>
-                <p>根據你們的五行與星座配對分析，這段關係存在修復的可能性。你們之間的能量場顯示...</p>
-              </div>
-              <div class="report-section">
-                <h3>&#x1F4AC; 溝通建議</h3>
-                <p>你們的溝通方式需要調整，根據命盤顯示最有效的溝通策略是...</p>
-              </div>
-              <div class="report-section">
-                <h3>&#x23F0; 最佳時機</h3>
-                <p>星象分析顯示最有利的復合時間點即將到來...</p>
-              </div>
-              <div class="report-section">
-                <h3>&#x1F4CB; 行動方案</h3>
-                <p>四階段挽回計畫：冷靜期、輕度接觸、自然互動、深度溝通...</p>
+          <!-- Teaser: real content that fades out at the juicy part -->
+          <div class="teaser-section">
+
+            <!-- Teaser 1: Partner psychology — 2 sentences visible, rest fades -->
+            <div class="report-section">
+              <h3>&#x1F9E0; ${f.partnerName} 的內心世界</h3>
+              <div class="teaser-fadeout">
+                <p class="teaser-visible">${currentFortune.partnerPsychology}</p>
               </div>
             </div>
-            <div class="blur-overlay">
-              <div class="lock-icon">&#x1F512;</div>
-              <p>解鎖完整挽回分析報告<br>包含溝通策略、最佳時機、行動方案</p>
-              <div class="countdown-bar">
-                <span>&#x23F0; 限時優惠剩</span>
-                <span class="timer" id="countdownTimer">15:00</span>
-                <span>過後恢復原價</span>
+            <div class="teaser-lock-hint">&#x1F512; 解鎖報告看完整心理分析</div>
+
+            <!-- Teaser 2: Locked score dimensions -->
+            <div style="margin-bottom:20px">
+              <div class="luck-meter" style="margin-bottom:10px">
+                <div class="luck-label"><span>挽回指數</span><span style="color:${getColor(p.reconciliation)}">${p.reconciliation}/100</span></div>
+                <div class="luck-bar"><div class="luck-fill" style="width:${p.reconciliation}%;background:${getColor(p.reconciliation)}"></div></div>
               </div>
-              <div class="price-original">原價 NT$599</div>
-              <div class="price-tag">NT$299</div>
-              <button class="btn btn-pay" style="width:auto;padding:14px 40px" onclick="unlockReport()">
-                立即解鎖完整報告
-              </button>
-              <div id="liveViewerArea"></div>
+              <div class="luck-meter locked-meter" style="margin-bottom:10px">
+                <div class="luck-label"><span>化學反應</span><span>??/100</span></div>
+                <div class="luck-bar"><div class="luck-fill" style="width:${currentFortune.luckScores.chemistry}%;background:#c56cf0"></div></div>
+              </div>
+              <div class="luck-meter locked-meter" style="margin-bottom:10px">
+                <div class="luck-label"><span>溝通契合</span><span>??/100</span></div>
+                <div class="luck-bar"><div class="luck-fill" style="width:${currentFortune.luckScores.communication}%;background:#6c5ce7"></div></div>
+              </div>
+              <div class="luck-meter locked-meter" style="margin-bottom:10px">
+                <div class="luck-label"><span>時機指數</span><span>??/100</span></div>
+                <div class="luck-bar"><div class="luck-fill" style="width:${currentFortune.luckScores.timing}%;background:#00b894"></div></div>
+              </div>
+              <div class="luck-meter locked-meter">
+                <div class="luck-label"><span>長期穩定</span><span>??/100</span></div>
+                <div class="luck-bar"><div class="luck-fill" style="width:${currentFortune.luckScores.longTerm}%;background:#e17055"></div></div>
+              </div>
             </div>
+            <div class="teaser-lock-hint">&#x1F512; 解鎖報告查看完整五維分數</div>
+
+            <!-- Teaser 3: Reconciliation advice — first sentence -->
+            <div class="report-section">
+              <h3>&#x1F52E; 挽回分析</h3>
+              <div class="teaser-fadeout">
+                <p class="teaser-visible">${currentFortune.reconciliationAdvice}</p>
+              </div>
+            </div>
+            <div class="teaser-lock-hint">&#x1F512; 解鎖報告看完整挽回策略</div>
+
+            <!-- Teaser 4: Action plan — only step 1 -->
+            <div class="report-section">
+              <h3>&#x1F4CB; 行動方案</h3>
+              <p class="teaser-visible" style="margin-bottom:8px">${currentFortune.actionPlan.split('\n')[0]}</p>
+              <p style="color:#666;font-size:0.85rem">第二步至第四步 &#x1F512;</p>
+            </div>
+
+          </div>
+
+          <!-- Paywall -->
+          <div style="margin-top:24px;padding:28px 20px;background:linear-gradient(135deg,rgba(245,200,66,0.06),rgba(197,108,240,0.06));border:1px solid rgba(245,200,66,0.2);border-radius:16px;text-align:center">
+            <div style="font-size:1.2rem;font-weight:700;color:#f5c842;margin-bottom:8px">&#x1F513; 解鎖完整報告</div>
+            <p style="color:#999;font-size:0.85rem;line-height:1.6;margin-bottom:16px">
+              完整心理分析 &middot; 五維分數 &middot; 溝通話術<br>
+              最佳復合時機 &middot; 四階段行動方案 &middot; 幸運指南
+            </p>
+            <div class="countdown-bar">
+              <span>&#x23F0; 限時優惠剩</span>
+              <span class="timer" id="countdownTimer">15:00</span>
+              <span>過後恢復原價</span>
+            </div>
+            <div class="price-original">原價 NT$599</div>
+            <div class="price-tag">NT$299</div>
+            <button class="btn btn-pay" style="width:auto;padding:14px 40px" onclick="unlockReport()">
+              立即解鎖完整報告
+            </button>
+            <div id="liveViewerArea"></div>
           </div>
         </div>
       `
