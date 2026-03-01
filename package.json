@@ -8,6 +8,6 @@
   },
   "description": "Can We Back? - Fortune telling service",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^4.22.1"
   }
 }
