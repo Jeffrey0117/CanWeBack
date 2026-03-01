@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Can We Back? | 命理分析</title>
+  <title>Can We Back? | 挽回指數分析</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -83,6 +83,10 @@
       backdrop-filter: blur(10px);
     }
 
+    .form-group {
+      margin-bottom: 20px;
+    }
+
     label {
       display: block;
       font-size: 0.9rem;
@@ -90,7 +94,15 @@
       margin-bottom: 8px;
     }
 
-    input[type="date"] {
+    .input-row {
+      display: flex;
+      gap: 12px;
+    }
+    .input-row .form-group {
+      flex: 1;
+    }
+
+    input[type="text"] {
       width: 100%;
       padding: 14px 16px;
       border-radius: 10px;
@@ -99,11 +111,29 @@
       color: #fff;
       font-size: 1.1rem;
       outline: none;
-      margin-bottom: 24px;
     }
-    input[type="date"]:focus {
+    input[type="text"]:focus {
       border-color: #f5c842;
       box-shadow: 0 0 0 3px rgba(245,200,66,0.15);
+    }
+    input[type="text"]::placeholder {
+      color: rgba(255,255,255,0.25);
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      color: #c56cf0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(197,108,240,0.2);
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 4px;
     }
 
     .btn {
@@ -123,13 +153,6 @@
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,200,66,0.3); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    .btn-pay {
-      background: linear-gradient(135deg, #00b894, #00cec9);
-      color: white;
-      margin-top: 16px;
-    }
-    .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,184,148,0.3); }
-
     /* Preview Section */
     #preview { display: none; margin-top: 32px; }
 
@@ -143,6 +166,34 @@
       margin-bottom: 4px;
     }
     .preview-header p { color: #888; font-size: 0.85rem; }
+
+    .vs-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .vs-person {
+      text-align: center;
+      flex: 1;
+    }
+    .vs-person .name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .vs-person .details {
+      font-size: 0.8rem;
+      color: #999;
+      line-height: 1.5;
+    }
+    .vs-icon {
+      font-size: 1.4rem;
+      color: #ff6b6b;
+      flex-shrink: 0;
+    }
 
     .info-row {
       display: flex;
@@ -199,48 +250,6 @@
       color: #c56cf0;
     }
 
-    .blur-section {
-      position: relative;
-      margin-top: 24px;
-    }
-    .blur-content {
-      filter: blur(6px);
-      pointer-events: none;
-      user-select: none;
-    }
-    .blur-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(10,10,26,0.6);
-      border-radius: 12px;
-      z-index: 2;
-    }
-    .blur-overlay .lock-icon {
-      font-size: 2rem;
-      margin-bottom: 12px;
-    }
-    .blur-overlay p {
-      color: #ccc;
-      margin-bottom: 16px;
-      text-align: center;
-      line-height: 1.5;
-    }
-    .price-tag {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #00b894;
-      margin-bottom: 8px;
-    }
-    .price-original {
-      text-decoration: line-through;
-      color: #666;
-      font-size: 0.9rem;
-    }
-
     /* Full Report */
     #fullReport { display: none; margin-top: 32px; }
 
@@ -262,6 +271,12 @@
       color: #bbb;
       line-height: 1.7;
       font-size: 0.95rem;
+    }
+    .report-section .action-plan {
+      white-space: pre-line;
+      color: #bbb;
+      line-height: 1.8;
+      font-size: 0.9rem;
     }
 
     .lucky-grid {
@@ -299,10 +314,28 @@
       font-size: 0.8rem;
     }
 
+    .back-btn {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 12px 32px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #aaa;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+
     @media (max-width: 480px) {
       .container { padding: 24px 16px; }
       h1 { font-size: 1.8rem; }
       .card { padding: 24px 18px; }
+      .input-row { flex-direction: column; gap: 0; }
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -311,68 +344,46 @@
   <div class="stars"></div>
   <div class="container">
     <h1>Can We Back?</h1>
-    <p class="subtitle">輸入你的生日，揭開命運的面紗</p>
+    <p class="subtitle">輸入雙方資料，分析你們的挽回指數</p>
 
     <div class="card" id="inputCard">
-      <label for="birthday">選擇你的出生日期</label>
-      <input type="date" id="birthday" max="2010-12-31">
-      <button class="btn btn-primary" id="submitBtn" onclick="getFortune()">開始算命</button>
+      <div class="section-label">你的資料</div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label for="myName">你的名字</label>
+          <input type="text" id="myName" placeholder="選填">
+        </div>
+        <div class="form-group">
+          <label for="myBirthday">你的生日</label>
+          <input type="text" id="myBirthday" placeholder="如 880118" inputmode="numeric" maxlength="7">
+          <div class="hint">民國年月日，如 880118</div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:8px">對方的資料</div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label for="partnerName">對方名字</label>
+          <input type="text" id="partnerName" placeholder="選填">
+        </div>
+        <div class="form-group">
+          <label for="partnerBirthday">對方生日</label>
+          <input type="text" id="partnerBirthday" placeholder="如 900520" inputmode="numeric" maxlength="7">
+          <div class="hint">民國年月日，如 900520</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="submitBtn" onclick="getFortune()" style="margin-top:8px">分析挽回指數</button>
     </div>
 
     <div id="loadingSection" style="display:none">
       <div class="card">
         <div class="loading">
           <div class="spinner"></div>
-          <p style="color:#f5c842">命運之輪轉動中...</p>
-          <p style="color:#888;font-size:0.85rem;margin-top:8px">正在解讀你的生命密碼</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="preview">
-      <div class="card">
-        <div class="preview-header">
-          <h2>命理分析預覽</h2>
-          <p>以下為部分分析結果</p>
-        </div>
-
-        <div class="info-row" id="infoRow"></div>
-
-        <div id="luckPreview"></div>
-
-        <div style="margin-top:16px">
-          <p style="color:#aaa;font-size:0.85rem;margin-bottom:8px">性格特質</p>
-          <div class="traits-list" id="traitsList"></div>
-        </div>
-
-        <div class="blur-section">
-          <div class="blur-content">
-            <div class="report-section">
-              <h3>💕 感情運勢</h3>
-              <p>你的靈魂伴侶可能就在身邊，留意那個總是默默關心你的人。今年感情運勢極佳，把握機會主動出擊。</p>
-            </div>
-            <div class="report-section">
-              <h3>💼 事業運勢</h3>
-              <p>職場上會遇到重要的轉折點，第三季是關鍵時期。你的才華即將被伯樂發現。</p>
-            </div>
-            <div class="report-section">
-              <h3>💰 財富運勢</h3>
-              <p>下半年有一筆意外之財，投資運不錯，但建議以穩健型投資為主。</p>
-            </div>
-            <div class="report-section">
-              <h3>🍀 幸運指南</h3>
-              <p>幸運色、幸運數字、幸運方位等完整資訊。</p>
-            </div>
-          </div>
-          <div class="blur-overlay">
-            <div class="lock-icon">🔒</div>
-            <p>解鎖完整命理報告<br>包含感情、事業、財運、健康全面分析</p>
-            <div class="price-original">原價 NT$299</div>
-            <div class="price-tag">NT$99</div>
-            <button class="btn btn-pay" style="width:auto;padding:14px 40px" onclick="payAndUnlock()">
-              立即解鎖完整報告
-            </button>
-          </div>
+          <p style="color:#f5c842">命盤合對分析中...</p>
+          <p style="color:#888;font-size:0.85rem;margin-top:8px">正在解讀你們的緣分密碼</p>
         </div>
       </div>
     </div>
@@ -380,16 +391,23 @@
     <div id="fullReport"></div>
 
     <div class="footer">
-      <p>Can We Back? &copy; 2026 | 僅供娛樂參考</p>
+      <p>Can We Back? &copy; 2026</p>
     </div>
   </div>
 
   <script>
-    let currentOrderId = null
-
     async function getFortune() {
-      const birthday = document.getElementById('birthday').value
-      if (!birthday) return alert('請選擇出生日期')
+      const myBirthday = document.getElementById('myBirthday').value.trim()
+      const partnerBirthday = document.getElementById('partnerBirthday').value.trim()
+      const myName = document.getElementById('myName').value.trim() || '你'
+      const partnerName = document.getElementById('partnerName').value.trim() || '對方'
+
+      if (!myBirthday || !partnerBirthday) return alert('請輸入雙方的生日')
+
+      const cleaned1 = myBirthday.replace(/\D/g, '')
+      const cleaned2 = partnerBirthday.replace(/\D/g, '')
+      if (cleaned1.length < 6 || cleaned1.length > 7) return alert('你的生日格式不正確，請輸入如 880118')
+      if (cleaned2.length < 6 || cleaned2.length > 7) return alert('對方生日格式不正確，請輸入如 900520')
 
       const btn = document.getElementById('submitBtn')
       btn.disabled = true
@@ -400,108 +418,47 @@
         const res = await fetch('/api/fortune', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ birthday }),
+          body: JSON.stringify({ myBirthday, partnerBirthday, myName, partnerName }),
         })
         const data = await res.json()
-        currentOrderId = data.orderId
 
-        // Simulate "calculating" delay
+        if (data.error) {
+          alert(data.error)
+          btn.disabled = false
+          document.getElementById('inputCard').style.display = 'block'
+          document.getElementById('loadingSection').style.display = 'none'
+          return
+        }
+
         await new Promise(r => setTimeout(r, 2000))
 
         document.getElementById('loadingSection').style.display = 'none'
-        renderPreview(data.preview)
-      } catch {
-        alert('算命失敗，請重試')
+        renderFullReport(data.fortune)
+      } catch (err) {
+        alert('分析失敗，請重試')
         btn.disabled = false
         document.getElementById('inputCard').style.display = 'block'
         document.getElementById('loadingSection').style.display = 'none'
       }
     }
 
-    function renderPreview(p) {
-      document.getElementById('infoRow').innerHTML = `
-        <div class="info-badge">
-          <div class="label">生肖</div>
-          <div class="value">${p.zodiac}</div>
-        </div>
-        <div class="info-badge">
-          <div class="label">星座</div>
-          <div class="value">${p.constellation}</div>
-        </div>
-        <div class="info-badge">
-          <div class="label">五行</div>
-          <div class="value">${p.element}</div>
-        </div>
-      `
-
-      const colors = { 90: '#00b894', 70: '#f5c842', 50: '#e17055', 0: '#d63031' }
-      function getColor(score) {
-        if (score >= 80) return '#00b894'
-        if (score >= 60) return '#f5c842'
-        if (score >= 40) return '#e17055'
-        return '#d63031'
-      }
-
-      document.getElementById('luckPreview').innerHTML = `
-        <div class="luck-meter">
-          <div class="luck-label"><span>整體運勢</span><span style="color:${getColor(p.overallLuck)}">${p.overallLuck}/100</span></div>
-          <div class="luck-bar"><div class="luck-fill" style="width:${p.overallLuck}%;background:${getColor(p.overallLuck)}"></div></div>
-        </div>
-      `
-
-      const traitsList = document.getElementById('traitsList')
-      traitsList.innerHTML = p.traits.map(t => `<span class="trait">${t}</span>`).join('')
-
-      document.getElementById('preview').style.display = 'block'
-    }
-
-    async function payAndUnlock() {
-      if (!currentOrderId) return
-
-      const btn = event.target
-      btn.textContent = '處理中...'
-      btn.disabled = true
-
-      try {
-        const res = await fetch('/api/pay', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: currentOrderId }),
-        })
-        const data = await res.json()
-
-        if (data.success) {
-          // Load full report
-          const reportRes = await fetch(`/api/fortune/${currentOrderId}`)
-          const reportData = await reportRes.json()
-          renderFullReport(reportData.fortune)
-        } else if (data.paymentUrl) {
-          window.location.href = data.paymentUrl
-        }
-      } catch {
-        alert('付款失敗，請重試')
-        btn.textContent = '立即解鎖完整報告'
-        btn.disabled = false
-      }
+    function getColor(score) {
+      if (score >= 80) return '#00b894'
+      if (score >= 60) return '#f5c842'
+      if (score >= 40) return '#e17055'
+      return '#d63031'
     }
 
     function renderFullReport(f) {
-      document.getElementById('preview').style.display = 'none'
+      const luckEntries = [
+        ['挽回指數', f.luckScores.reconciliation],
+        ['化學反應', f.luckScores.chemistry],
+        ['溝通契合', f.luckScores.communication],
+        ['時機指數', f.luckScores.timing],
+        ['長期穩定', f.luckScores.longTerm],
+      ]
 
-      function getColor(score) {
-        if (score >= 80) return '#00b894'
-        if (score >= 60) return '#f5c842'
-        if (score >= 40) return '#e17055'
-        return '#d63031'
-      }
-
-      const luckBars = Object.entries({
-        '整體運勢': f.luckScores.overall,
-        '愛情運': f.luckScores.love,
-        '事業運': f.luckScores.career,
-        '財運': f.luckScores.wealth,
-        '健康運': f.luckScores.health,
-      }).map(([label, score]) => `
+      const luckBars = luckEntries.map(([label, score]) => `
         <div class="luck-meter">
           <div class="luck-label"><span>${label}</span><span style="color:${getColor(score)}">${score}/100</span></div>
           <div class="luck-bar"><div class="luck-fill" style="width:${score}%;background:${getColor(score)}"></div></div>
@@ -511,56 +468,59 @@
       document.getElementById('fullReport').innerHTML = `
         <div class="card">
           <div class="preview-header">
-            <h2>完整命理報告</h2>
-            <p>感謝您的購買，以下是您的完整分析</p>
+            <h2>挽回指數分析報告</h2>
+            <p>${f.myName} & ${f.partnerName} 的緣分解析</p>
           </div>
 
-          <div class="info-row">
-            <div class="info-badge">
-              <div class="label">生肖</div>
-              <div class="value">${f.zodiac}</div>
+          <div class="vs-row">
+            <div class="vs-person">
+              <div class="name">${f.myName}</div>
+              <div class="details">
+                ${f.myConstellation} / ${f.myZodiac}<br>
+                五行屬${f.myElement}
+              </div>
             </div>
-            <div class="info-badge">
-              <div class="label">星座</div>
-              <div class="value">${f.constellation}</div>
-            </div>
-            <div class="info-badge">
-              <div class="label">五行</div>
-              <div class="value">${f.element}</div>
+            <div class="vs-icon">&hearts;</div>
+            <div class="vs-person">
+              <div class="name">${f.partnerName}</div>
+              <div class="details">
+                ${f.partnerConstellation} / ${f.partnerZodiac}<br>
+                五行屬${f.partnerElement}
+              </div>
             </div>
           </div>
 
           <div style="margin-bottom:20px">
-            <p style="color:#aaa;font-size:0.85rem;margin-bottom:8px">性格特質</p>
+            <p style="color:#aaa;font-size:0.85rem;margin-bottom:8px">${f.myName} 的性格特質</p>
             <div class="traits-list">
-              ${f.traits.map(t => `<span class="trait">${t}</span>`).join('')}
+              ${f.myTraits.map(t => `<span class="trait">${t}</span>`).join('')}
             </div>
           </div>
 
           ${luckBars}
 
           <div class="report-section" style="margin-top:20px">
-            <h3>🌟 年度運勢總覽</h3>
-            <p>${f.yearAdvice}</p>
+            <h3>&#x1F52E; 挽回分析</h3>
+            <p>${f.reconciliationAdvice}</p>
           </div>
 
           <div class="report-section">
-            <h3>💕 感情運勢</h3>
-            <p>${f.loveAdvice}</p>
+            <h3>&#x1F4AC; 溝通建議</h3>
+            <p>${f.communicationAdvice}</p>
           </div>
 
           <div class="report-section">
-            <h3>💼 事業運勢</h3>
-            <p>${f.careerAdvice}</p>
+            <h3>&#x23F0; 時機判斷</h3>
+            <p>${f.timingAdvice}</p>
           </div>
 
           <div class="report-section">
-            <h3>💰 財富運勢</h3>
-            <p>${f.wealthAdvice}</p>
+            <h3>&#x1F4CB; 行動方案</h3>
+            <div class="action-plan">${f.actionPlan}</div>
           </div>
 
           <div class="report-section">
-            <h3>🍀 幸運指南</h3>
+            <h3>&#x1F340; 挽回幸運指南</h3>
             <div class="lucky-grid">
               <div class="lucky-item">
                 <div class="li-label">幸運色</div>
@@ -584,25 +544,14 @@
               </div>
             </div>
           </div>
+
+          <div style="text-align:center">
+            <button class="back-btn" onclick="location.reload()">重新分析</button>
+          </div>
         </div>
       `
 
       document.getElementById('fullReport').style.display = 'block'
-    }
-
-    // Check if returning from payment
-    const params = new URLSearchParams(window.location.search)
-    const returnId = params.get('id')
-    if (returnId) {
-      currentOrderId = returnId
-      fetch(`/api/fortune/${returnId}`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.fortune) {
-            document.getElementById('inputCard').style.display = 'none'
-            renderFullReport(data.fortune)
-          }
-        })
     }
   </script>
 </body>
