@@ -69,6 +69,24 @@ function parseRocBirthday(input) {
   return new Date(year, month - 1, day)
 }
 
+// Simple string hash for deterministic but well-distributed seed
+function hashStr(str) {
+  let h = 0
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h + str.charCodeAt(i)) | 0
+  }
+  return Math.abs(h)
+}
+
+// Seeded pseudo-random: returns a function that generates deterministic values 0~1
+function seededRandom(seed) {
+  let s = seed
+  return function() {
+    s = (s * 1664525 + 1013904223) & 0x7fffffff
+    return s / 0x7fffffff
+  }
+}
+
 function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
   const myDate = parseRocBirthday(myBirthday)
   const partnerDate = parseRocBirthday(partnerBirthday)
@@ -81,7 +99,9 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
 
   const mySeed = myMonth * 31 + myDay
   const partnerSeed = pMonth * 31 + pDay
-  const combinedSeed = mySeed * 100 + partnerSeed
+  // Mix in names + both birthdays for much better distribution
+  const combinedSeed = hashStr(myName + myBirthday + partnerName + partnerBirthday)
+  const rng = seededRandom(combinedSeed)
 
   const elements = ['金', '木', '水', '火', '土']
   const myElement = elements[mySeed % 5]
@@ -125,11 +145,11 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
 
   const baseCompat = elementCompat[myElement + partnerElement] || 50
   const luckScores = {
-    reconciliation: Math.min(95, Math.max(30, baseCompat + (combinedSeed % 15) - 5)),
-    chemistry: Math.min(95, Math.max(25, 40 + ((combinedSeed * 7) % 50))),
-    communication: Math.min(95, Math.max(25, 35 + ((combinedSeed * 13) % 55))),
-    timing: Math.min(95, Math.max(30, 45 + ((combinedSeed * 3) % 45))),
-    longTerm: Math.min(95, Math.max(25, 40 + ((combinedSeed * 11) % 50))),
+    reconciliation: Math.min(95, Math.max(30, baseCompat + Math.floor(rng() * 20) - 8)),
+    chemistry: Math.min(95, Math.max(25, 35 + Math.floor(rng() * 55))),
+    communication: Math.min(95, Math.max(25, 30 + Math.floor(rng() * 60))),
+    timing: Math.min(95, Math.max(30, 40 + Math.floor(rng() * 50))),
+    longTerm: Math.min(95, Math.max(25, 35 + Math.floor(rng() * 55))),
   }
 
   const myTraitsPool = [
@@ -138,8 +158,15 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     ['熱情洋溢', '充滿活力', '行動力強', '勇於表達'],
     ['溫柔體貼', '富有同情心', '感受力強', '善解人意'],
     ['理性務實', '有責任感', '注重細節', '規劃力強'],
+    ['獨立自主', '思考深沉', '洞察力強', '不畏困難'],
+    ['樂觀開朗', '幽默感強', '社交力佳', '感染力強'],
+    ['浪漫多情', '藝術感強', '想像力豐富', '情感細膩'],
+    ['忠誠可靠', '守護意識強', '言出必行', '默默付出'],
+    ['好奇心強', '學習力佳', '反應靈敏', '創意十足'],
+    ['沉穩內斂', '大局觀強', '抗壓力高', '深藏不露'],
+    ['真誠坦率', '正義感強', '保護慾強', '說到做到'],
   ]
-  const myTraits = myTraitsPool[mySeed % 5]
+  const myTraits = myTraitsPool[Math.floor(rng() * myTraitsPool.length)]
 
   const reconciliationAdvice = [
     `從五行來看，${myName}屬${myElement}而${partnerName}屬${partnerElement}，你們之間存在互補的能量。挽回的關鍵在於先穩定自己的情緒，用行動而非言語來表達誠意。建議在對方冷靜後，以真誠但不帶壓力的方式重新建立聯繫。`,
@@ -149,6 +176,12 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     `五行分析顯示${myElement}與${partnerElement}的組合需要一個調和的契機。建議${myName}在接下來的一個月內專注自我成長，等待雙方能量重新對齊的時刻再行動。`,
     `星座配對顯示${myConstellation}與${partnerConstellation}之間存在強烈的吸引力，即使暫時分開，這股引力仍在。建議用溫和而堅定的態度，讓對方感受到你的改變與成長。`,
     `從命理角度來看，你們的分離時機恰好落在星象轉換期。下一個有利的復合時間點即將到來，但前提是${myName}必須先完成內在的自我修復。`,
+    `${myElement}屬性的${myName}天生具有吸引${partnerElement}的磁場。這股吸引力並不會因為分手而消失。你需要做的是重新喚醒這份連結——從對方在意的小事開始，不用刻意，自然就好。`,
+    `${myConstellation}與${partnerConstellation}的配對在星象學上被稱為「命運之輪」組合。你們的故事還沒結束，但下一章需要${myName}先學會放手，才能重新握住。這不是矛盾，是宇宙的智慧。`,
+    `根據五行相生的原理，${myElement}生${partnerElement}代表你天生是滋養對方的角色。問題不在於你不夠好，而是用力過猛。建議改用「若即若離」的策略，讓${partnerName}感受到失去你的真實重量。`,
+    `${myZodiac}年出生的${myName}與${partnerZodiac}年出生的${partnerName}在生肖配對上屬於「磨合型」。分手只是磨合過程中的一個節點，而非終點。反思你們最常爭吵的議題，那裡藏著復合的鑰匙。`,
+    `命盤顯示${myName}的情感能量正處於蓄勢待發的階段。你目前最大的武器不是追回對方，而是讓自己散發出「我已經不一樣了」的氣場。${partnerName}的${partnerConstellation}特質會讓對方不自覺地被這種改變吸引。`,
+    `${myConstellation}的守護星與${partnerConstellation}的守護星目前形成六合相位，這是一個有利於和解的天象。但你需要的不是表白或道歉——而是一個「恰到好處的巧遇」，讓重逢看起來像命運安排。`,
   ]
 
   const communicationAdvice = [
@@ -157,6 +190,13 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     `根據星座分析，${partnerName}最在意的是被理解和被尊重。在重新建立溝通時，先傾聽、後表達，展現你真正理解問題所在。`,
     `命盤顯示你們的溝通需要一個中性的橋樑。建議透過共同的興趣或話題重新開啟對話，避免直接討論感情問題。`,
     `${myZodiac}與${partnerZodiac}在溝通上需要更多耐心。建議先用輕鬆的方式打招呼，循序漸進地恢復日常互動。`,
+    `${partnerConstellation}最反感的溝通方式是情緒勒索和反覆追問「你到底怎麼想」。建議改用分享式溝通：分享你近況的改變，讓對方自然產生好奇，而不是追著對方要答案。`,
+    `分析顯示${myName}的表達方式偏向${myElement}型——${{ '金': '直接犀利', '木': '溫和含蓄', '水': '善於傾聽', '火': '熱情直白', '土': '穩重務實' }[myElement]}。而${partnerName}需要的是${{ '金': '溫柔的肯定', '木': '明確的承諾', '水': '具體的行動', '火': '冷靜的理解', '土': '浪漫的驚喜' }[partnerElement]}。找到這個平衡點，溝通就不再是障礙。`,
+    `你們之間最大的溝通盲區是：${myName}以為問題在於說了什麼，但${partnerName}在意的其實是「什麼時候說」和「用什麼語氣說」。時機比內容更重要。`,
+    `${partnerConstellation}在分手後最渴望聽到的不是「我錯了」，而是「我終於理解你為什麼那樣感受了」。前者是認錯，後者是共情——${partnerName}要的是後者。`,
+    `根據五行流通的規律，${myElement}與${partnerElement}之間的能量傳遞需要一個中介。在溝通上，建議先從輕鬆的「第三方話題」切入——比如推薦一部你覺得對方會喜歡的劇、分享一個有趣的發現——而不是直接談感情。`,
+    `命盤提示：${myName}容易犯的錯誤是「解釋太多」。你越是解釋，${partnerName}越覺得你在找藉口。改成「少說多做」模式——用三個月的行動改變，抵過三小時的長篇訊息。`,
+    `${myConstellation}與${partnerConstellation}最有效的復合溝通模式是「書信體」。不是真的寫信，而是用訊息模擬書信的節奏：一天一封，簡短但真誠，分享你的日常成長，不問對方近況，不施加壓力。第七天停下來，等對方回應。`,
   ]
 
   const timingAdvice = [
@@ -165,12 +205,28 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     '命盤顯示下一個月的中旬是重新聯繫的好時機，屆時雙方的能量場會趨於和諧。',
     '從五行流年來看，今年下半年是感情修復的黃金期，把握這個階段的每一次互動機會。',
     '星象顯示近期不宜過於積極，建議以退為進，讓對方主動靠近你。',
+    `以${partnerConstellation}的性格週期來看，對方在分手後第 3-4 週會進入「反芻期」——開始反覆回想你們的好。那個時間點是你輕輕出現的最佳時機。`,
+    '金星目前正過境你們的關係宮位，這股能量會持續到下個月底。在此期間任何正面接觸都會被放大效果。',
+    `${myElement}的能量在每個月的上弦月階段最旺盛。建議在月亮漸圓的時候採取行動，你的魅力和說服力會比平時強 30%。`,
+    '命盤顯示目前並非最佳行動期，但也不是完全不利。建議用這段時間做好準備——當窗口來臨時，你要能在 72 小時內把握住。',
+    '分析顯示最有利的聯繫時間是平日傍晚 6-8 點，對方在這個時段最容易感性、最容易想起你們的日常。週末反而不好——太多社交干擾。',
+    `根據你們的五行互動模式，最理想的復合節奏是「21天法則」：7天完全靜默、7天間接出現在對方視野、7天自然互動。每個階段都不能急。`,
+    `${partnerZodiac}年生人在感情上有「三個月迴圈」的特性。從分手算起的第三個月，對方的防備心會降到最低點。如果你在那之前已經做好改變，勝率最高。`,
   ]
 
   const actionPlan = [
     `第一步：冷靜期（1-2週）— 完全不主動聯繫，專注自我\n第二步：輕度接觸 — 透過社群互動或朋友圈展現正面改變\n第三步：自然互動 — 找到自然的理由重新聯繫\n第四步：深度溝通 — 真誠表達感受，但不施加壓力`,
     `第一步：自我反思 — 誠實面對分手的原因\n第二步：自我成長 — 針對問題做出實際改變\n第三步：間接展現 — 讓對方看到你的蛻變\n第四步：重新出發 — 以全新的姿態邀約`,
     `第一步：斷聯修復（2-3週）— 給彼此喘息空間\n第二步：朋友圈經營 — 展現積極正向的生活\n第三步：輕鬆破冰 — 以朋友的身份重新互動\n第四步：循序漸進 — 慢慢恢復信任與親密感`,
+    `第一步：情緒排毒（1週）— 把所有想說的話寫下來但不要傳出去\n第二步：形象升級 — 從外在到內在，讓朋友圈看到你的蛻變\n第三步：製造巧遇 — 出現在對方會出現的場合，但保持從容\n第四步：以退為進 — 讓對方主動靠近你`,
+    `第一步：寫下覆盤（3天）— 列出你做錯了什麼、對方需要什麼\n第二步：精準改變 — 針對問題做出看得見的具體行動\n第三步：低壓回歸 — 用不帶期待的口吻重新聯繫\n第四步：重建信任 — 用一致性證明你的改變不是演的`,
+    `第一步：社群靜默（2週）— 不發任何與感情有關的動態\n第二步：高價值展現 — 發布你在學新技能、去新地方的照片\n第三步：觸發好奇 — 在共同朋友圈留下「你最近變了很多」的印象\n第四步：等待邀請 — 當對方主動聯繫時，用平常心回應`,
+    `第一步：物品歸還（1週內）— 用歸還物品作為最後一次自然見面的理由\n第二步：留下好印象 — 見面時表現從容、不提復合\n第三步：種下種子 — 臨走說一句「以後如果需要，我都在」\n第四步：完全放手 — 不再主動聯繫，讓種子自己發芽`,
+    `第一步：找回自己（2-3週）— 回到分手前你最有魅力的狀態\n第二步：共同記憶觸發 — 去你們常去的地方打卡，不標記對方\n第三步：輕觸底線 — 傳一張你們都會笑的舊照片，配一句「整理照片翻到的」\n第四步：順水推舟 — 如果對方有回應，慢慢把節奏拉起來`,
+    `第一步：心態歸零（1週）— 接受分手是事實，不再幻想對方會主動回來\n第二步：人生重啟 — 報名一個課程、開始一個新嗜好、認識新朋友\n第三步：不經意展現 — 讓改變自然地被對方的社交圈發現\n第四步：最後一搏 — 在最好的狀態下約對方喝一杯咖啡，只聊近況不談過去`,
+    `第一步：深度反省（3-5天）— 不只是道歉，是真正理解「為什麼你的道歉對方不接受」\n第二步：行為證明（2-4週）— 在對方不知道的情況下改變，讓朋友作為見證\n第三步：橋樑建立 — 透過共同朋友傳遞「你最近真的不一樣了」的訊息\n第四步：水到渠成 — 等對方好奇到主動探聽你的近況時，自然地重新連結`,
+    `第一步：數位斷捨離（立即）— 取消追蹤但不封鎖，展現成熟而非報復\n第二步：現實世界升級（1個月）— 健身、閱讀、旅行，三管齊下\n第三步：策略性回歸 — 在某個重要日子（非紀念日）發一則有質感的動態\n第四步：軟著陸 — 如果對方有互動，以朋友的方式重新開始`,
+    `第一步：寫一封不寄出的信（今天）— 把所有情緒傾倒在紙上，然後封存\n第二步：21天挑戰 — 每天做一件讓自己變更好的事，記錄下來\n第三步：重新定義 — 想清楚你要的是「對方回來」還是「一段更好的關係」\n第四步：帶著答案出發 — 如果答案是後者，你已經準備好了`,
   ]
 
   // 對方心理深度分析（根據星座）
@@ -206,12 +262,16 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     destinyDesc = `${myName}與${partnerName}的組合需要更大的努力。但命理學告訴我們，越是困難的配對，一旦克服障礙，反而能建立最堅固的關係。不要放棄，但策略必須正確。`
   }
 
+  const luckyColors = ['粉紅色', '薰衣草紫', '天空藍', '珊瑚橘', '翡翠綠', '暖白色', '玫瑰金', '霧灰藍', '焦糖棕', '蜜桃粉']
+  const luckyDirections = ['東方', '南方', '西方', '北方', '東南', '西北', '東北', '西南']
+  const luckyFlowers = ['玫瑰', '百合', '滿天星', '繡球花', '鬱金香', '桃花', '薰衣草', '向日葵', '茉莉', '牡丹']
+  const luckyDays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
   const luckyItems = {
-    color: ['粉紅色', '薰衣草紫', '天空藍', '珊瑚橘', '翡翠綠', '暖白色', '玫瑰金'][combinedSeed % 7],
-    number: ((combinedSeed * 7) % 9) + 1,
-    direction: ['東方', '南方', '西方', '北方', '東南', '西北'][combinedSeed % 6],
-    flower: ['玫瑰', '百合', '滿天星', '繡球花', '鬱金香', '桃花'][combinedSeed % 6],
-    day: ['星期一', '星期三', '星期五', '星期六', '星期日'][combinedSeed % 5],
+    color: luckyColors[Math.floor(rng() * luckyColors.length)],
+    number: Math.floor(rng() * 9) + 1,
+    direction: luckyDirections[Math.floor(rng() * luckyDirections.length)],
+    flower: luckyFlowers[Math.floor(rng() * luckyFlowers.length)],
+    day: luckyDays[Math.floor(rng() * luckyDays.length)],
   }
 
   return {
@@ -226,10 +286,10 @@ function generateFortune(myBirthday, partnerBirthday, myName, partnerName) {
     destinyLevel,
     destinyDesc,
     partnerPsychology: partnerPsychology[partnerConstellation] || `${partnerName}的星座配置顯示對方內心仍有牽掛，但需要看到你真正的改變。`,
-    reconciliationAdvice: reconciliationAdvice[combinedSeed % reconciliationAdvice.length],
-    communicationAdvice: communicationAdvice[combinedSeed % communicationAdvice.length],
-    timingAdvice: timingAdvice[combinedSeed % timingAdvice.length],
-    actionPlan: actionPlan[combinedSeed % actionPlan.length],
+    reconciliationAdvice: reconciliationAdvice[Math.floor(rng() * reconciliationAdvice.length)],
+    communicationAdvice: communicationAdvice[Math.floor(rng() * communicationAdvice.length)],
+    timingAdvice: timingAdvice[Math.floor(rng() * timingAdvice.length)],
+    actionPlan: actionPlan[Math.floor(rng() * actionPlan.length)],
   }
 }
 
