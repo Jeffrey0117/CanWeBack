@@ -1,17 +1,54 @@
-const express = require('express')
+const http = require('http')
+const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
 
-const app = express()
 const PORT = process.env.PORT || 3000
-
-app.use(express.json())
-app.use(express.static(path.join(__dirname, 'public')))
-
-// In-memory order store (good enough for MVP)
 const orders = new Map()
 
-// Generate fortune from birthday
+const MIME_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.ico': 'image/x-icon',
+}
+
+function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('end', () => {
+      try { resolve(JSON.parse(body)) }
+      catch { resolve({}) }
+    })
+    req.on('error', reject)
+  })
+}
+
+function sendJson(res, data, status = 200) {
+  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' })
+  res.end(JSON.stringify(data))
+}
+
+function serveStatic(res, filePath) {
+  const fullPath = path.join(__dirname, 'public', filePath === '/' ? 'index.html' : filePath)
+  const ext = path.extname(fullPath)
+  const mime = MIME_TYPES[ext] || 'application/octet-stream'
+
+  fs.readFile(fullPath, (err, data) => {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' })
+      res.end('Not Found')
+      return
+    }
+    res.writeHead(200, { 'Content-Type': mime })
+    res.end(data)
+  })
+}
+
 function generateFortune(birthday) {
   const date = new Date(birthday)
   const month = date.getMonth() + 1
@@ -92,13 +129,8 @@ function generateFortune(birthday) {
   }
 
   return {
-    birthday,
-    zodiac,
-    constellation,
-    element,
-    traits,
-    luckScores,
-    luckyItems,
+    birthday, zodiac, constellation, element, traits,
+    luckScores, luckyItems,
     yearAdvice: yearAdvice[seed % yearAdvice.length],
     loveAdvice: loveAdvice[seed % loveAdvice.length],
     careerAdvice: careerAdvice[seed % careerAdvice.length],
@@ -106,113 +138,73 @@ function generateFortune(birthday) {
   }
 }
 
-// API: Generate fortune
-app.post('/api/fortune', (req, res) => {
-  const { birthday } = req.body
-  if (!birthday) {
-    return res.status(400).json({ error: '請提供生日' })
+const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url, `http://localhost:${PORT}`)
+  const pathname = url.pathname
+
+  // API routes
+  if (pathname === '/api/health' && req.method === 'GET') {
+    return sendJson(res, { status: 'ok', service: 'canweback' })
   }
 
-  const fortune = generateFortune(birthday)
-  const orderId = crypto.randomUUID()
-
-  orders.set(orderId, {
-    fortune,
-    paid: false,
-    createdAt: new Date().toISOString(),
-  })
-
-  // Return preview (blurred) version
-  res.json({
-    orderId,
-    preview: {
-      zodiac: fortune.zodiac,
-      constellation: fortune.constellation,
-      element: fortune.element,
-      traits: fortune.traits.slice(0, 2),
-      overallLuck: fortune.luckScores.overall,
-    },
-  })
-})
-
-// API: Get full report (after payment)
-app.get('/api/fortune/:orderId', (req, res) => {
-  const order = orders.get(req.params.orderId)
-  if (!order) {
-    return res.status(404).json({ error: '找不到此報告' })
-  }
-  if (!order.paid) {
-    return res.status(402).json({ error: '請先完成付款', orderId: req.params.orderId })
-  }
-  res.json({ fortune: order.fortune })
-})
-
-// API: Create payment via LetMeUse billing
-app.post('/api/pay', async (req, res) => {
-  const { orderId } = req.body
-  const order = orders.get(orderId)
-  if (!order) {
-    return res.status(404).json({ error: '找不到此訂單' })
-  }
-
-  const LETMEUSE_URL = process.env.LETMEUSE_URL || 'https://letmeuse.isnowfriend.com'
-  const APP_ID = process.env.LETMEUSE_APP_ID || ''
-  const APP_SECRET = process.env.LETMEUSE_APP_SECRET || ''
-
-  try {
-    const response = await fetch(`${LETMEUSE_URL}/api/billing/subscription`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-App-Id': APP_ID,
-        'X-App-Secret': APP_SECRET,
-      },
-      body: JSON.stringify({
-        orderId,
-        amount: 99,
-        description: '命理報告 - 完整版',
-        returnUrl: `${process.env.BASE_URL || 'https://canweback.isnowfriend.com'}/report?id=${orderId}`,
-      }),
-    })
-
-    if (!response.ok) {
-      // Billing not ready yet — simulate payment for now
-      order.paid = true
-      return res.json({
-        success: true,
-        message: '付款成功（測試模式）',
-        redirectUrl: `/report.html?id=${orderId}`,
-      })
+  if (pathname === '/api/fortune' && req.method === 'POST') {
+    const body = await parseBody(req)
+    if (!body.birthday) {
+      return sendJson(res, { error: '請提供生日' }, 400)
     }
 
-    const data = await response.json()
-    res.json({ success: true, paymentUrl: data.paymentUrl })
-  } catch {
-    // LetMeUse billing not available — auto-approve for demo
-    order.paid = true
-    res.json({
-      success: true,
-      message: '付款成功（測試模式）',
-      redirectUrl: `/report.html?id=${orderId}`,
+    const fortune = generateFortune(body.birthday)
+    const orderId = crypto.randomUUID()
+    orders.set(orderId, { fortune, paid: false, createdAt: new Date().toISOString() })
+
+    return sendJson(res, {
+      orderId,
+      preview: {
+        zodiac: fortune.zodiac,
+        constellation: fortune.constellation,
+        element: fortune.element,
+        traits: fortune.traits.slice(0, 2),
+        overallLuck: fortune.luckScores.overall,
+      },
     })
   }
-})
 
-// API: Payment callback (webhook from LetMeUse)
-app.post('/api/webhook/payment', (req, res) => {
-  const { orderId, status } = req.body
-  const order = orders.get(orderId)
-  if (order && status === 'paid') {
-    order.paid = true
+  if (pathname.startsWith('/api/fortune/') && req.method === 'GET') {
+    const orderId = pathname.split('/')[3]
+    const order = orders.get(orderId)
+    if (!order) return sendJson(res, { error: '找不到此報告' }, 404)
+    if (!order.paid) return sendJson(res, { error: '請先完成付款', orderId }, 402)
+    return sendJson(res, { fortune: order.fortune })
   }
-  res.json({ received: true })
+
+  if (pathname === '/api/pay' && req.method === 'POST') {
+    const body = await parseBody(req)
+    const order = orders.get(body.orderId)
+    if (!order) return sendJson(res, { error: '找不到此訂單' }, 404)
+
+    // For now, auto-approve (test mode)
+    // When LetMeUse billing is ready, integrate here
+    order.paid = true
+    return sendJson(res, {
+      success: true,
+      message: '付款成功（測試模式）',
+      redirectUrl: `/report.html?id=${body.orderId}`,
+    })
+  }
+
+  if (pathname === '/api/webhook/payment' && req.method === 'POST') {
+    const body = await parseBody(req)
+    const order = orders.get(body.orderId)
+    if (order && body.status === 'paid') {
+      order.paid = true
+    }
+    return sendJson(res, { received: true })
+  }
+
+  // Static files
+  serveStatic(res, pathname)
 })
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'canweback' })
-})
-
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`canweback running on port ${PORT}`)
 })

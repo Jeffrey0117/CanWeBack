@@ -6,8 +6,5 @@
     "start": "node server.js",
     "dev": "node server.js"
   },
-  "description": "Can We Back? - Fortune telling service",
-  "dependencies": {
-    "express": "^4.22.1"
-  }
+  "description": "Can We Back? - Fortune telling service"
 }
