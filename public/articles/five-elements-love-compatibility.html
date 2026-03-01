@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>五行看感情：為什麼你們總是吵架 | 失戀急診室</title>
+  <meta name="description" content="金木水火土不只影響運勢，更決定了兩個人的相處模式。命理師解析五行相剋的感情配對。">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans TC', -apple-system, sans-serif; background: #0a0a1a; color: #e0e0e0; min-height: 100vh; }
+    .stars { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 0; }
+    .stars::before { content: ''; position: absolute; width: 2px; height: 2px; border-radius: 50%; background: white;
+      box-shadow: 25px 50px white, 100px 120px white, 200px 80px white, 350px 200px white, 50px 300px white,
+        180px 350px white, 400px 100px white, 300px 400px white, 500px 250px white, 250px 500px white;
+      animation: twinkle 4s ease-in-out infinite alternate; }
+    @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+    .container { max-width: 680px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 1; }
+    .breadcrumb { font-size: 0.8rem; color: #666; margin-bottom: 24px; }
+    .breadcrumb a { color: #f5c842; text-decoration: none; }
+    .article { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 36px; backdrop-filter: blur(10px); }
+    .article h1 { font-size: 1.6rem; line-height: 1.5; color: #fff; margin-bottom: 16px; }
+    .article-meta { font-size: 0.8rem; color: #666; margin-bottom: 32px; display: flex; gap: 16px; }
+    .article-meta .read-count { color: #ff6b6b; }
+    .article p { color: #ccc; line-height: 1.9; font-size: 1rem; margin-bottom: 20px; }
+    .article h2 { font-size: 1.2rem; color: #f5c842; margin: 32px 0 16px; }
+    .element-card { border-radius: 12px; padding: 20px; margin: 16px 0; }
+    .element-gold { background: rgba(245,200,66,0.06); border: 1px solid rgba(245,200,66,0.2); }
+    .element-wood { background: rgba(0,184,148,0.06); border: 1px solid rgba(0,184,148,0.2); }
+    .element-water { background: rgba(108,92,231,0.06); border: 1px solid rgba(108,92,231,0.2); }
+    .element-fire { background: rgba(255,107,107,0.06); border: 1px solid rgba(255,107,107,0.2); }
+    .element-earth { background: rgba(180,150,100,0.06); border: 1px solid rgba(180,150,100,0.2); }
+    .element-card h4 { color: #fff; font-size: 1.05rem; margin-bottom: 10px; }
+    .element-card p { font-size: 0.9rem; margin-bottom: 0; }
+    .compat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .compat-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; text-align: center; }
+    .compat-item .pair { color: #fff; font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .compat-item .score { font-size: 0.85rem; }
+    .score-high { color: #00b894; }
+    .score-mid { color: #f5c842; }
+    .score-low { color: #ff6b6b; }
+    .highlight-box { background: rgba(197,108,240,0.08); border-left: 3px solid #c56cf0; padding: 16px 20px; border-radius: 0 10px 10px 0; margin: 24px 0; }
+    .highlight-box p { color: #ddd; margin-bottom: 0; }
+    .cta-box { background: linear-gradient(135deg, rgba(245,200,66,0.1), rgba(255,107,107,0.1)); border: 1px solid rgba(245,200,66,0.3); border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0 0; }
+    .cta-box h3 { color: #f5c842; font-size: 1.2rem; margin-bottom: 12px; }
+    .cta-box p { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; }
+    .cta-btn { display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #f5c842, #ff6b6b); color: #1a1a2e; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s; }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,200,66,0.3); }
+    .footer { text-align: center; margin-top: 48px; color: #555; font-size: 0.8rem; }
+    .footer a { color: #f5c842; text-decoration: none; }
+    @media (max-width: 480px) { .container { padding: 24px 16px; } .article { padding: 24px 18px; } .article h1 { font-size: 1.3rem; } .compat-grid { grid-template-columns: 1fr; } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="container">
+    <div class="breadcrumb"><a href="/blog.html">失戀急診室</a> / 五行配對</div>
+    <div class="article">
+      <h1>五行看感情：為什麼你們總是吵架？原來是「屬性相剋」</h1>
+      <div class="article-meta">
+        <span>2026-02-16</span>
+        <span class="read-count">5.8 萬人已讀</span>
+        <span>4 分鐘閱讀</span>
+      </div>
+
+      <p>你有沒有過這種經驗：明明兩個人都很愛對方，但就是動不動就吵架，好像天生磁場不合？</p>
+      <p>在東方命理學中，這種「莫名的不合」往往跟五行有關。金、木、水、火、土五種元素之間的相生相剋關係，深刻影響著兩個人的互動模式。</p>
+
+      <h2>五行人格速查</h2>
+
+      <div class="element-card element-gold">
+        <h4>金 — 堅毅型</h4>
+        <p>重原則、有決斷力、追求完美。感情中偏理性，不輕易表達情感，但一旦承諾就非常忠誠。容易因為「太正確」而讓對方感到壓力。</p>
+      </div>
+
+      <div class="element-card element-wood">
+        <h4>木 — 成長型</h4>
+        <p>富創造力、有同理心、渴望自由。感情中需要空間和成長，不喜歡被控制。但有時候太在意自己的感受，忽略了對方的需求。</p>
+      </div>
+
+      <div class="element-card element-water">
+        <h4>水 — 感性型</h4>
+        <p>直覺敏銳、善解人意、情感豐富。感情中非常投入，但容易受情緒影響。缺乏安全感時會變得多疑和黏人。</p>
+      </div>
+
+      <div class="element-card element-fire">
+        <h4>火 — 熱情型</h4>
+        <p>充滿活力、外向奔放、行動力強。感情中很熱烈，但來得快去得也快。容易因為一時衝動說出傷人的話。</p>
+      </div>
+
+      <div class="element-card element-earth">
+        <h4>土 — 穩定型</h4>
+        <p>踏實可靠、有耐心、重視安全感。感情中是最好的依靠，但有時過於保守，不願意改變。另一半可能覺得生活太無趣。</p>
+      </div>
+
+      <h2>最容易吵架的五行配對</h2>
+
+      <div class="compat-grid">
+        <div class="compat-item">
+          <div class="pair">金 vs 木</div>
+          <div class="score score-low">衝突指數 85%</div>
+        </div>
+        <div class="compat-item">
+          <div class="pair">水 vs 火</div>
+          <div class="score score-low">衝突指數 90%</div>
+        </div>
+        <div class="compat-item">
+          <div class="pair">木 vs 土</div>
+          <div class="score score-low">衝突指數 78%</div>
+        </div>
+        <div class="compat-item">
+          <div class="pair">火 vs 金</div>
+          <div class="score score-low">衝突指數 82%</div>
+        </div>
+      </div>
+
+      <h2>最甜蜜的五行配對</h2>
+
+      <div class="compat-grid">
+        <div class="compat-item">
+          <div class="pair">金 + 水</div>
+          <div class="score score-high">契合度 88%</div>
+        </div>
+        <div class="compat-item">
+          <div class="pair">木 + 火</div>
+          <div class="score score-high">契合度 85%</div>
+        </div>
+        <div class="compat-item">
+          <div class="pair">水 + 木</div>
+          <div class="score score-high">契合度 82%</div>
+        </div>
+        <div class="compat-item">
+          <div class="pair">火 + 土</div>
+          <div class="score score-high">契合度 80%</div>
+        </div>
+      </div>
+
+      <h2>相剋不代表不能在一起</h2>
+
+      <div class="highlight-box">
+        <p>五行相剋代表你們的互動需要更多的理解和調整，而不是注定分手。很多相剋的組合反而因為差異而產生強烈的吸引力 — 心理學稱之為「互補吸引」。</p>
+      </div>
+
+      <p>關鍵在於找到兩人之間的「調和元素」。比如金木相剋，加入水的潤滑就能化解；水火相剋，加入木的平衡就能緩和。</p>
+      <p>但你的五行屬性是什麼？你跟對方的具體配對狀況如何？這需要根據出生日期精確計算。</p>
+
+      <div class="cta-box">
+        <h3>查看你們的五行配對</h3>
+        <p>輸入雙方生日，AI 精準計算你們的五行屬性、相生相剋關係、化解方法。</p>
+        <a href="/" class="cta-btn">免費五行配對分析</a>
+      </div>
+    </div>
+    <div class="footer">
+      <a href="/blog.html">&larr; 返回失戀急診室</a>
+      <p style="margin-top:16px">Can We Back? &copy; 2026</p>
+    </div>
+  </div>
+</body>
+</html>

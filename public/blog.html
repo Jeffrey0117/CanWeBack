@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>失戀急診室 | Can We Back?</title>
+  <meta name="description" content="分手後怎麼辦？前任還愛你嗎？失戀急診室帶你看透感情真相，用星座、心理學、命理分析你的挽回機率。">
+  <meta name="keywords" content="失戀,分手,挽回,前任,星座,感情,復合">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans TC', -apple-system, sans-serif;
+      background: #0a0a1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+    .stars {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 0;
+    }
+    .stars::before, .stars::after {
+      content: ''; position: absolute;
+      width: 2px; height: 2px; border-radius: 50%; background: white;
+      box-shadow:
+        25px 50px white, 100px 120px white, 200px 80px white,
+        350px 200px white, 50px 300px white, 180px 350px white,
+        400px 100px white, 300px 400px white, 150px 180px white,
+        450px 320px white, 80px 420px white, 320px 50px white,
+        500px 250px white, 250px 500px white, 420px 450px white;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    .stars::after {
+      width: 1px; height: 1px;
+      box-shadow:
+        75px 150px rgba(255,255,255,0.6), 250px 220px rgba(255,255,255,0.6),
+        450px 50px rgba(255,255,255,0.6), 120px 400px rgba(255,255,255,0.6),
+        500px 380px rgba(255,255,255,0.6), 300px 150px rgba(255,255,255,0.6);
+      animation: twinkle 3s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative; z-index: 1;
+    }
+
+    .header { text-align: center; margin-bottom: 48px; }
+    .header h1 {
+      font-size: 2.4rem;
+      background: linear-gradient(135deg, #f5c842, #ff6b6b, #c56cf0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .header .tagline { color: #888; font-size: 1rem; margin-bottom: 24px; }
+    .header .cta-banner {
+      display: inline-block;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, rgba(245,200,66,0.15), rgba(255,107,107,0.15));
+      border: 1px solid rgba(245,200,66,0.3);
+      border-radius: 30px;
+      color: #f5c842;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .header .cta-banner:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245,200,66,0.2);
+    }
+
+    .articles { display: flex; flex-direction: column; gap: 20px; }
+
+    .article-card {
+      display: block;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .article-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(245,200,66,0.3);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+    .article-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .tag-hot { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+    .tag-zodiac { background: rgba(197,108,240,0.2); color: #c56cf0; }
+    .tag-psychology { background: rgba(0,184,148,0.2); color: #00b894; }
+    .tag-strategy { background: rgba(245,200,66,0.2); color: #f5c842; }
+
+    .article-card h2 {
+      font-size: 1.25rem;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .article-card .excerpt {
+      color: #999;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.78rem;
+      color: #666;
+    }
+    .read-count { color: #ff6b6b; }
+
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 24px;
+      color: #555;
+      font-size: 0.8rem;
+    }
+    .footer a { color: #f5c842; text-decoration: none; }
+
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px; }
+      .header h1 { font-size: 1.8rem; }
+      .article-card { padding: 20px; }
+      .article-card h2 { font-size: 1.1rem; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="container">
+    <div class="header">
+      <h1>失戀急診室</h1>
+      <p class="tagline">你的感情，值得被認真對待</p>
+      <a href="/" class="cta-banner">免費測你的挽回指數 &rarr;</a>
+    </div>
+
+    <div class="articles">
+      <a href="/articles/signs-he-still-loves-you.html" class="article-card">
+        <span class="article-tag tag-hot">熱門</span>
+        <h2>分手後他還愛你的 7 個隱藏訊號，第 5 個 90% 的人都忽略了</h2>
+        <p class="excerpt">他嘴上說放下了，但這些不經意的小動作出賣了他的真心。心理學家揭露：分手後還會做「這件事」的人，內心根本放不下...</p>
+        <div class="article-meta">
+          <span>2026-03-01</span>
+          <span class="read-count">12.8 萬人已讀</span>
+          <span>3 分鐘閱讀</span>
+        </div>
+      </a>
+
+      <a href="/articles/zodiac-most-likely-to-come-back.html" class="article-card">
+        <span class="article-tag tag-zodiac">星座</span>
+        <h2>分手後最容易回頭的星座排名！第一名竟然不是雙魚座</h2>
+        <p class="excerpt">都說雙魚最心軟？錯了。根據 3000 份問卷調查，分手後復合率最高的星座讓所有人跌破眼鏡。你的前任上榜了嗎？</p>
+        <div class="article-meta">
+          <span>2026-02-28</span>
+          <span class="read-count">9.4 萬人已讀</span>
+          <span>4 分鐘閱讀</span>
+        </div>
+      </a>
+
+      <a href="/articles/no-contact-rule.html" class="article-card">
+        <span class="article-tag tag-strategy">策略</span>
+        <h2>「斷聯法則」到底有沒有用？我實測 30 天後，前任主動找我了</h2>
+        <p class="excerpt">網路上都說分手要斷聯，但到底要斷多久？怎麼斷才有效？一個過來人的血淚實測，附完整時間軸和對方的反應變化...</p>
+        <div class="article-meta">
+          <span>2026-02-25</span>
+          <span class="read-count">8.1 萬人已讀</span>
+          <span>5 分鐘閱讀</span>
+        </div>
+      </a>
+
+      <a href="/articles/why-he-left-suddenly.html" class="article-card">
+        <span class="article-tag tag-psychology">心理</span>
+        <h2>「他突然就不愛了」？心理師揭露分手背後的 3 個真正原因</h2>
+        <p class="excerpt">看起來毫無預兆的分手，其實早就有跡可循。諮商心理師分析：當對方出現這些行為時，他已經在內心和你說再見了...</p>
+        <div class="article-meta">
+          <span>2026-02-22</span>
+          <span class="read-count">7.6 萬人已讀</span>
+          <span>4 分鐘閱讀</span>
+        </div>
+      </a>
+
+      <a href="/articles/social-media-strategy-after-breakup.html" class="article-card">
+        <span class="article-tag tag-strategy">策略</span>
+        <h2>分手後的社群經營術：讓前任後悔的朋友圈該怎麼發？</h2>
+        <p class="excerpt">刪照片？封鎖？瘋狂發自拍？都錯了。感情專家教你分手後的社群黃金法則，不動聲色就能讓對方心癢難耐...</p>
+        <div class="article-meta">
+          <span>2026-02-19</span>
+          <span class="read-count">6.3 萬人已讀</span>
+          <span>3 分鐘閱讀</span>
+        </div>
+      </a>
+
+      <a href="/articles/five-elements-love-compatibility.html" class="article-card">
+        <span class="article-tag tag-zodiac">命理</span>
+        <h2>五行看感情：為什麼你們總是吵架？原來是「屬性相剋」</h2>
+        <p class="excerpt">金木水火土不只影響運勢，更決定了兩個人的相處模式。命理師解析：哪些五行組合注定多災多難，又該如何化解？</p>
+        <div class="article-meta">
+          <span>2026-02-16</span>
+          <span class="read-count">5.8 萬人已讀</span>
+          <span>4 分鐘閱讀</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>想知道你和前任的復合機率？</p>
+      <p style="margin-top:8px"><a href="/">免費挽回指數分析 &rarr;</a></p>
+      <p style="margin-top:24px">Can We Back? &copy; 2026</p>
+    </div>
+  </div>
+</body>
+</html>

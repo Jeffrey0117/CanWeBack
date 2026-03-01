@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>斷聯法則實測 30 天 | 失戀急診室</title>
+  <meta name="description" content="分手後斷聯到底有沒有用？一個過來人實測30天的完整紀錄，附時間軸和前任的反應變化。">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans TC', -apple-system, sans-serif; background: #0a0a1a; color: #e0e0e0; min-height: 100vh; }
+    .stars { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 0; }
+    .stars::before { content: ''; position: absolute; width: 2px; height: 2px; border-radius: 50%; background: white;
+      box-shadow: 25px 50px white, 100px 120px white, 200px 80px white, 350px 200px white, 50px 300px white,
+        180px 350px white, 400px 100px white, 300px 400px white, 500px 250px white, 250px 500px white;
+      animation: twinkle 4s ease-in-out infinite alternate; }
+    @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+    .container { max-width: 680px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 1; }
+    .breadcrumb { font-size: 0.8rem; color: #666; margin-bottom: 24px; }
+    .breadcrumb a { color: #f5c842; text-decoration: none; }
+    .article { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 36px; backdrop-filter: blur(10px); }
+    .article h1 { font-size: 1.6rem; line-height: 1.5; color: #fff; margin-bottom: 16px; }
+    .article-meta { font-size: 0.8rem; color: #666; margin-bottom: 32px; display: flex; gap: 16px; }
+    .article-meta .read-count { color: #ff6b6b; }
+    .article p { color: #ccc; line-height: 1.9; font-size: 1rem; margin-bottom: 20px; }
+    .article h2 { font-size: 1.2rem; color: #f5c842; margin: 32px 0 16px; }
+    .highlight-box { background: rgba(0,184,148,0.08); border-left: 3px solid #00b894; padding: 16px 20px; border-radius: 0 10px 10px 0; margin: 24px 0; }
+    .highlight-box p { color: #ddd; margin-bottom: 0; }
+    .timeline-item { position: relative; padding-left: 28px; margin: 20px 0; border-left: 2px solid rgba(245,200,66,0.3); padding-bottom: 4px; }
+    .timeline-item::before { content: ''; position: absolute; left: -6px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: #f5c842; }
+    .timeline-item .day { font-size: 0.85rem; color: #f5c842; font-weight: 700; margin-bottom: 4px; }
+    .timeline-item p { font-size: 0.9rem; margin-bottom: 0; }
+    .result-box { background: rgba(0,184,148,0.08); border: 1px solid rgba(0,184,148,0.25); border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center; }
+    .result-box .big { font-size: 2rem; font-weight: 800; color: #00b894; }
+    .cta-box { background: linear-gradient(135deg, rgba(245,200,66,0.1), rgba(255,107,107,0.1)); border: 1px solid rgba(245,200,66,0.3); border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0 0; }
+    .cta-box h3 { color: #f5c842; font-size: 1.2rem; margin-bottom: 12px; }
+    .cta-box p { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; }
+    .cta-btn { display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #f5c842, #ff6b6b); color: #1a1a2e; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s; }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,200,66,0.3); }
+    .footer { text-align: center; margin-top: 48px; color: #555; font-size: 0.8rem; }
+    .footer a { color: #f5c842; text-decoration: none; }
+    @media (max-width: 480px) { .container { padding: 24px 16px; } .article { padding: 24px 18px; } .article h1 { font-size: 1.3rem; } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="container">
+    <div class="breadcrumb"><a href="/blog.html">失戀急診室</a> / 斷聯實測</div>
+    <div class="article">
+      <h1>「斷聯法則」到底有沒有用？我實測 30 天後，前任主動找我了</h1>
+      <div class="article-meta">
+        <span>2026-02-25</span>
+        <span class="read-count">8.1 萬人已讀</span>
+        <span>5 分鐘閱讀</span>
+      </div>
+
+      <p>分手後第一件事，所有挽回攻略都告訴你：<strong>斷聯</strong>。不主動聯繫、不看對方動態、不找共同朋友打聽。</p>
+      <p>聽起來很反直覺對不對？明明想挽回，卻要裝作不在乎？我跟你一樣懷疑。所以我決定親自實測。</p>
+
+      <div class="highlight-box">
+        <p>背景：交往 2 年 3 個月，他提的分手，理由是「太累了」。分手時我哭著挽留了三次，被拒絕三次。</p>
+      </div>
+
+      <h2>30 天斷聯時間軸</h2>
+
+      <div class="timeline-item">
+        <div class="day">Day 1-3：地獄期</div>
+        <p>每五分鐘看一次手機。打了十幾次字又刪掉。哭到眼睛腫。覺得自己撐不過去。</p>
+      </div>
+
+      <div class="timeline-item">
+        <div class="day">Day 4-7：對方第一次試探</div>
+        <p>他發了一則「在嗎」。我差點秒回。但我忍住了，等了 8 小時才簡短回覆「嗯，怎麼了？」他說沒事。就這樣。</p>
+      </div>
+
+      <div class="timeline-item">
+        <div class="day">Day 8-14：最難熬的一週</div>
+        <p>他開始頻繁發限動，每一則都像是發給我看的。去了我們常去的餐廳，配文「突然想吃這個」。我知道他在試探我的反應。我繼續沉默。</p>
+      </div>
+
+      <div class="timeline-item">
+        <div class="day">Day 15-21：轉折點</div>
+        <p>我開始把注意力放在自己身上。報名了瑜伽課，跟朋友出去，發了幾張笑得很開心的照片。不是演的，是真的開始好一點了。他在我的照片下面按了讚。</p>
+      </div>
+
+      <div class="timeline-item">
+        <div class="day">Day 22-28：他慌了</div>
+        <p>共同朋友跟我說，他問了三次「她是不是交新男朋友了」。他的限動開始出現感傷的歌詞截圖。凌晨三點來了一個未接來電。</p>
+      </div>
+
+      <div class="timeline-item">
+        <div class="day">Day 30：他主動約我出來</div>
+        <p>「上次你推薦的那間咖啡廳，我一直沒去過，要不要一起？」就是這樣一句話。沒有道歉、沒有挽留，但我知道，他回來了。</p>
+      </div>
+
+      <div class="result-box">
+        <div class="big">斷聯 30 天，他回來了</div>
+        <p style="color:#aaa;margin-top:8px;margin-bottom:0">但不是每個人都適合同樣的天數</p>
+      </div>
+
+      <h2>斷聯為什麼有效？</h2>
+      <p><strong>心理學原理：損失厭惡</strong>。人們對「失去」的感受，是「得到」的 2.5 倍。當你突然消失，對方會從「我不要你了」變成「等等，我是不是真的失去他了？」</p>
+      <p>但斷聯不是萬能的。如果你們的問題很嚴重，光靠沉默不能解決。斷聯只是第一步，後面的溝通和改變才是關鍵。</p>
+
+      <h2>幾天的斷聯最有效？</h2>
+      <p>這取決於很多因素：你們交往多久、分手原因、對方的星座特質。有的人需要 2 週，有的需要 2 個月。太短沒有效果，太長對方可能真的放下了。</p>
+
+      <div class="cta-box">
+        <h3>算算你該斷聯多久</h3>
+        <p>根據你和對方的命盤配對，AI 幫你計算最佳的冷靜期長度和復合窗口期。</p>
+        <a href="/" class="cta-btn">免費分析最佳時機</a>
+      </div>
+    </div>
+    <div class="footer">
+      <a href="/blog.html">&larr; 返回失戀急診室</a>
+      <p style="margin-top:16px">Can We Back? &copy; 2026</p>
+    </div>
+  </div>
+</body>
+</html>
