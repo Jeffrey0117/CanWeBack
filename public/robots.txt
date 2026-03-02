@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://canweback.com/sitemap.xml
+
+# Don't index payment/internal pages
+Disallow: /checkout-success.html
+Disallow: /report.html
+Disallow: /plan.html
