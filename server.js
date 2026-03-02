@@ -5,6 +5,23 @@ const crypto = require('crypto')
 
 const PORT = process.env.PORT || 3000
 const orders = new Map()
+const EMAILS_FILE = path.join(__dirname, 'data', 'emails.json')
+
+function loadEmails() {
+  try {
+    return JSON.parse(fs.readFileSync(EMAILS_FILE, 'utf-8'))
+  } catch {
+    return []
+  }
+}
+
+function saveEmail(entry) {
+  const dir = path.dirname(EMAILS_FILE)
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  const emails = loadEmails()
+  emails.push(entry)
+  fs.writeFileSync(EMAILS_FILE, JSON.stringify(emails, null, 2))
+}
 
 // LetMeUse checkout integration
 const LETMEUSE_BASE_URL = process.env.LETMEUSE_BASE_URL || 'http://localhost:3001'
@@ -442,6 +459,45 @@ const server = http.createServer(async (req, res) => {
       }
     }
     return sendJson(res, { received: true })
+  }
+
+  // Email collection — gate before paywall
+  if (pathname === '/api/collect-email' && req.method === 'POST') {
+    const body = await parseBody(req)
+    const email = (body.email || '').trim().toLowerCase()
+    if (!email || !email.includes('@')) {
+      return sendJson(res, { error: '請輸入有效的 email' }, 400)
+    }
+
+    const order = orders.get(body.orderId)
+    if (order) {
+      order.email = email
+    }
+
+    saveEmail({
+      email,
+      orderId: body.orderId || null,
+      source: body.source || 'paywall_gate',
+      myName: body.myName || null,
+      partnerName: body.partnerName || null,
+      createdAt: new Date().toISOString(),
+    })
+
+    // Also forward to LetMeUse if available
+    try {
+      fetch(`${LETMEUSE_BASE_URL}/api/collect/email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appId: LETMEUSE_APP_ID,
+          appSecret: LETMEUSE_APP_SECRET,
+          email,
+          metadata: { source: 'canweback', orderId: body.orderId },
+        }),
+      }).catch(() => {})
+    } catch {}
+
+    return sendJson(res, { success: true })
   }
 
   // Called by checkout-success page to mark order as paid

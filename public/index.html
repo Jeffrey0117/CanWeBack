@@ -449,6 +449,41 @@
     }
     .share-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
 
+    /* Email gate */
+    .email-gate {
+      margin-top: 20px;
+      padding: 24px 20px;
+      background: linear-gradient(135deg, rgba(0,184,148,0.08), rgba(0,206,201,0.08));
+      border: 1px solid rgba(0,184,148,0.25);
+      border-radius: 14px;
+      text-align: center;
+    }
+    .email-gate h4 { color: #00b894; font-size: 1rem; margin-bottom: 6px; }
+    .email-gate p { color: #999; font-size: 0.8rem; margin-bottom: 14px; line-height: 1.4; }
+    .email-gate-row {
+      display: flex; gap: 8px; max-width: 360px; margin: 0 auto;
+    }
+    .email-gate-row input {
+      flex: 1; padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: #fff; font-size: 0.9rem; outline: none;
+    }
+    .email-gate-row input:focus { border-color: #00b894; }
+    .email-gate-row input::placeholder { color: rgba(255,255,255,0.25); }
+    .btn-email {
+      padding: 12px 18px;
+      border: none; border-radius: 10px;
+      background: #00b894; color: white;
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: all 0.3s;
+    }
+    .btn-email:hover { background: #00a884; }
+    .btn-email:disabled { opacity: 0.5; cursor: not-allowed; }
+    .email-gate-note { font-size: 0.7rem; color: #666; margin-top: 8px; }
+
     /* Share canvas */
     #shareCanvas { display: none; }
 
@@ -770,24 +805,37 @@
 
           </div>
 
-          <!-- Paywall -->
-          <div style="margin-top:24px;padding:28px 20px;background:linear-gradient(135deg,rgba(245,200,66,0.06),rgba(197,108,240,0.06));border:1px solid rgba(245,200,66,0.2);border-radius:16px;text-align:center">
-            <div style="font-size:1.2rem;font-weight:700;color:#f5c842;margin-bottom:8px">&#x1F513; 解鎖完整報告</div>
-            <p style="color:#999;font-size:0.85rem;line-height:1.6;margin-bottom:16px">
-              完整心理分析 &middot; 五維分數 &middot; 溝通話術<br>
-              最佳復合時機 &middot; 四階段行動方案 &middot; 幸運指南
-            </p>
-            <div class="countdown-bar">
-              <span>&#x23F0; 限時優惠剩</span>
-              <span class="timer" id="countdownTimer">15:00</span>
-              <span>過後恢復原價</span>
+          <!-- Email gate: free preview in exchange for email -->
+          <div class="email-gate" id="emailGate">
+            <h4>&#x1F4E7; 輸入 Email 免費看更多分析</h4>
+            <p>我們會將你的專屬報告摘要寄到信箱<br>同時解鎖更多免費內容</p>
+            <div class="email-gate-row">
+              <input type="email" id="emailInput" placeholder="your@email.com">
+              <button class="btn-email" id="emailBtn" onclick="submitEmail()">免費解鎖</button>
             </div>
-            <div class="price-original">原價 NT$599</div>
-            <div class="price-tag">NT$299</div>
-            <button class="btn btn-pay" style="width:auto;padding:14px 40px" onclick="unlockReport()">
-              立即解鎖完整報告
-            </button>
-            <div id="liveViewerArea"></div>
+            <div class="email-gate-note">我們不會寄送垃圾信，僅提供報告與挽回建議</div>
+          </div>
+
+          <!-- Paywall (hidden until email submitted) -->
+          <div id="paywallSection" style="display:none">
+            <div style="margin-top:20px;padding:28px 20px;background:linear-gradient(135deg,rgba(245,200,66,0.06),rgba(197,108,240,0.06));border:1px solid rgba(245,200,66,0.2);border-radius:16px;text-align:center">
+              <div style="font-size:1.2rem;font-weight:700;color:#f5c842;margin-bottom:8px">&#x1F513; 解鎖完整報告</div>
+              <p style="color:#999;font-size:0.85rem;line-height:1.6;margin-bottom:16px">
+                完整心理分析 &middot; 五維分數 &middot; 溝通話術<br>
+                最佳復合時機 &middot; 四階段行動方案 &middot; 幸運指南
+              </p>
+              <div class="countdown-bar">
+                <span>&#x23F0; 限時優惠剩</span>
+                <span class="timer" id="countdownTimer">15:00</span>
+                <span>過後恢復原價</span>
+              </div>
+              <div class="price-original">原價 NT$599</div>
+              <div class="price-tag">NT$299</div>
+              <button class="btn btn-pay" style="width:auto;padding:14px 40px" onclick="unlockReport()">
+                立即解鎖完整報告
+              </button>
+              <div id="liveViewerArea"></div>
+            </div>
           </div>
         </div>
       `
@@ -802,10 +850,56 @@
         if (fillEl) fillEl.style.width = p.reconciliation + '%'
       }, 300)
 
-      // Start countdown
-      startCountdown()
+      // Countdown and live viewers start after email gate submit
+    }
 
-      // Show live viewers
+    async function submitEmail() {
+      const input = document.getElementById('emailInput')
+      const btn = document.getElementById('emailBtn')
+      const email = (input.value || '').trim()
+
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        input.style.borderColor = '#d63031'
+        input.focus()
+        return
+      }
+
+      btn.disabled = true
+      btn.textContent = '送出中...'
+
+      try {
+        await fetch('/api/collect-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            orderId: currentOrderId,
+            source: 'paywall_gate',
+            myName: currentFortune.myName,
+            partnerName: currentFortune.partnerName,
+          }),
+        })
+      } catch {}
+
+      // Hide email gate, show paywall
+      document.getElementById('emailGate').style.display = 'none'
+      document.getElementById('paywallSection').style.display = 'block'
+
+      // Remove teaser fadeout — reveal full teaser text as reward
+      document.querySelectorAll('.teaser-fadeout').forEach(el => {
+        el.style.maxHeight = 'none'
+        el.style.overflow = 'visible'
+      })
+      document.querySelectorAll('.teaser-fadeout::after').forEach(el => {
+        el.style.display = 'none'
+      })
+      // Simpler: just remove the class
+      document.querySelectorAll('.teaser-fadeout').forEach(el => {
+        el.classList.remove('teaser-fadeout')
+      })
+
+      // Start countdown only after email gate
+      startCountdown()
       showLiveViewer()
     }
 
@@ -1073,15 +1167,22 @@
       ctx.fillStyle = '#f5c842'
       ctx.fillText('\u7de3\u5206\u5224\u5b9a\uff1a' + destiny, cx, 740)
 
-      // CTA
-      ctx.font = '400 26px "Noto Sans TC", sans-serif'
-      ctx.fillStyle = 'rgba(255,255,255,0.4)'
-      ctx.fillText('\u4f60\u4e5f\u4f86\u6e2c\u6e2c\u2192 canweback.com', cx, 850)
+      // CTA — prominent with background pill
+      const ctaY = 840
+      ctx.fillStyle = 'rgba(245,200,66,0.12)'
+      const ctaText = '\u4f60\u4e5f\u4f86\u6e2c\u6e2c \u2192 canweback.com'
+      ctx.font = '600 30px "Noto Sans TC", sans-serif'
+      const ctaW = ctx.measureText(ctaText).width
+      ctx.beginPath()
+      ctx.roundRect(cx - ctaW / 2 - 24, ctaY - 22, ctaW + 48, 50, 25)
+      ctx.fill()
+      ctx.fillStyle = '#f5c842'
+      ctx.fillText(ctaText, cx, ctaY + 4)
 
       // Watermark
-      ctx.font = '400 22px "Noto Sans TC", sans-serif'
-      ctx.fillStyle = 'rgba(245,200,66,0.15)'
-      ctx.fillText('Can We Back? \u00a9 2026', cx, h - 40)
+      ctx.font = '400 20px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = 'rgba(255,255,255,0.2)'
+      ctx.fillText('canweback.com \u00a9 2026', cx, h - 35)
 
       // Download
       canvas.toBlob(function(blob) {
