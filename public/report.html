@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can We Back? | 完整報告</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans TC', -apple-system, sans-serif;
+      background: #0a0a1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+    .stars {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 0;
+    }
+    .stars::before {
+      content: '';
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: white;
+      box-shadow:
+        25px 50px white, 100px 120px white, 200px 80px white,
+        350px 200px white, 50px 300px white, 180px 350px white,
+        400px 100px white, 300px 400px white, 150px 180px white,
+        450px 320px white, 550px 150px white, 600px 350px white;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative; z-index: 1;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+    }
+    .preview-header { text-align: center; margin-bottom: 24px; }
+    .preview-header h2 { font-size: 1.4rem; color: #f5c842; margin-bottom: 4px; }
+    .preview-header p { color: #888; font-size: 0.85rem; }
+    .success-badge {
+      display: inline-block;
+      background: rgba(0,184,148,0.15);
+      border: 1px solid rgba(0,184,148,0.3);
+      color: #00b894;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .vs-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px; }
+    .vs-person { text-align: center; flex: 1; }
+    .vs-person .name { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .vs-person .details { font-size: 0.8rem; color: #999; line-height: 1.5; }
+    .vs-icon { font-size: 1.4rem; color: #ff6b6b; flex-shrink: 0; }
+    .traits-list { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .trait {
+      background: rgba(197,108,240,0.15);
+      border: 1px solid rgba(197,108,240,0.25);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: #c56cf0;
+    }
+    .luck-meter { margin-bottom: 16px; }
+    .luck-meter .luck-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
+    .luck-bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .luck-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .report-section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .report-section h3 { font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .report-section p { color: #bbb; line-height: 1.7; font-size: 0.95rem; }
+    .report-section .action-plan { white-space: pre-line; color: #bbb; line-height: 1.8; font-size: 0.9rem; }
+    .lucky-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
+    .lucky-item { text-align: center; padding: 12px; background: rgba(245,200,66,0.05); border-radius: 8px; }
+    .lucky-item .li-label { font-size: 0.75rem; color: #888; }
+    .lucky-item .li-value { font-size: 1rem; color: #f5c842; font-weight: 600; margin-top: 4px; }
+    .upsell-card {
+      background: linear-gradient(135deg, rgba(197,108,240,0.1), rgba(108,92,231,0.1));
+      border: 1px solid rgba(197,108,240,0.3);
+      border-radius: 16px;
+      padding: 32px;
+      margin-top: 24px;
+      text-align: center;
+    }
+    .upsell-card h3 { font-size: 1.3rem; color: #c56cf0; margin-bottom: 12px; }
+    .upsell-card .upsell-desc { color: #aaa; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+    .upsell-features { text-align: left; margin-bottom: 24px; }
+    .upsell-features .feature-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem; color: #ccc;
+    }
+    .upsell-features .feature-item:last-child { border-bottom: none; }
+    .feature-check { color: #c56cf0; flex-shrink: 0; font-weight: 700; }
+    .upsell-pricing { margin-bottom: 20px; }
+    .price-tag { font-size: 1.8rem; font-weight: 800; color: #00b894; margin-bottom: 8px; }
+    .price-original { text-decoration: line-through; color: #666; font-size: 0.9rem; }
+    .btn {
+      display: inline-block; padding: 16px 32px;
+      border: none; border-radius: 12px;
+      font-size: 1.1rem; font-weight: 600;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .btn-premium { background: linear-gradient(135deg, #c56cf0, #6c5ce7); color: white; }
+    .btn-premium:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(197,108,240,0.3); }
+    .back-link { display: block; text-align: center; margin-top: 24px; }
+    .back-link a { color: #888; text-decoration: none; font-size: 0.9rem; }
+    .back-link a:hover { color: #fff; }
+    .footer { text-align: center; margin-top: 48px; color: #555; font-size: 0.8rem; }
+    .loading { text-align: center; padding: 40px; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #f5c842;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px; }
+      .card { padding: 24px 18px; }
+      .upsell-card { padding: 24px 18px; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="container">
+    <div id="content">
+      <div class="card">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p style="color:#f5c842">載入報告中...</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><p>Can We Back? &copy; 2026</p></div>
+  </div>
+
+  <script>
+    let currentOrderId = null
+
+    function getColor(score) {
+      if (score >= 80) return '#00b894'
+      if (score >= 60) return '#f5c842'
+      if (score >= 40) return '#e17055'
+      return '#d63031'
+    }
+
+    async function loadReport() {
+      const params = new URLSearchParams(window.location.search)
+      const id = params.get('id')
+      if (!id) {
+        document.getElementById('content').innerHTML = '<div class="card" style="text-align:center;padding:40px;color:#e17055">缺少訂單 ID</div>'
+        return
+      }
+      currentOrderId = id
+
+      try {
+        const res = await fetch('/api/fortune/' + id)
+        const data = await res.json()
+
+        if (data.error) {
+          document.getElementById('content').innerHTML = '<div class="card" style="text-align:center;padding:40px;color:#e17055">' + data.error + '</div>'
+          return
+        }
+
+        renderReport(data.fortune)
+      } catch (err) {
+        document.getElementById('content').innerHTML = '<div class="card" style="text-align:center;padding:40px;color:#e17055">載入失敗，請重試</div>'
+      }
+    }
+
+    function renderReport(f) {
+      const luckEntries = [
+        ['挽回指數', f.luckScores.reconciliation],
+        ['化學反應', f.luckScores.chemistry],
+        ['溝通契合', f.luckScores.communication],
+        ['時機指數', f.luckScores.timing],
+        ['長期穩定', f.luckScores.longTerm],
+      ]
+
+      const luckBars = luckEntries.map(function(entry) {
+        const label = entry[0], score = entry[1]
+        return '<div class="luck-meter">' +
+          '<div class="luck-label"><span>' + label + '</span><span style="color:' + getColor(score) + '">' + score + '/100</span></div>' +
+          '<div class="luck-bar"><div class="luck-fill" style="width:' + score + '%;background:' + getColor(score) + '"></div></div>' +
+        '</div>'
+      }).join('')
+
+      document.getElementById('content').innerHTML = `
+        <div class="card">
+          <div class="preview-header">
+            <span class="success-badge">&#x2713; 報告已解鎖</span>
+            <h2>挽回指數分析報告</h2>
+            <p>${f.myName} & ${f.partnerName} 的完整緣分解析</p>
+          </div>
+
+          <div class="vs-row">
+            <div class="vs-person">
+              <div class="name">${f.myName}</div>
+              <div class="details">
+                ${f.myConstellation} / ${f.myZodiac}<br>
+                五行屬${f.myElement}
+              </div>
+            </div>
+            <div class="vs-icon">&hearts;</div>
+            <div class="vs-person">
+              <div class="name">${f.partnerName}</div>
+              <div class="details">
+                ${f.partnerConstellation} / ${f.partnerZodiac}<br>
+                五行屬${f.partnerElement}
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <p style="color:#aaa;font-size:0.85rem;margin-bottom:8px">${f.myName} 的性格特質</p>
+            <div class="traits-list">
+              ${f.myTraits.map(function(t) { return '<span class="trait">' + t + '</span>' }).join('')}
+            </div>
+          </div>
+
+          ${luckBars}
+
+          <div class="report-section" style="margin-top:20px;border-color:rgba(245,200,66,0.3);background:rgba(245,200,66,0.05)">
+            <h3 style="color:#f5c842">&#x2728; 緣分判定：${f.destinyLevel}</h3>
+            <p>${f.destinyDesc}</p>
+          </div>
+
+          <div class="report-section">
+            <h3>&#x1F9E0; ${f.partnerName} 的內心世界</h3>
+            <p>${f.partnerPsychology}</p>
+          </div>
+
+          <div class="report-section">
+            <h3>&#x1F52E; 挽回分析</h3>
+            <p>${f.reconciliationAdvice}</p>
+          </div>
+
+          <div class="report-section">
+            <h3>&#x1F4AC; 溝通建議</h3>
+            <p>${f.communicationAdvice}</p>
+          </div>
+
+          <div class="report-section">
+            <h3>&#x23F0; 時機判斷</h3>
+            <p>${f.timingAdvice}</p>
+          </div>
+
+          <div class="report-section">
+            <h3>&#x1F4CB; 行動方案</h3>
+            <div class="action-plan">${f.actionPlan}</div>
+          </div>
+
+          <div class="report-section">
+            <h3>&#x1F340; 挽回幸運指南</h3>
+            <div class="lucky-grid">
+              <div class="lucky-item">
+                <div class="li-label">幸運色</div>
+                <div class="li-value">${f.luckyItems.color}</div>
+              </div>
+              <div class="lucky-item">
+                <div class="li-label">幸運數字</div>
+                <div class="li-value">${f.luckyItems.number}</div>
+              </div>
+              <div class="lucky-item">
+                <div class="li-label">幸運方位</div>
+                <div class="li-value">${f.luckyItems.direction}</div>
+              </div>
+              <div class="lucky-item">
+                <div class="li-label">幸運花</div>
+                <div class="li-value">${f.luckyItems.flower}</div>
+              </div>
+              <div class="lucky-item">
+                <div class="li-label">幸運日</div>
+                <div class="li-value">${f.luckyItems.day}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="upsell-card">
+          <h3>&#x1F48E; 挽回改造計畫</h3>
+          <p class="upsell-desc">
+            報告只是起點。真正讓對方回頭的，是你的蛻變。<br>
+            根據 ${f.myName} 與 ${f.partnerName} 的命盤量身打造的完整改造方案。
+          </p>
+          <div class="upsell-features">
+            <div class="feature-item"><span class="feature-check">&#x2713;</span><span>21天挽回行動日曆</span></div>
+            <div class="feature-item"><span class="feature-check">&#x2713;</span><span>對方星座心理解析 — ${f.partnerConstellation} 的核心需求與地雷</span></div>
+            <div class="feature-item"><span class="feature-check">&#x2713;</span><span>溝通話術範本</span></div>
+            <div class="feature-item"><span class="feature-check">&#x2713;</span><span>自我提升指南 — 根據你的五行屬性打造</span></div>
+            <div class="feature-item"><span class="feature-check">&#x2713;</span><span>復合後經營手冊</span></div>
+          </div>
+          <div class="upsell-pricing">
+            <div class="price-original">原價 NT$4,980</div>
+            <div class="price-tag">NT$2,680</div>
+          </div>
+          <button class="btn btn-premium" onclick="buyPlan()">取得我的專屬改造計畫</button>
+          <p style="color:#666;font-size:0.75rem;margin-top:12px">付款後立即取得完整改造方案</p>
+        </div>
+
+        <div class="back-link"><a href="/">&#x2190; 重新分析</a></div>
+      `
+    }
+
+    async function buyPlan() {
+      if (!currentOrderId) return
+      const btn = event.target
+      btn.textContent = '處理中...'
+      btn.disabled = true
+
+      try {
+        const res = await fetch('/api/buy-plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: currentOrderId }),
+        })
+        const data = await res.json()
+
+        if (data.success && data.checkoutUrl) {
+          window.location.href = data.checkoutUrl
+        } else {
+          alert(data.error || '購買失敗，請重試')
+          btn.textContent = '取得我的專屬改造計畫'
+          btn.disabled = false
+        }
+      } catch (err) {
+        alert('購買失敗，請重試')
+        btn.textContent = '取得我的專屬改造計畫'
+        btn.disabled = false
+      }
+    }
+
+    loadReport()
+  </script>
+</body>
+</html>

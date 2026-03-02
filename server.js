@@ -6,6 +6,12 @@ const crypto = require('crypto')
 const PORT = process.env.PORT || 3000
 const orders = new Map()
 
+// LetMeUse checkout integration
+const LETMEUSE_BASE_URL = process.env.LETMEUSE_BASE_URL || 'http://localhost:3001'
+const LETMEUSE_APP_ID = process.env.LETMEUSE_APP_ID || 'app_canweback'
+const LETMEUSE_APP_SECRET = process.env.LETMEUSE_APP_SECRET || 'dev_secret'
+const CANWEBACK_BASE_URL = process.env.CANWEBACK_BASE_URL || `http://localhost:${PORT}`
+
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css',
@@ -345,14 +351,35 @@ const server = http.createServer(async (req, res) => {
     const order = orders.get(body.orderId)
     if (!order) return sendJson(res, { error: '找不到此訂單' }, 404)
 
-    // For now, auto-approve (test mode)
-    // When LetMeUse billing is ready, integrate here
-    order.paid = true
-    return sendJson(res, {
-      success: true,
-      message: '付款成功（測試模式）',
-      redirectUrl: `/report.html?id=${body.orderId}`,
-    })
+    try {
+      const checkoutRes = await fetch(`${LETMEUSE_BASE_URL}/api/billing/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appId: LETMEUSE_APP_ID,
+          appSecret: LETMEUSE_APP_SECRET,
+          mode: 'one_time',
+          productId: 'report_unlock',
+          productName: '挽回指數完整報告',
+          amount: 299,
+          currency: 'TWD',
+          metadata: { orderId: body.orderId, type: 'report' },
+          successUrl: `${CANWEBACK_BASE_URL}/checkout-success.html?orderId=${body.orderId}&type=report`,
+          cancelUrl: `${CANWEBACK_BASE_URL}/`,
+        }),
+      })
+      const result = await checkoutRes.json()
+
+      if (result.success) {
+        return sendJson(res, {
+          success: true,
+          checkoutUrl: `${LETMEUSE_BASE_URL}${result.data.checkoutUrl}`,
+        })
+      }
+      return sendJson(res, { error: result.error || '建立結帳失敗' }, 500)
+    } catch (err) {
+      return sendJson(res, { error: '無法連線付款服務' }, 502)
+    }
   }
 
   if (pathname === '/api/buy-plan' && req.method === 'POST') {
@@ -360,13 +387,35 @@ const server = http.createServer(async (req, res) => {
     const order = orders.get(body.orderId)
     if (!order) return sendJson(res, { error: '找不到此訂單' }, 404)
 
-    // Test mode: auto-approve
-    order.planPurchased = true
-    return sendJson(res, {
-      success: true,
-      message: '購買成功（測試模式）',
-      redirectUrl: `/plan.html?id=${body.orderId}`,
-    })
+    try {
+      const checkoutRes = await fetch(`${LETMEUSE_BASE_URL}/api/billing/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appId: LETMEUSE_APP_ID,
+          appSecret: LETMEUSE_APP_SECRET,
+          mode: 'one_time',
+          productId: 'recovery_plan',
+          productName: '挽回改造計畫',
+          amount: 2680,
+          currency: 'TWD',
+          metadata: { orderId: body.orderId, type: 'plan' },
+          successUrl: `${CANWEBACK_BASE_URL}/checkout-success.html?orderId=${body.orderId}&type=plan`,
+          cancelUrl: `${CANWEBACK_BASE_URL}/`,
+        }),
+      })
+      const result = await checkoutRes.json()
+
+      if (result.success) {
+        return sendJson(res, {
+          success: true,
+          checkoutUrl: `${LETMEUSE_BASE_URL}${result.data.checkoutUrl}`,
+        })
+      }
+      return sendJson(res, { error: result.error || '建立結帳失敗' }, 500)
+    } catch (err) {
+      return sendJson(res, { error: '無法連線付款服務' }, 502)
+    }
   }
 
   if (pathname === '/api/plan' && req.method === 'GET') {
@@ -377,13 +426,34 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, { fortune: order.fortune })
   }
 
+  // Called by LetMeUse webhook or by checkout-success page to confirm payment
   if (pathname === '/api/webhook/payment' && req.method === 'POST') {
     const body = await parseBody(req)
-    const order = orders.get(body.orderId)
-    if (order && body.status === 'paid') {
-      order.paid = true
+    const orderId = body.orderId || (body.metadata && body.metadata.orderId)
+    const type = body.type || (body.metadata && body.metadata.type)
+    const order = orders.get(orderId)
+    if (order) {
+      if (type === 'plan') {
+        order.planPurchased = true
+      } else {
+        order.paid = true
+      }
     }
     return sendJson(res, { received: true })
+  }
+
+  // Called by checkout-success page to mark order as paid
+  if (pathname === '/api/confirm-payment' && req.method === 'POST') {
+    const body = await parseBody(req)
+    const order = orders.get(body.orderId)
+    if (!order) return sendJson(res, { error: '找不到此訂單' }, 404)
+
+    if (body.type === 'plan') {
+      order.planPurchased = true
+    } else {
+      order.paid = true
+    }
+    return sendJson(res, { success: true })
   }
 
   // Static files

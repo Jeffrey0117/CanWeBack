@@ -801,6 +801,10 @@
       btn.textContent = '處理中...'
       btn.disabled = true
 
+      // Save fortune data to localStorage so checkout-success can restore it
+      localStorage.setItem('canweback_orderId', currentOrderId)
+      localStorage.setItem('canweback_fortune', JSON.stringify(currentFortune))
+
       try {
         const res = await fetch('/api/pay', {
           method: 'POST',
@@ -809,9 +813,12 @@
         })
         const data = await res.json()
 
-        if (data.success) {
-          document.getElementById('previewSection').style.display = 'none'
-          renderFullReport(currentFortune)
+        if (data.success && data.checkoutUrl) {
+          window.location.href = data.checkoutUrl
+        } else {
+          alert(data.error || '付款失敗，請重試')
+          btn.textContent = '立即解鎖完整報告'
+          btn.disabled = false
         }
       } catch (err) {
         alert('付款失敗，請重試')
@@ -1079,6 +1086,10 @@
       btn.textContent = '處理中...'
       btn.disabled = true
 
+      // Save fortune data to localStorage so checkout-success can restore it
+      localStorage.setItem('canweback_orderId', currentOrderId)
+      localStorage.setItem('canweback_fortune', JSON.stringify(currentFortune))
+
       try {
         const res = await fetch('/api/buy-plan', {
           method: 'POST',
@@ -1087,8 +1098,12 @@
         })
         const data = await res.json()
 
-        if (data.success) {
-          window.location.href = '/plan.html?id=' + currentOrderId
+        if (data.success && data.checkoutUrl) {
+          window.location.href = data.checkoutUrl
+        } else {
+          alert(data.error || '購買失敗，請重試')
+          btn.textContent = '取得我的專屬改造計畫'
+          btn.disabled = false
         }
       } catch (err) {
         alert('購買失敗，請重試')
