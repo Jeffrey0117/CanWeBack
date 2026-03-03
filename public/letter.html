@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>宇宙來信 | Can We Back?</title>
-  <meta name="description" content="透過宇宙，把你的心意送給那個人。寫一封信，讓宇宙幫你傳達。">
+  <title>沒說出口的那封信 | Can We Back?</title>
+  <meta name="description" content="把你沒說出口的話寫下來。也許對方也寫了一封給你。輸入你的名字，看看有沒有人寫信給你。">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="宇宙來信 — 有人透過宇宙寫了一封信給你">
-  <meta property="og:description" content="有一封來自宇宙的信正在等你打開。">
+  <meta property="og:title" content="沒說出口的那封信">
+  <meta property="og:description" content="把沒說出口的話寫下來，也許對方也正在想你。輸入你的名字查看。">
   <meta property="og:url" content="https://canweback.com/letter.html">
   <meta property="og:image" content="https://canweback.com/og-image.png">
   <meta property="og:locale" content="zh_TW">
@@ -70,7 +70,7 @@
       50% { transform: translateY(-8px); }
     }
     .header h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       background: linear-gradient(135deg, #c8b6ff, #ffd6e0);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 8px;
@@ -78,39 +78,53 @@
     .header p {
       color: rgba(200, 200, 230, 0.5);
       font-size: 0.85rem;
+      line-height: 1.6;
     }
 
-    /* Steps indicator */
-    .steps {
-      display: flex; justify-content: center; gap: 8px;
-      margin-bottom: 32px;
+    /* Tab switcher */
+    .tab-bar {
+      display: flex;
+      background: rgba(200, 182, 255, 0.04);
+      border: 1px solid rgba(200, 182, 255, 0.1);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 28px;
     }
-    .step-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(200, 182, 255, 0.2);
+    .tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: rgba(200, 200, 230, 0.5);
+      cursor: pointer;
       transition: all 0.3s;
     }
-    .step-dot.active { background: #c8b6ff; box-shadow: 0 0 10px rgba(200, 182, 255, 0.4); }
-    .step-dot.done { background: rgba(200, 182, 255, 0.5); }
-
-    /* Form sections */
-    .form-section {
-      display: none;
-      animation: fadeUp 0.5s ease-out;
+    .tab.active {
+      background: rgba(200, 182, 255, 0.1);
+      color: #c8b6ff;
     }
-    .form-section.active { display: block; }
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; animation: fadeUp 0.4s ease-out; }
 
     @keyframes fadeUp {
-      0% { opacity: 0; transform: translateY(20px); }
+      0% { opacity: 0; transform: translateY(16px); }
       100% { opacity: 1; transform: translateY(0); }
     }
 
     label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: rgba(200, 200, 230, 0.6);
       margin-bottom: 8px;
       letter-spacing: 1px;
+    }
+    .label-required::after {
+      content: ' *';
+      color: rgba(255, 120, 120, 0.6);
     }
 
     input, textarea {
@@ -147,6 +161,13 @@
       margin-bottom: 20px;
     }
 
+    .name-hint {
+      font-size: 0.72rem;
+      color: rgba(200, 200, 230, 0.35);
+      margin-top: -14px;
+      margin-bottom: 18px;
+    }
+
     .btn-primary {
       width: 100%;
       padding: 16px;
@@ -162,10 +183,8 @@
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(200, 182, 255, 0.3); }
     .btn-primary:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
+      opacity: 0.4; cursor: not-allowed;
+      transform: none; box-shadow: none;
     }
 
     .btn-secondary {
@@ -184,109 +203,145 @@
     .btn-secondary:hover { background: rgba(200, 182, 255, 0.1); }
 
     /* Sending animation */
-    .sending-scene {
-      display: none;
-      text-align: center;
-      padding: 60px 20px;
-    }
-    .sending-scene.active { display: block; }
-
     @keyframes envelopeFly {
       0% { transform: translateY(0) scale(1); opacity: 1; }
       30% { transform: translateY(-60px) scale(1.1); opacity: 1; }
       60% { transform: translateY(-150px) scale(0.8) rotate(10deg); opacity: 0.8; }
       100% { transform: translateY(-300px) scale(0.3) rotate(20deg); opacity: 0; }
     }
-    .envelope-fly {
+
+    .sending-overlay {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 5, 26, 0.9);
+      z-index: 200;
+      align-items: center; justify-content: center;
+      flex-direction: column;
+    }
+    .sending-overlay.active { display: flex; }
+    .sending-overlay .envelope-fly {
       font-size: 4rem;
-      display: inline-block;
       animation: envelopeFly 2.5s ease-in forwards;
     }
-
-    @keyframes sparkle {
-      0%, 100% { opacity: 0; transform: scale(0); }
-      50% { opacity: 1; transform: scale(1); }
-    }
-    .sparkles {
-      position: relative;
-      height: 100px;
-      margin-top: -40px;
-    }
-    .sparkles span {
-      position: absolute;
-      font-size: 1.2rem;
-      animation: sparkle 1s ease-in-out forwards;
-    }
-
-    .sending-text {
-      font-size: 1rem;
+    .sending-overlay .sending-text {
       color: rgba(200, 200, 230, 0.6);
       margin-top: 20px;
+      font-size: 0.92rem;
       animation: fadeUp 0.5s ease-out 2s both;
     }
 
     /* Success */
-    .success-section {
+    .success-box {
       display: none;
       text-align: center;
+      padding: 40px 20px;
       animation: fadeUp 0.5s ease-out;
     }
-    .success-section.active { display: block; }
+    .success-box.active { display: block; }
+    .success-box .icon { font-size: 3rem; margin-bottom: 16px; }
+    .success-box h2 { font-size: 1.2rem; color: #c8b6ff; margin-bottom: 12px; }
+    .success-box p {
+      color: rgba(200, 200, 230, 0.5);
+      font-size: 0.85rem; line-height: 1.7;
+      margin-bottom: 20px;
+    }
 
-    .success-icon {
-      font-size: 3rem;
+    /* Search results */
+    .letter-found {
+      background: rgba(200, 182, 255, 0.03);
+      border: 1px solid rgba(200, 182, 255, 0.12);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      animation: fadeUp 0.4s ease-out;
+    }
+    .letter-found .from-label {
+      font-size: 0.75rem;
+      color: rgba(200, 200, 230, 0.4);
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .letter-found .from-name {
+      font-size: 1.1rem;
+      color: #c8b6ff;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .letter-found .date {
+      font-size: 0.72rem;
+      color: rgba(200, 200, 230, 0.3);
       margin-bottom: 16px;
     }
-    .success-section h2 {
-      font-size: 1.3rem;
-      color: #c8b6ff;
-      margin-bottom: 12px;
-    }
-    .success-section p {
-      color: rgba(200, 200, 230, 0.6);
-      font-size: 0.88rem;
-      line-height: 1.7;
-      margin-bottom: 24px;
-    }
-
-    .share-link-box {
-      background: rgba(200, 182, 255, 0.04);
-      border: 1px solid rgba(200, 182, 255, 0.15);
+    .letter-found .locked-preview {
+      background: rgba(200, 182, 255, 0.02);
+      border: 1px dashed rgba(200, 182, 255, 0.1);
       border-radius: 12px;
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      padding: 20px;
+      text-align: center;
       margin-bottom: 16px;
     }
-    .share-link-box input {
-      flex: 1;
-      background: none;
-      border: none;
-      color: #c8b6ff;
+    .locked-preview .lock-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .locked-preview p {
       font-size: 0.82rem;
-      padding: 0;
-      margin: 0;
+      color: rgba(200, 200, 230, 0.4);
+      line-height: 1.5;
     }
-    .copy-btn {
-      background: rgba(200, 182, 255, 0.15);
-      border: none;
-      color: #c8b6ff;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.3s;
-    }
-    .copy-btn:hover { background: rgba(200, 182, 255, 0.25); }
 
-    .hint {
-      font-size: 0.78rem;
-      color: rgba(200, 200, 230, 0.35);
-      margin-top: 20px;
-      line-height: 1.6;
+    .no-letters {
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeUp 0.4s ease-out;
     }
+    .no-letters .icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+    .no-letters p {
+      color: rgba(200, 200, 230, 0.4);
+      font-size: 0.88rem; line-height: 1.6;
+    }
+
+    /* Revealed letter */
+    .letter-paper {
+      background: rgba(200, 182, 255, 0.03);
+      border: 1px solid rgba(200, 182, 255, 0.12);
+      border-radius: 20px;
+      padding: 32px 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.6s ease-out;
+    }
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #c8b6ff, #88b4ff, #ffd6e0);
+    }
+    .letter-paper .letter-header {
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(200, 182, 255, 0.4);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    .letter-paper .greeting {
+      font-size: 0.88rem;
+      color: rgba(200, 200, 230, 0.6);
+      margin-bottom: 16px;
+    }
+    .letter-paper .greeting span { color: #c8b6ff; }
+    .letter-paper .body {
+      font-size: 1rem;
+      line-height: 2;
+      color: #e8e4f0;
+      white-space: pre-wrap;
+      margin-bottom: 20px;
+    }
+    .letter-paper .signature {
+      text-align: right;
+      font-size: 0.88rem;
+      color: rgba(200, 200, 230, 0.6);
+    }
+    .letter-paper .signature span { color: #c8b6ff; }
 
     .footer {
       text-align: center; margin-top: 50px; padding-bottom: 40px;
@@ -303,79 +358,61 @@
   <div class="container">
     <div class="header">
       <div class="header-icon">&#9993;</div>
-      <h1>宇宙來信</h1>
-      <p>透過宇宙，把你的心意傳給那個人</p>
+      <h1>沒說出口的那封信</h1>
+      <p>把你沒說出口的話寫下來<br>也許，對方也寫了一封給你</p>
     </div>
 
-    <div class="steps">
-      <div class="step-dot active" id="dot1"></div>
-      <div class="step-dot" id="dot2"></div>
-      <div class="step-dot" id="dot3"></div>
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('write')">&#9997; 寫一封信</div>
+      <div class="tab" onclick="switchTab('search')">&#128270; 查有沒有我的信</div>
     </div>
 
-    <!-- Step 1: Names -->
-    <div class="form-section active" id="step1">
-      <label>你的名字（或暱稱）</label>
-      <input type="text" id="senderName" placeholder="宇宙知道你是誰" maxlength="20">
+    <!-- ── WRITE TAB ── -->
+    <div class="section active" id="writeSection">
+      <div id="writeForm">
+        <label class="label-required">你的本名</label>
+        <input type="text" id="senderName" placeholder="請輸入你的真實姓名" maxlength="10">
+        <div class="name-hint">必須填本名，對方才能用名字找到這封信</div>
 
-      <label>對方的名字（或暱稱）</label>
-      <input type="text" id="receiverName" placeholder="你想把信送給誰？" maxlength="20">
+        <label class="label-required">對方的本名</label>
+        <input type="text" id="receiverName" placeholder="你想寫信給誰？" maxlength="10">
+        <div class="name-hint">請填對方的真實姓名</div>
 
-      <button class="btn-primary" onclick="goStep(2)">下一步</button>
-    </div>
+        <label class="label-required">你想說的話</label>
+        <textarea id="letterContent" placeholder="那些沒說出口的話，在這裡寫下來..." maxlength="500"></textarea>
+        <div class="char-count"><span id="charCount">0</span> / 500</div>
 
-    <!-- Step 2: Write letter -->
-    <div class="form-section" id="step2">
-      <label>寫下你想說的話</label>
-      <textarea id="letterContent" placeholder="親愛的，&#10;&#10;我一直想跟你說..." maxlength="500"></textarea>
-      <div class="char-count"><span id="charCount">0</span> / 500</div>
-
-      <button class="btn-primary" onclick="goStep(3)">預覽信件</button>
-      <button class="btn-secondary" onclick="goStep(1)">上一步</button>
-    </div>
-
-    <!-- Step 3: Preview & Send -->
-    <div class="form-section" id="step3">
-      <div style="background:rgba(200,182,255,0.03);border:1px solid rgba(200,182,255,0.12);border-radius:16px;padding:24px;margin-bottom:24px">
-        <div style="text-align:center;font-size:0.72rem;color:rgba(200,182,255,0.4);letter-spacing:2px;margin-bottom:16px">&#10024; 來自宇宙的信 &#10024;</div>
-        <div style="font-size:0.82rem;color:rgba(200,200,230,0.5);margin-bottom:12px">親愛的 <span id="previewReceiver" style="color:#c8b6ff"></span>，</div>
-        <div id="previewContent" style="font-size:0.92rem;line-height:1.9;color:#e8e4f0;white-space:pre-wrap;margin-bottom:16px"></div>
-        <div style="text-align:right;font-size:0.82rem;color:rgba(200,200,230,0.5)">— <span id="previewSender" style="color:#c8b6ff"></span></div>
+        <button class="btn-primary" onclick="sendLetter()">&#9993; 把信交出去</button>
       </div>
 
-      <button class="btn-primary" onclick="sendLetter()">&#10024; 交給宇宙傳送</button>
-      <button class="btn-secondary" onclick="goStep(2)">修改內容</button>
+      <div class="success-box" id="writeSuccess">
+        <div class="icon">&#10024;</div>
+        <h2>信已經寄出了</h2>
+        <p>
+          當 <strong id="successReceiver" style="color:#c8b6ff"></strong> 來到這個頁面<br>
+          輸入自己的名字，就會看到有一封信<br>
+          付費後才能打開你寫的內容
+        </p>
+        <button class="btn-secondary" onclick="resetWrite()">再寫一封</button>
+      </div>
     </div>
 
-    <!-- Sending animation -->
-    <div class="sending-scene" id="sendingScene">
+    <!-- ── SEARCH TAB ── -->
+    <div class="section" id="searchSection">
+      <label class="label-required">輸入你的本名</label>
+      <input type="text" id="searchName" placeholder="輸入你的真實姓名" maxlength="10">
+      <div class="name-hint">看看有沒有人寫了一封信給你</div>
+
+      <button class="btn-primary" onclick="searchLetters()">&#128270; 查詢</button>
+
+      <div id="searchResults" style="margin-top:24px"></div>
+    </div>
+
+    <!-- Sending overlay -->
+    <div class="sending-overlay" id="sendingOverlay">
       <div class="envelope-fly">&#9993;</div>
-      <div class="sparkles">
-        <span style="left:30%;top:20%;animation-delay:0.5s">&#10024;</span>
-        <span style="left:50%;top:10%;animation-delay:0.8s">&#10022;</span>
-        <span style="left:70%;top:30%;animation-delay:1.1s">&#10024;</span>
-        <span style="left:40%;top:0%;animation-delay:1.4s">&#10022;</span>
-      </div>
-      <div class="sending-text">宇宙正在傳遞你的心意...</div>
-    </div>
-
-    <!-- Success -->
-    <div class="success-section" id="successSection">
-      <div class="success-icon">&#10024;</div>
-      <h2>信已交給宇宙了</h2>
-      <p>把下面的連結傳給對方<br>對方需要<strong style="color:#c8b6ff">回信</strong>才能打開你的信</p>
-
-      <div class="share-link-box">
-        <input type="text" id="shareLink" readonly>
-        <button class="copy-btn" onclick="copyLink()">複製</button>
-      </div>
-
-      <button class="btn-primary" onclick="shareLetter()">分享給對方</button>
-
-      <div class="hint">
-        &#128274; 對方看到信封後，必須也寫一封信給你（或付費解鎖），才能讀到你的內容。<br>
-        這樣你們就都有一封來自宇宙的信了。
-      </div>
+      <div class="sending-text">信正在飛向宇宙的另一端...</div>
     </div>
 
     <div class="footer">
@@ -385,43 +422,16 @@
   </div>
 
   <script>
-    let currentStep = 1
-
     document.getElementById('letterContent').addEventListener('input', function() {
       document.getElementById('charCount').textContent = this.value.length
     })
 
-    function goStep(step) {
-      const senderName = document.getElementById('senderName').value.trim()
-      const receiverName = document.getElementById('receiverName').value.trim()
-      const content = document.getElementById('letterContent').value.trim()
-
-      if (step === 2 && (!senderName || !receiverName)) {
-        document.getElementById('senderName').style.borderColor = senderName ? '' : 'rgba(255,100,100,0.5)'
-        document.getElementById('receiverName').style.borderColor = receiverName ? '' : 'rgba(255,100,100,0.5)'
-        return
-      }
-      if (step === 3 && !content) {
-        document.getElementById('letterContent').style.borderColor = 'rgba(255,100,100,0.5)'
-        return
-      }
-
-      if (step === 3) {
-        document.getElementById('previewReceiver').textContent = receiverName
-        document.getElementById('previewContent').textContent = content
-        document.getElementById('previewSender').textContent = senderName
-      }
-
-      document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'))
-      document.getElementById('step' + step).classList.add('active')
-
-      document.querySelectorAll('.step-dot').forEach((d, i) => {
-        d.classList.remove('active', 'done')
-        if (i + 1 === step) d.classList.add('active')
-        else if (i + 1 < step) d.classList.add('done')
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'write' && i === 0) || (tab === 'search' && i === 1))
       })
-
-      currentStep = step
+      document.getElementById('writeSection').classList.toggle('active', tab === 'write')
+      document.getElementById('searchSection').classList.toggle('active', tab === 'search')
     }
 
     async function sendLetter() {
@@ -429,10 +439,17 @@
       const receiverName = document.getElementById('receiverName').value.trim()
       const content = document.getElementById('letterContent').value.trim()
 
-      // Hide form, show sending animation
-      document.getElementById('step3').classList.remove('active')
-      document.querySelector('.steps').style.display = 'none'
-      document.getElementById('sendingScene').classList.add('active')
+      let valid = true
+      if (!senderName) { document.getElementById('senderName').style.borderColor = 'rgba(255,100,100,0.5)'; valid = false }
+      else { document.getElementById('senderName').style.borderColor = '' }
+      if (!receiverName) { document.getElementById('receiverName').style.borderColor = 'rgba(255,100,100,0.5)'; valid = false }
+      else { document.getElementById('receiverName').style.borderColor = '' }
+      if (!content) { document.getElementById('letterContent').style.borderColor = 'rgba(255,100,100,0.5)'; valid = false }
+      else { document.getElementById('letterContent').style.borderColor = '' }
+      if (!valid) return
+
+      // Show sending animation
+      document.getElementById('sendingOverlay').classList.add('active')
 
       try {
         const res = await fetch('/api/letter', {
@@ -442,48 +459,142 @@
         })
         const data = await res.json()
 
-        if (data.letterId) {
-          const link = window.location.origin + '/letter-read.html?id=' + data.letterId
-          document.getElementById('shareLink').value = link
+        setTimeout(() => {
+          document.getElementById('sendingOverlay').classList.remove('active')
+          if (data.letterId) {
+            document.getElementById('writeForm').style.display = 'none'
+            document.getElementById('successReceiver').textContent = receiverName
+            document.getElementById('writeSuccess').classList.add('active')
+          } else {
+            alert(data.error || '寄信失敗')
+          }
+        }, 3000)
+      } catch {
+        document.getElementById('sendingOverlay').classList.remove('active')
+        alert('網路錯誤，請重試')
+      }
+    }
 
-          // Wait for animation to finish
-          setTimeout(() => {
-            document.getElementById('sendingScene').classList.remove('active')
-            document.getElementById('successSection').classList.add('active')
-          }, 3000)
-        } else {
-          throw new Error(data.error || '傳送失敗')
+    function resetWrite() {
+      document.getElementById('writeForm').style.display = 'block'
+      document.getElementById('writeSuccess').classList.remove('active')
+      document.getElementById('senderName').value = ''
+      document.getElementById('receiverName').value = ''
+      document.getElementById('letterContent').value = ''
+      document.getElementById('charCount').textContent = '0'
+    }
+
+    async function searchLetters() {
+      const name = document.getElementById('searchName').value.trim()
+      if (!name) {
+        document.getElementById('searchName').style.borderColor = 'rgba(255,100,100,0.5)'
+        return
+      }
+      document.getElementById('searchName').style.borderColor = ''
+
+      const resultsDiv = document.getElementById('searchResults')
+      resultsDiv.innerHTML = '<p style="text-align:center;color:rgba(200,200,230,0.4);font-size:0.85rem">搜尋中...</p>'
+
+      try {
+        const res = await fetch('/api/letter/search?name=' + encodeURIComponent(name))
+        const data = await res.json()
+
+        if (!data.letters || data.letters.length === 0) {
+          resultsDiv.innerHTML = `
+            <div class="no-letters">
+              <div class="icon">&#9993;</div>
+              <p>目前還沒有人寫信給「${escapeHtml(name)}」<br><br>也許你可以先寫一封給想說的人？</p>
+            </div>
+          `
+          return
         }
-      } catch (err) {
-        alert('傳送失敗：' + err.message)
-        document.getElementById('sendingScene').classList.remove('active')
-        document.getElementById('step3').classList.add('active')
-        document.querySelector('.steps').style.display = 'flex'
-      }
-    }
 
-    function copyLink() {
-      const input = document.getElementById('shareLink')
-      input.select()
-      navigator.clipboard.writeText(input.value).then(() => {
-        const btn = document.querySelector('.copy-btn')
-        btn.textContent = '已複製!'
-        setTimeout(() => { btn.textContent = '複製' }, 2000)
-      })
-    }
+        resultsDiv.innerHTML = `
+          <p style="text-align:center;color:rgba(200,200,230,0.5);font-size:0.85rem;margin-bottom:16px">
+            找到 <span style="color:#c8b6ff;font-weight:700">${data.letters.length}</span> 封信給你
+          </p>
+        `
 
-    function shareLetter() {
-      const link = document.getElementById('shareLink').value
-      const receiverName = document.getElementById('receiverName').value.trim()
-      const text = `${receiverName}，有一封來自宇宙的信在等你 ✨\n${link}`
+        data.letters.forEach(letter => {
+          const div = document.createElement('div')
+          div.className = 'letter-found'
 
-      if (navigator.share) {
-        navigator.share({ title: '宇宙來信', text, url: link }).catch(() => {})
-      } else {
-        navigator.clipboard.writeText(text).then(() => {
-          alert('已複製到剪貼簿！')
+          if (letter.unlocked) {
+            div.innerHTML = `
+              <div class="from-label">來自</div>
+              <div class="from-name">${escapeHtml(letter.senderName)}</div>
+              <div class="date">${formatDate(letter.createdAt)}</div>
+              <div class="letter-paper" style="margin:0">
+                <div class="letter-header">&#10024; ${escapeHtml(letter.senderName)} 寫給你的信 &#10024;</div>
+                <div class="greeting">親愛的 <span>${escapeHtml(name)}</span>，</div>
+                <div class="body">${escapeHtml(letter.content)}</div>
+                <div class="signature">— <span>${escapeHtml(letter.senderName)}</span></div>
+              </div>
+            `
+          } else {
+            div.innerHTML = `
+              <div class="from-label">來自</div>
+              <div class="from-name">${escapeHtml(letter.senderName)}</div>
+              <div class="date">${formatDate(letter.createdAt)}</div>
+              <div class="locked-preview">
+                <div class="lock-icon">&#128274;</div>
+                <p>${escapeHtml(letter.senderName)} 寫了一封信給你<br>付費解鎖才能看到內容</p>
+              </div>
+              <button class="btn-primary" onclick="unlockLetter('${letter.id}')">&#128275; 解鎖這封信（NT$99）</button>
+            `
+          }
+
+          resultsDiv.appendChild(div)
         })
+      } catch {
+        resultsDiv.innerHTML = '<p style="text-align:center;color:rgba(255,100,100,0.5)">查詢失敗，請重試</p>'
       }
+    }
+
+    async function unlockLetter(letterId) {
+      try {
+        const res = await fetch('/api/letter/' + letterId + '/pay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+        const data = await res.json()
+
+        if (data.checkoutUrl) {
+          // Save search name so we can auto-search after payment
+          localStorage.setItem('letter_search_name', document.getElementById('searchName').value.trim())
+          window.location.href = data.checkoutUrl
+        } else if (data.success) {
+          // Dev mode: direct unlock, re-search
+          searchLetters()
+        }
+      } catch {
+        alert('網路錯誤，請重試')
+      }
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div')
+      d.textContent = str
+      return d.innerHTML
+    }
+
+    function formatDate(iso) {
+      if (!iso) return ''
+      const d = new Date(iso)
+      return d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate()
+    }
+
+    // Auto-search if returning from payment
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('paid') === '1') {
+      const savedName = localStorage.getItem('letter_search_name')
+      if (savedName) {
+        switchTab('search')
+        document.getElementById('searchName').value = savedName
+        localStorage.removeItem('letter_search_name')
+        searchLetters()
+      }
+      history.replaceState(null, '', '/letter.html')
     }
   </script>
 </body>

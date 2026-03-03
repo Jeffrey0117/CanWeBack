@@ -381,9 +381,21 @@
       </p>
     </div>
 
-    <div class="counter">已接收 <span id="flippedCount">0</span> / <span id="totalCount">9</span> 則訊息</div>
+    <div class="counter">宇宙為你準備了 <span id="totalCount">9</span> 則訊息</div>
 
     <div class="card-grid" id="cardGrid"></div>
+
+    <!-- Paywall after first free card -->
+    <div id="cardPaywall" style="display:none;text-align:center;padding:32px 20px;background:rgba(200,182,255,0.03);border:1px solid rgba(200,182,255,0.12);border-radius:16px;margin-bottom:32px;animation:fadeUp 0.5s ease-out">
+      <div style="font-size:2rem;margin-bottom:12px">&#128302;</div>
+      <h3 style="font-size:1.1rem;color:#c8b6ff;margin-bottom:8px">宇宙還有更多話想說</h3>
+      <p style="font-size:0.85rem;color:rgba(200,200,230,0.5);line-height:1.6;margin-bottom:20px">
+        你已經接收了第一則免費訊息<br>
+        解鎖全部 9 則宇宙專屬訊息
+      </p>
+      <button class="btn-primary" onclick="unlockAllCards()" style="width:100%;padding:16px;background:linear-gradient(135deg,#c8b6ff,#88b4ff);color:#0a0a2e;border:none;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer">&#10024; 解鎖全部（NT$29）</button>
+      <p style="font-size:0.72rem;color:rgba(200,200,230,0.3);margin-top:12px">一次解鎖，無限翻閱</p>
+    </div>
 
     <div class="result-section" id="resultSection">
       <p class="result-text">宇宙已經把話說完了。</p>
@@ -451,7 +463,9 @@
 
     const cardSymbols = ['&#9734;', '&#9790;', '&#10022;', '&#9672;', '&#10038;', '&#9683;', '&#10048;', '&#9753;', '&#10070;']
     const CARD_COUNT = 9
+    const FREE_LIMIT = 1
     let flippedCount = 0
+    let unlocked = localStorage.getItem('cards_unlocked') === '1'
 
     function shuffle(arr) {
       const a = [...arr]
@@ -510,9 +524,23 @@
 
     function flipCard(card) {
       if (card.classList.contains('flipped')) return
+
+      // Check paywall: only 1 free flip
+      if (!unlocked && flippedCount >= FREE_LIMIT) {
+        document.getElementById('cardPaywall').style.display = 'block'
+        document.getElementById('cardPaywall').scrollIntoView({ behavior: 'smooth', block: 'center' })
+        return
+      }
+
       card.classList.add('flipped')
       flippedCount++
-      document.getElementById('flippedCount').textContent = String(flippedCount)
+
+      // Show paywall after first free card
+      if (!unlocked && flippedCount >= FREE_LIMIT) {
+        setTimeout(() => {
+          document.getElementById('cardPaywall').style.display = 'block'
+        }, 1200)
+      }
 
       if (flippedCount === 1) {
         setTimeout(() => {
@@ -525,6 +553,34 @@
           document.getElementById('resultSection').classList.add('show')
         }, 800)
       }
+    }
+
+    async function unlockAllCards() {
+      try {
+        const res = await fetch('/api/pay-cards', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+        const data = await res.json()
+        if (data.checkoutUrl) {
+          localStorage.setItem('cards_pending', '1')
+          window.location.href = data.checkoutUrl
+          return
+        }
+        // Dev mode: direct unlock
+        doUnlock()
+      } catch {
+        doUnlock()
+      }
+    }
+
+    function doUnlock() {
+      unlocked = true
+      localStorage.setItem('cards_unlocked', '1')
+      document.getElementById('cardPaywall').style.display = 'none'
+    }
+
+    // Check if returning from payment
+    if (new URLSearchParams(window.location.search).get('unlocked') === '1') {
+      doUnlock()
+      history.replaceState(null, '', '/cards.html')
     }
 
     function reshuffle() {

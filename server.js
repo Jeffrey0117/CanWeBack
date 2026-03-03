@@ -527,7 +527,36 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, { success: true })
   }
 
-  // ── Letter API ──────────────────────────────────
+  // Pay to unlock all cards (宇宙的一句話)
+  if (pathname === '/api/pay-cards' && req.method === 'POST') {
+    try {
+      const checkoutRes = await fetch(`${LETMEUSE_BASE_URL}/api/billing/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appId: LETMEUSE_APP_ID,
+          appSecret: LETMEUSE_APP_SECRET,
+          mode: 'one_time',
+          productId: 'cards_unlock',
+          productName: '宇宙的一句話 — 全部解鎖',
+          amount: 29,
+          currency: 'TWD',
+          metadata: { type: 'cards' },
+          successUrl: `${CANWEBACK_BASE_URL}/cards.html?unlocked=1`,
+          cancelUrl: `${CANWEBACK_BASE_URL}/cards.html`,
+        }),
+      })
+      const result = await checkoutRes.json()
+      if (result.success) {
+        return sendJson(res, { success: true, checkoutUrl: `${LETMEUSE_BASE_URL}${result.data.checkoutUrl}` })
+      }
+      return sendJson(res, { success: true })
+    } catch {
+      return sendJson(res, { success: true })
+    }
+  }
+
+  // ── Letter API（沒說出口的那封信）──────────────────
 
   // Create a letter
   if (pathname === '/api/letter' && req.method === 'POST') {
@@ -549,66 +578,33 @@ const server = http.createServer(async (req, res) => {
       receiverName,
       content,
       unlocked: false,
-      reply: null,
       createdAt: new Date().toISOString(),
     }
     saveLetter(letter)
     return sendJson(res, { letterId: letter.id })
   }
 
-  // Get letter info (content hidden if locked)
-  if (pathname.match(/^\/api\/letter\/[^/]+$/) && req.method === 'GET') {
-    const letterId = pathname.split('/')[3]
-    const letters = loadLetters()
-    const letter = letters.find(l => l.id === letterId)
-    if (!letter) return sendJson(res, { error: '找不到這封信' }, 404)
-
-    if (letter.unlocked) {
-      return sendJson(res, {
-        senderName: letter.senderName,
-        receiverName: letter.receiverName,
-        content: letter.content,
-        reply: letter.reply,
-        unlocked: true,
-        createdAt: letter.createdAt,
-      })
-    }
-
-    return sendJson(res, {
-      senderName: letter.senderName,
-      receiverName: letter.receiverName,
-      unlocked: false,
-      createdAt: letter.createdAt,
-    })
-  }
-
-  // Reply to a letter (unlocks both)
-  if (pathname.match(/^\/api\/letter\/[^/]+\/reply$/) && req.method === 'POST') {
-    const letterId = pathname.split('/')[3]
-    const body = await parseBody(req)
-    const content = (body.content || '').trim()
-
-    if (!content) return sendJson(res, { error: '請寫下你的回信' }, 400)
-    if (content.length > 500) return sendJson(res, { error: '內容超過 500 字' }, 400)
+  // Search letters by receiver name
+  if (pathname === '/api/letter/search' && req.method === 'GET') {
+    const name = (url.searchParams.get('name') || '').trim()
+    if (!name) return sendJson(res, { error: '請輸入姓名' }, 400)
 
     const letters = loadLetters()
-    const letter = letters.find(l => l.id === letterId)
-    if (!letter) return sendJson(res, { error: '找不到這封信' }, 404)
-    if (letter.unlocked) return sendJson(res, { error: '信已經打開了' }, 400)
+    const found = letters
+      .filter(l => l.receiverName === name)
+      .map(l => ({
+        id: l.id,
+        senderName: l.senderName,
+        unlocked: l.unlocked,
+        content: l.unlocked ? l.content : undefined,
+        createdAt: l.createdAt,
+      }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
-    const updated = updateLetter(letterId, {
-      unlocked: true,
-      reply: {
-        content,
-        from: letter.receiverName,
-        createdAt: new Date().toISOString(),
-      },
-    })
-
-    return sendJson(res, { success: true })
+    return sendJson(res, { letters: found })
   }
 
-  // Pay to unlock a letter
+  // Pay to unlock a letter (NT$99)
   if (pathname.match(/^\/api\/letter\/[^/]+\/pay$/) && req.method === 'POST') {
     const letterId = pathname.split('/')[3]
     const letters = loadLetters()
@@ -625,12 +621,12 @@ const server = http.createServer(async (req, res) => {
           appSecret: LETMEUSE_APP_SECRET,
           mode: 'one_time',
           productId: 'letter_unlock',
-          productName: '宇宙來信解鎖',
-          amount: 49,
+          productName: '沒說出口的那封信 — 解鎖',
+          amount: 99,
           currency: 'TWD',
           metadata: { letterId, type: 'letter' },
-          successUrl: `${CANWEBACK_BASE_URL}/letter-read.html?id=${letterId}&unlocked=1`,
-          cancelUrl: `${CANWEBACK_BASE_URL}/letter-read.html?id=${letterId}`,
+          successUrl: `${CANWEBACK_BASE_URL}/letter.html?paid=1`,
+          cancelUrl: `${CANWEBACK_BASE_URL}/letter.html`,
         }),
       })
       const result = await checkoutRes.json()
