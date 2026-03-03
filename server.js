@@ -556,6 +556,35 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // Pay to unlock fortune detail (觀音靈籤)
+  if (pathname === '/api/pay-fortune' && req.method === 'POST') {
+    try {
+      const checkoutRes = await fetch(`${LETMEUSE_BASE_URL}/api/billing/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appId: LETMEUSE_APP_ID,
+          appSecret: LETMEUSE_APP_SECRET,
+          mode: 'one_time',
+          productId: 'fortune_unlock',
+          productName: '觀音靈籤 — 完整解籤 + 挽回建議',
+          amount: 800,
+          currency: 'TWD',
+          metadata: { type: 'fortune' },
+          successUrl: `${CANWEBACK_BASE_URL}/fortune.html?paid=1`,
+          cancelUrl: `${CANWEBACK_BASE_URL}/fortune.html`,
+        }),
+      })
+      const result = await checkoutRes.json()
+      if (result.success) {
+        return sendJson(res, { success: true, checkoutUrl: `${LETMEUSE_BASE_URL}${result.data.checkoutUrl}` })
+      }
+      return sendJson(res, { success: true })
+    } catch {
+      return sendJson(res, { success: true })
+    }
+  }
+
   // ── Letter API（沒說出口的那封信）──────────────────
 
   // Create a letter
@@ -607,7 +636,7 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, { letters: found })
   }
 
-  // Pay to unlock a letter (NT$99)
+  // Pay to unlock a letter (NT$500)
   if (pathname.match(/^\/api\/letter\/[^/]+\/pay$/) && req.method === 'POST') {
     const letterId = pathname.split('/')[3]
     const letters = loadLetters()

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>觀音靈籤 | Can We Back?</title>
-  <meta name="description" content="每日一籤，求問感情前程。傳統觀音靈籤線上抽籤。">
+  <meta name="description" content="觀音靈籤線上抽籤，解鎖感情完整解析與專屬挽回建議。每日一籤，求問感情前程。">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -207,21 +207,113 @@
       margin-bottom: 8px;
     }
 
+    .unlock-badge .price-tag {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #f5c842;
+      margin: 8px 0;
+    }
+
+    .unlock-badge .selling-points {
+      text-align: left;
+      margin: 12px 0;
+      font-size: 0.8rem;
+      color: #ccc;
+      line-height: 1.8;
+    }
+
+    .unlock-badge .selling-points li {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .unlock-badge .selling-points li::before {
+      content: '✦ ';
+      color: #c56cf0;
+    }
+
     .btn-unlock {
-      padding: 10px 20px;
+      padding: 12px 28px;
       border: none;
       border-radius: 8px;
       background: linear-gradient(135deg, #c56cf0, #6c5ce7);
       color: white;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
+      width: 100%;
     }
 
     .btn-unlock:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(197,108,240,0.3);
+    }
+
+    /* Unlocked full content */
+    .unlocked-section {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(197,108,240,0.05);
+      border: 1px solid rgba(197,108,240,0.2);
+      border-radius: 12px;
+    }
+
+    .unlocked-section h3 {
+      font-size: 1rem;
+      color: #c56cf0;
+      margin-bottom: 10px;
+    }
+
+    .unlocked-section p {
+      font-size: 0.93rem;
+      line-height: 1.8;
+      color: #ccc;
+      margin-bottom: 16px;
+    }
+
+    .unlocked-section .advice-block {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border-left: 3px solid #c56cf0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .unlocked-section .advice-block h4 {
+      font-size: 0.9rem;
+      color: #f5c842;
+      margin-bottom: 8px;
+    }
+
+    .unlocked-section .advice-block p {
+      margin-bottom: 0;
+    }
+
+    .cross-sell {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(245,200,66,0.05);
+      border: 1px solid rgba(245,200,66,0.2);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .cross-sell p {
+      color: #f5c842;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .cross-sell a {
+      display: inline-block;
+      padding: 10px 24px;
+      background: linear-gradient(135deg, #f5c842, #ff6b6b);
+      color: #1a1a2e;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
     }
 
     .limit-notice {
@@ -272,7 +364,7 @@
   <div class="stars"></div>
   <div class="container">
     <h1>觀音靈籤</h1>
-    <p class="subtitle">每日一籤，求問感情前程</p>
+    <p class="subtitle">每日一籤，求問感情前程・解鎖挽回專屬建議</p>
 
     <div class="card">
       <div class="fortune-container">
@@ -299,6 +391,7 @@
     let fortuneData = []
     let isShaking = false
     let canDrawToday = true
+    let fortuneUnlocked = localStorage.getItem('fortune_unlocked') === '1'
 
     // Load fortune data
     async function loadFortuneData() {
@@ -306,7 +399,17 @@
         const res = await fetch('/data/guanyin-fortune.json')
         fortuneData = await res.json()
       } catch (err) {
-        console.error('Failed to load fortune data:', err)
+        // silent fail
+      }
+    }
+
+    // Check payment return
+    function checkPaymentReturn() {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('paid') === '1') {
+        localStorage.setItem('fortune_unlocked', '1')
+        fortuneUnlocked = true
+        window.history.replaceState({}, '', window.location.pathname)
       }
     }
 
@@ -423,8 +526,154 @@
       isShaking = false
     }
 
+    // Generate reconciliation advice based on fortune level
+    function getReconciliationAdvice(fortune) {
+      const level = fortune.level
+      const id = fortune.id
+
+      const adviceByLevel = {
+        '上上籤': {
+          situation: '你們的緣分正處於最旺盛的時期。宇宙的能量站在你這邊，對方心中仍有你的位置。',
+          strategy: '這是主動出擊的好時機。對方目前的心理防線較低，你的真誠表達會被接收。建議在近期找一個自然的理由聯繫對方——不要太刻意，一條簡短的問候或分享一個你們都會笑的回憶就夠了。',
+          action: '把握這個黃金時機，用行動展現你的改變。不需要長篇大論的道歉，而是讓對方在互動中感受到「你不一樣了」。',
+          timing: '近一到兩週內是最佳行動窗口，越早越好。拖延反而會消耗這股正面能量。',
+          warning: '切記不要因為運勢好就掉以輕心。即使籤運大吉，也要展現出真正的成長，而非表面功夫。'
+        },
+        '上籤': {
+          situation: '你們之間的感情線尚未斷裂，只是暫時被生活的塵埃遮蔽。對方偶爾會想起你，但還在猶豫。',
+          strategy: '採取「若即若離」的策略最有效。不要急著表白或道歉，先讓自己活出更好的狀態。透過社群或共同朋友的管道，讓對方看到你的正向改變。',
+          action: '開始一個新的興趣或技能，發在社群上但不要刻意。當對方忍不住好奇你的近況時，復合的種子就已經埋下了。',
+          timing: '給自己三到四週的自我提升期，然後在一個自然的時機重新出現在對方的生活中。',
+          warning: '不要操之過急。上籤的能量需要你先蓄積實力，過早行動反而會讓好運打折。'
+        },
+        '中籤': {
+          situation: '你們的感情正處於十字路口。不好不壞，一切取決於接下來你怎麼做。對方對你有懷念，但也有怨氣。',
+          strategy: '先解決對方的怨氣，再喚起美好回憶。寫一封真誠的訊息（不是長篇大論），承認自己做得不好的地方，但不要祈求對方回來。讓對方感受到你的反思是發自內心的。',
+          action: '找出你們關係中最核心的問題，做出具體的改變。如果問題是溝通，去學習非暴力溝通；如果是陪伴，重新安排你的生活優先級。讓改變有跡可循。',
+          timing: '需要耐心。預計需要一到兩個月的時間讓對方看到你的改變。不要設定死線，但保持持續的正向行動。',
+          warning: '中籤最怕的是「半途而廢」。很多人在看不到即時效果時就放棄了，但對方其實一直在觀察你。堅持下去。'
+        },
+        '下籤': {
+          situation: '目前你們之間的能量場較低迷，對方的心門暫時是關閉的。強行突破只會讓情況更糟。',
+          strategy: '以退為進。現在最重要的不是追回對方，而是好好照顧自己。把所有想對對方說的話寫在日記裡，不要傳出去。讓時間成為你的盟友。',
+          action: '專注在自己身上——健康、事業、社交圈。當你真正為自己而活時，會散發出一種特殊的吸引力。這股吸引力比任何挽回技巧都有效。',
+          timing: '至少需要兩到三個月的冷靜期。這段時間不是等待，而是蛻變。當你準備好了，機會自然會出現。',
+          warning: '下籤不代表沒有希望，而是在告訴你「現在不是時候」。強求只會把對方推得更遠。學會放手，才能重新握住。'
+        },
+        '下下籤': {
+          situation: '你們目前的感情已經到了最低點。但請記住——物極必反，最深的谷底往往是轉折的起點。',
+          strategy: '完全停止所有挽回行動。不聯繫、不追蹤、不打聽。把對方的社群媒體暫時取消追蹤（不是封鎖）。這不是放棄，而是讓雙方的傷口癒合。',
+          action: '把這段時間當作人生的「重開機」。去做你一直想做但沒做的事。去旅行、去學習、去認識新朋友。讓自己成為一個全新的人。',
+          timing: '至少三個月以上的完全靜默期。在此期間，任何主動聯繫都可能造成反效果。等到你已經不再因為想到對方而痛苦時，才是重新開始的時機。',
+          warning: '這支籤是在保護你。有時候看起來最壞的結果，回頭看反而是最好的安排。無論最終是否復合，你都會變成更好的自己。'
+        }
+      }
+
+      // Map fortune level to advice
+      let levelKey = level
+      if (!adviceByLevel[levelKey]) {
+        levelKey = '中籤'
+      }
+
+      return adviceByLevel[levelKey]
+    }
+
     function showFortune(fortune, isPreviousDraw) {
       const resultDiv = document.getElementById('fortuneResult')
+      const isUnlocked = fortuneUnlocked
+
+      let paidContent = ''
+
+      if (isUnlocked) {
+        const advice = getReconciliationAdvice(fortune)
+        paidContent = `
+          <div class="unlocked-section">
+            <h3>感情運</h3>
+            <p>${fortune.love}</p>
+
+            <h3>事業運</h3>
+            <p>${fortune.career}</p>
+
+            <h3>財運</h3>
+            <p>${fortune.wealth}</p>
+          </div>
+
+          <div class="unlocked-section" style="margin-top:16px">
+            <h3>你的挽回專屬建議</h3>
+
+            <div class="advice-block">
+              <h4>現況分析</h4>
+              <p>${advice.situation}</p>
+            </div>
+
+            <div class="advice-block">
+              <h4>挽回策略</h4>
+              <p>${advice.strategy}</p>
+            </div>
+
+            <div class="advice-block">
+              <h4>具體行動</h4>
+              <p>${advice.action}</p>
+            </div>
+
+            <div class="advice-block">
+              <h4>最佳時機</h4>
+              <p>${advice.timing}</p>
+            </div>
+
+            <div class="advice-block">
+              <h4>注意事項</h4>
+              <p>${advice.warning}</p>
+            </div>
+          </div>
+
+          <div class="cross-sell">
+            <p>想要更深入了解你們的緣分？</p>
+            <a href="/">算算你們的挽回指數</a>
+          </div>
+        `
+      } else {
+        paidContent = `
+          <div class="blur-overlay">
+            <div class="blur-content">
+              <div class="fortune-section">
+                <h3>感情運</h3>
+                <p>${fortune.love}</p>
+              </div>
+
+              <div class="fortune-section">
+                <h3>事業運</h3>
+                <p>${fortune.career}</p>
+              </div>
+
+              <div class="fortune-section">
+                <h3>財運</h3>
+                <p>${fortune.wealth}</p>
+              </div>
+
+              <div class="fortune-section">
+                <h3>挽回專屬建議</h3>
+                <p>根據籤象分析你們的感情現況，提供具體的挽回策略、最佳行動時機、溝通方式建議⋯⋯</p>
+              </div>
+            </div>
+
+            <div class="unlock-badge">
+              <p>🔒 解鎖完整解籤 + 挽回專屬建議</p>
+              <div class="price-tag">NT$800</div>
+              <ul class="selling-points">
+                <li>感情、事業、財運完整解析</li>
+                <li>根據籤象的挽回現況分析</li>
+                <li>專屬挽回策略與具體行動</li>
+                <li>最佳挽回時機建議</li>
+                <li>個人化注意事項提醒</li>
+              </ul>
+              <button class="btn-unlock" onclick="unlockDetail()">
+                解鎖完整解析
+              </button>
+            </div>
+          </div>
+        `
+      }
 
       resultDiv.innerHTML = `
         <div class="fortune-result">
@@ -446,44 +695,48 @@
             <p>${fortune.overall}</p>
           </div>
 
-          <!-- Free preview ends here -->
-          <div class="blur-overlay">
-            <div class="blur-content">
-              <div class="fortune-section">
-                <h3>感情運</h3>
-                <p>${fortune.love}</p>
-              </div>
-
-              <div class="fortune-section">
-                <h3>事業運</h3>
-                <p>${fortune.career}</p>
-              </div>
-
-              <div class="fortune-section">
-                <h3>財運</h3>
-                <p>${fortune.wealth}</p>
-              </div>
-            </div>
-
-            <div class="unlock-badge">
-              <p>🔒 解鎖詳細解籤</p>
-              <button class="btn-unlock" onclick="unlockDetail()">
-                NT$99 查看完整解析
-              </button>
-            </div>
-          </div>
+          ${paidContent}
         </div>
       `
 
       resultDiv.style.display = 'block'
     }
 
-    function unlockDetail() {
-      alert('付費功能開發中\n將整合現有 LetMeUse 付費系統')
-      // TODO: Integrate with existing payment system
+    async function unlockDetail() {
+      const btn = document.querySelector('.btn-unlock')
+      if (btn) {
+        btn.disabled = true
+        btn.textContent = '連線中...'
+      }
+
+      try {
+        const res = await fetch('/api/pay-fortune', { method: 'POST' })
+        const data = await res.json()
+
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl
+        } else {
+          // Dev mode fallback: unlock directly
+          localStorage.setItem('fortune_unlocked', '1')
+          fortuneUnlocked = true
+          const lastResult = localStorage.getItem('fortune_last_result')
+          if (lastResult) {
+            showFortune(JSON.parse(lastResult), true)
+          }
+        }
+      } catch {
+        // Dev fallback
+        localStorage.setItem('fortune_unlocked', '1')
+        fortuneUnlocked = true
+        const lastResult = localStorage.getItem('fortune_last_result')
+        if (lastResult) {
+          showFortune(JSON.parse(lastResult), true)
+        }
+      }
     }
 
     // Initialize
+    checkPaymentReturn()
     loadFortuneData().then(() => {
       checkDailyLimit()
       initCanvas()
