@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>觀音靈籤 | Can We Back?</title>
+  <meta name="description" content="每日一籤，求問感情前程。傳統觀音靈籤線上抽籤。">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans TC', -apple-system, sans-serif;
+      background: #0a0a1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Stars background */
+    .stars {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .stars::before, .stars::after {
+      content: '';
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: white;
+      box-shadow:
+        25px 50px white, 100px 120px white, 200px 80px white,
+        350px 200px white, 50px 300px white, 180px 350px white,
+        400px 100px white, 300px 400px white, 150px 180px white,
+        450px 320px white, 80px 420px white, 320px 50px white,
+        500px 250px white, 250px 500px white, 420px 450px white,
+        550px 150px white, 600px 350px white, 700px 200px white,
+        650px 400px white, 750px 100px white, 350px 550px white;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    .stars::after {
+      width: 1px; height: 1px;
+      box-shadow:
+        75px 150px rgba(255,255,255,0.6), 250px 220px rgba(255,255,255,0.6),
+        450px 50px rgba(255,255,255,0.6), 120px 400px rgba(255,255,255,0.6),
+        500px 380px rgba(255,255,255,0.6), 300px 150px rgba(255,255,255,0.6),
+        680px 280px rgba(255,255,255,0.5), 550px 450px rgba(255,255,255,0.5);
+      animation: twinkle 3s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      background: linear-gradient(135deg, #f5c842, #ff6b6b, #c56cf0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Fortune stick container */
+    .fortune-container {
+      position: relative;
+      min-height: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #fortuneCanvas {
+      max-width: 100%;
+      cursor: pointer;
+    }
+
+    .shake-btn {
+      margin-top: 24px;
+      padding: 16px 48px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #f5c842, #ff6b6b);
+      color: #1a1a2e;
+      transition: all 0.3s;
+    }
+    .shake-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245,200,66,0.3);
+    }
+    .shake-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .fortune-result {
+      margin-top: 24px;
+      padding: 24px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      animation: fadeIn 0.5s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fortune-level {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .fortune-level.上上籤 { color: #00b894; }
+    .fortune-level.上籤 { color: #00cec9; }
+    .fortune-level.中籤 { color: #f5c842; }
+    .fortune-level.下籤 { color: #e17055; }
+    .fortune-level.下下籤 { color: #d63031; }
+
+    .fortune-poem {
+      text-align: center;
+      font-size: 1rem;
+      line-height: 2;
+      color: #ddd;
+      margin-bottom: 20px;
+      white-space: pre-line;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 20px;
+    }
+
+    .fortune-section {
+      margin-bottom: 16px;
+    }
+
+    .fortune-section h3 {
+      font-size: 0.9rem;
+      color: #c56cf0;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .fortune-section p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #bbb;
+    }
+
+    .blur-overlay {
+      position: relative;
+    }
+
+    .blur-content {
+      filter: blur(6px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .unlock-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10,10,26,0.9);
+      padding: 16px 24px;
+      border-radius: 12px;
+      border: 1px solid rgba(245,200,66,0.3);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .unlock-badge p {
+      font-size: 0.85rem;
+      color: #f5c842;
+      margin-bottom: 8px;
+    }
+
+    .btn-unlock {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #c56cf0, #6c5ce7);
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-unlock:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(197,108,240,0.3);
+    }
+
+    .limit-notice {
+      text-align: center;
+      padding: 16px;
+      background: rgba(255,107,107,0.1);
+      border: 1px solid rgba(255,107,107,0.3);
+      border-radius: 12px;
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      color: #555;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px; }
+      h1 { font-size: 1.6rem; }
+      .card { padding: 24px 18px; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="container">
+    <h1>觀音靈籤</h1>
+    <p class="subtitle">每日一籤，求問感情前程</p>
+
+    <div class="card">
+      <div class="fortune-container">
+        <canvas id="fortuneCanvas" width="300" height="300"></canvas>
+        <button class="shake-btn" id="shakeBtn" onclick="shakeFortune()">
+          誠心求籤
+        </button>
+      </div>
+
+      <div id="limitNotice" style="display:none"></div>
+      <div id="fortuneResult" style="display:none"></div>
+    </div>
+
+    <div style="text-align:center">
+      <a href="/" class="back-link">← 回首頁</a>
+    </div>
+
+    <div class="footer">
+      <p>Can We Back? &copy; 2026</p>
+    </div>
+  </div>
+
+  <script>
+    let fortuneData = []
+    let isShaking = false
+    let canDrawToday = true
+
+    // Load fortune data
+    async function loadFortuneData() {
+      try {
+        const res = await fetch('/data/guanyin-fortune.json')
+        fortuneData = await res.json()
+      } catch (err) {
+        console.error('Failed to load fortune data:', err)
+      }
+    }
+
+    // Check if user can draw today
+    function checkDailyLimit() {
+      const lastDraw = localStorage.getItem('fortune_last_draw')
+      const today = new Date().toDateString()
+
+      if (lastDraw === today) {
+        canDrawToday = false
+        const lastResult = localStorage.getItem('fortune_last_result')
+        if (lastResult) {
+          const result = JSON.parse(lastResult)
+          showFortune(result, true)
+        }
+        showLimitNotice()
+      } else {
+        canDrawToday = true
+      }
+    }
+
+    function showLimitNotice() {
+      const notice = document.getElementById('limitNotice')
+      notice.innerHTML = `
+        <div class="limit-notice">
+          ⏰ 今日已抽籤，明天再來吧<br>
+          <small>每天可免費抽一次</small>
+        </div>
+      `
+      notice.style.display = 'block'
+      document.getElementById('shakeBtn').disabled = true
+    }
+
+    // Draw fortune sticks
+    function drawSticks(ctx, shaking = false) {
+      const canvas = ctx.canvas
+      const w = canvas.width
+      const h = canvas.height
+
+      ctx.clearRect(0, 0, w, h)
+
+      // Draw container
+      ctx.fillStyle = 'rgba(139, 90, 43, 0.6)'
+      ctx.fillRect(w / 2 - 60, h / 2 - 20, 120, 100)
+      ctx.strokeStyle = 'rgba(101, 67, 33, 0.8)'
+      ctx.lineWidth = 2
+      ctx.strokeRect(w / 2 - 60, h / 2 - 20, 120, 100)
+
+      // Draw sticks
+      const stickCount = 30
+      const baseX = w / 2
+      const baseY = h / 2 + 20
+
+      for (let i = 0; i < stickCount; i++) {
+        const angle = (Math.random() - 0.5) * 0.3
+        const offsetX = (Math.random() - 0.5) * 40
+        const shakeOffset = shaking ? (Math.random() - 0.5) * 10 : 0
+
+        ctx.save()
+        ctx.translate(baseX + offsetX + shakeOffset, baseY)
+        ctx.rotate(angle)
+
+        // Stick
+        ctx.fillStyle = '#d4a574'
+        ctx.fillRect(-2, -60, 4, 60)
+
+        // Stick top
+        ctx.fillStyle = '#8b5a2b'
+        ctx.fillRect(-2, -62, 4, 2)
+
+        ctx.restore()
+      }
+    }
+
+    // Initialize canvas
+    function initCanvas() {
+      const canvas = document.getElementById('fortuneCanvas')
+      const ctx = canvas.getContext('2d')
+      drawSticks(ctx, false)
+    }
+
+    // Shake animation
+    async function shakeFortune() {
+      if (!canDrawToday) return
+      if (isShaking) return
+
+      isShaking = true
+      const btn = document.getElementById('shakeBtn')
+      btn.disabled = true
+      btn.textContent = '搖籤中...'
+
+      const canvas = document.getElementById('fortuneCanvas')
+      const ctx = canvas.getContext('2d')
+
+      // Shake animation
+      for (let i = 0; i < 20; i++) {
+        drawSticks(ctx, true)
+        await new Promise(r => setTimeout(r, 50))
+      }
+
+      // Draw result
+      const randomIndex = Math.floor(Math.random() * fortuneData.length)
+      const result = fortuneData[randomIndex]
+
+      // Save to localStorage
+      const today = new Date().toDateString()
+      localStorage.setItem('fortune_last_draw', today)
+      localStorage.setItem('fortune_last_result', JSON.stringify(result))
+
+      canDrawToday = false
+      showFortune(result, false)
+      showLimitNotice()
+
+      isShaking = false
+    }
+
+    function showFortune(fortune, isPreviousDraw) {
+      const resultDiv = document.getElementById('fortuneResult')
+
+      resultDiv.innerHTML = `
+        <div class="fortune-result">
+          <div class="fortune-level ${fortune.level}">
+            ${fortune.level} 第${fortune.id}籤
+          </div>
+
+          <div class="fortune-poem">
+            ${fortune.poem}
+          </div>
+
+          <div class="fortune-section">
+            <h3>籤意</h3>
+            <p>${fortune.meaning}</p>
+          </div>
+
+          <div class="fortune-section">
+            <h3>總論</h3>
+            <p>${fortune.overall}</p>
+          </div>
+
+          <!-- Free preview ends here -->
+          <div class="blur-overlay">
+            <div class="blur-content">
+              <div class="fortune-section">
+                <h3>感情運</h3>
+                <p>${fortune.love}</p>
+              </div>
+
+              <div class="fortune-section">
+                <h3>事業運</h3>
+                <p>${fortune.career}</p>
+              </div>
+
+              <div class="fortune-section">
+                <h3>財運</h3>
+                <p>${fortune.wealth}</p>
+              </div>
+            </div>
+
+            <div class="unlock-badge">
+              <p>🔒 解鎖詳細解籤</p>
+              <button class="btn-unlock" onclick="unlockDetail()">
+                NT$99 查看完整解析
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+
+      resultDiv.style.display = 'block'
+    }
+
+    function unlockDetail() {
+      alert('付費功能開發中\n將整合現有 LetMeUse 付費系統')
+      // TODO: Integrate with existing payment system
+    }
+
+    // Initialize
+    loadFortuneData().then(() => {
+      checkDailyLimit()
+      initCanvas()
+    })
+  </script>
+</body>
+</html>
