@@ -379,6 +379,10 @@
         <input type="text" id="receiverName" placeholder="你想寫信給誰？" maxlength="10">
         <div class="name-hint">請填對方的真實姓名</div>
 
+        <label class="label-required">對方的生日（民國）</label>
+        <input type="text" id="receiverBirthday" placeholder="如 880118" inputmode="numeric" maxlength="7">
+        <div class="name-hint">民國年月日，用來確保信送對人</div>
+
         <label class="label-required">你想說的話</label>
         <textarea id="letterContent" placeholder="那些沒說出口的話，在這裡寫下來..." maxlength="500"></textarea>
         <div class="char-count"><span id="charCount">0</span> / 500</div>
@@ -403,6 +407,10 @@
       <label class="label-required">輸入你的本名</label>
       <input type="text" id="searchName" placeholder="輸入你的真實姓名" maxlength="10">
       <div class="name-hint">看看有沒有人寫了一封信給你</div>
+
+      <label class="label-required">你的生日（民國）</label>
+      <input type="text" id="searchBirthday" placeholder="如 880118" inputmode="numeric" maxlength="7">
+      <div class="name-hint">民國年月日，用來確認是你的信</div>
 
       <button class="btn-primary" onclick="searchLetters()">&#128270; 查詢</button>
 
@@ -437,15 +445,20 @@
     async function sendLetter() {
       const senderName = document.getElementById('senderName').value.trim()
       const receiverName = document.getElementById('receiverName').value.trim()
+      const receiverBirthday = document.getElementById('receiverBirthday').value.trim()
       const content = document.getElementById('letterContent').value.trim()
 
       let valid = true
-      if (!senderName) { document.getElementById('senderName').style.borderColor = 'rgba(255,100,100,0.5)'; valid = false }
-      else { document.getElementById('senderName').style.borderColor = '' }
-      if (!receiverName) { document.getElementById('receiverName').style.borderColor = 'rgba(255,100,100,0.5)'; valid = false }
-      else { document.getElementById('receiverName').style.borderColor = '' }
-      if (!content) { document.getElementById('letterContent').style.borderColor = 'rgba(255,100,100,0.5)'; valid = false }
-      else { document.getElementById('letterContent').style.borderColor = '' }
+      const fields = [
+        ['senderName', senderName],
+        ['receiverName', receiverName],
+        ['receiverBirthday', receiverBirthday],
+        ['letterContent', content],
+      ]
+      fields.forEach(([id, val]) => {
+        if (!val) { document.getElementById(id).style.borderColor = 'rgba(255,100,100,0.5)'; valid = false }
+        else { document.getElementById(id).style.borderColor = '' }
+      })
       if (!valid) return
 
       // Show sending animation
@@ -455,7 +468,7 @@
         const res = await fetch('/api/letter', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ senderName, receiverName, content }),
+          body: JSON.stringify({ senderName, receiverName, receiverBirthday, content }),
         })
         const data = await res.json()
 
@@ -480,23 +493,27 @@
       document.getElementById('writeSuccess').classList.remove('active')
       document.getElementById('senderName').value = ''
       document.getElementById('receiverName').value = ''
+      document.getElementById('receiverBirthday').value = ''
       document.getElementById('letterContent').value = ''
       document.getElementById('charCount').textContent = '0'
     }
 
     async function searchLetters() {
       const name = document.getElementById('searchName').value.trim()
-      if (!name) {
-        document.getElementById('searchName').style.borderColor = 'rgba(255,100,100,0.5)'
+      const birthday = document.getElementById('searchBirthday').value.trim()
+      if (!name || !birthday) {
+        if (!name) document.getElementById('searchName').style.borderColor = 'rgba(255,100,100,0.5)'
+        if (!birthday) document.getElementById('searchBirthday').style.borderColor = 'rgba(255,100,100,0.5)'
         return
       }
       document.getElementById('searchName').style.borderColor = ''
+      document.getElementById('searchBirthday').style.borderColor = ''
 
       const resultsDiv = document.getElementById('searchResults')
       resultsDiv.innerHTML = '<p style="text-align:center;color:rgba(200,200,230,0.4);font-size:0.85rem">搜尋中...</p>'
 
       try {
-        const res = await fetch('/api/letter/search?name=' + encodeURIComponent(name))
+        const res = await fetch('/api/letter/search?name=' + encodeURIComponent(name) + '&birthday=' + encodeURIComponent(birthday))
         const data = await res.json()
 
         if (!data.letters || data.letters.length === 0) {
@@ -530,6 +547,10 @@
                 <div class="body">${escapeHtml(letter.content)}</div>
                 <div class="signature">— <span>${escapeHtml(letter.senderName)}</span></div>
               </div>
+              <div style="margin-top:16px;padding:16px;background:rgba(200,182,255,0.04);border:1px solid rgba(200,182,255,0.1);border-radius:12px;text-align:center">
+                <p style="font-size:0.82rem;color:rgba(200,200,230,0.5);margin-bottom:10px">看完這封信，想知道你們還有沒有機會嗎？</p>
+                <a href="/" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#c8b6ff,#88b4ff);color:#0a0a2e;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.88rem">測測你們的挽回指數 &rarr;</a>
+              </div>
             `
           } else {
             div.innerHTML = `
@@ -540,7 +561,7 @@
                 <div class="lock-icon">&#128274;</div>
                 <p>${escapeHtml(letter.senderName)} 寫了一封信給你<br>付費解鎖才能看到內容</p>
               </div>
-              <button class="btn-primary" onclick="unlockLetter('${letter.id}')">&#128275; 解鎖這封信（NT$99）</button>
+              <button class="btn-primary" onclick="unlockLetter('${letter.id}')">&#128275; 解鎖這封信（NT$500）</button>
             `
           }
 
@@ -562,6 +583,7 @@
         if (data.checkoutUrl) {
           // Save search name so we can auto-search after payment
           localStorage.setItem('letter_search_name', document.getElementById('searchName').value.trim())
+          localStorage.setItem('letter_search_birthday', document.getElementById('searchBirthday').value.trim())
           window.location.href = data.checkoutUrl
         } else if (data.success) {
           // Dev mode: direct unlock, re-search
@@ -588,10 +610,13 @@
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.get('paid') === '1') {
       const savedName = localStorage.getItem('letter_search_name')
-      if (savedName) {
+      const savedBirthday = localStorage.getItem('letter_search_birthday')
+      if (savedName && savedBirthday) {
         switchTab('search')
         document.getElementById('searchName').value = savedName
+        document.getElementById('searchBirthday').value = savedBirthday
         localStorage.removeItem('letter_search_name')
+        localStorage.removeItem('letter_search_birthday')
         searchLetters()
       }
       history.replaceState(null, '', '/letter.html')

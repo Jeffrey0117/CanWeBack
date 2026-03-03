@@ -407,7 +407,7 @@ const server = http.createServer(async (req, res) => {
           mode: 'one_time',
           productId: 'report_unlock',
           productName: '挽回指數完整報告',
-          amount: 299,
+          amount: 1500,
           currency: 'TWD',
           metadata: { orderId: body.orderId, type: 'report' },
           successUrl: `${CANWEBACK_BASE_URL}/checkout-success.html?orderId=${body.orderId}&type=report`,
@@ -539,7 +539,7 @@ const server = http.createServer(async (req, res) => {
           mode: 'one_time',
           productId: 'cards_unlock',
           productName: '宇宙的一句話 — 全部解鎖',
-          amount: 29,
+          amount: 200,
           currency: 'TWD',
           metadata: { type: 'cards' },
           successUrl: `${CANWEBACK_BASE_URL}/cards.html?unlocked=1`,
@@ -563,9 +563,10 @@ const server = http.createServer(async (req, res) => {
     const body = await parseBody(req)
     const senderName = (body.senderName || '').trim()
     const receiverName = (body.receiverName || '').trim()
+    const receiverBirthday = (body.receiverBirthday || '').replace(/\D/g, '')
     const content = (body.content || '').trim()
 
-    if (!senderName || !receiverName || !content) {
+    if (!senderName || !receiverName || !receiverBirthday || !content) {
       return sendJson(res, { error: '請填寫完整' }, 400)
     }
     if (content.length > 500) {
@@ -576,6 +577,7 @@ const server = http.createServer(async (req, res) => {
       id: crypto.randomUUID(),
       senderName,
       receiverName,
+      receiverBirthday,
       content,
       unlocked: false,
       createdAt: new Date().toISOString(),
@@ -584,14 +586,15 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, { letterId: letter.id })
   }
 
-  // Search letters by receiver name
+  // Search letters by receiver name + birthday
   if (pathname === '/api/letter/search' && req.method === 'GET') {
     const name = (url.searchParams.get('name') || '').trim()
-    if (!name) return sendJson(res, { error: '請輸入姓名' }, 400)
+    const birthday = (url.searchParams.get('birthday') || '').replace(/\D/g, '')
+    if (!name || !birthday) return sendJson(res, { error: '請輸入姓名和生日' }, 400)
 
     const letters = loadLetters()
     const found = letters
-      .filter(l => l.receiverName === name)
+      .filter(l => l.receiverName === name && l.receiverBirthday === birthday)
       .map(l => ({
         id: l.id,
         senderName: l.senderName,
@@ -622,7 +625,7 @@ const server = http.createServer(async (req, res) => {
           mode: 'one_time',
           productId: 'letter_unlock',
           productName: '沒說出口的那封信 — 解鎖',
-          amount: 99,
+          amount: 500,
           currency: 'TWD',
           metadata: { letterId, type: 'letter' },
           successUrl: `${CANWEBACK_BASE_URL}/letter.html?paid=1`,
