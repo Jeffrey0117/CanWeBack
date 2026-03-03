@@ -3,27 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>失戀語錄牌 | Can We Back?</title>
-  <meta name="description" content="翻一張牌，看看哪句話說中了你的心。失戀語錄牌，每一句都是某個人的真實心聲。">
-  <meta name="keywords" content="失戀語錄,分手,心情,語錄牌,失戀">
+  <title>宇宙的一句話 | Can We Back?</title>
+  <meta name="description" content="閉上眼，讓宇宙給你一句話。每張牌都是宇宙專屬給你的訊息。">
+  <meta name="keywords" content="宇宙訊息,心靈牌卡,宇宙的一句話,療癒,靈性">
   <link rel="canonical" href="https://canweback.com/cards.html">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="失戀語錄牌 | Can We Back?">
-  <meta property="og:description" content="翻一張牌，看看哪句話說中了你的心。每一句都是某個人的真實心聲。">
+  <meta property="og:title" content="宇宙的一句話 | Can We Back?">
+  <meta property="og:description" content="閉上眼，讓宇宙給你一句話。每張牌都是宇宙專屬給你的訊息。">
   <meta property="og:url" content="https://canweback.com/cards.html">
   <meta property="og:image" content="https://canweback.com/og-image.png">
   <meta property="og:locale" content="zh_TW">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="失戀語錄牌 | Can We Back?">
-  <meta name="twitter:description" content="翻一張牌，看看哪句話說中了你的心。">
+  <meta name="twitter:title" content="宇宙的一句話 | Can We Back?">
+  <meta name="twitter:description" content="閉上眼，讓宇宙給你一句話。">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Noto Sans TC', -apple-system, sans-serif;
-      background: #0a0a1a;
+      background: #05051a;
       color: #e0e0e0;
       min-height: 100vh;
       overflow-x: hidden;
+    }
+
+    /* Cosmos background */
+    .cosmos {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(88, 40, 180, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(40, 100, 200, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(180, 60, 120, 0.06) 0%, transparent 50%);
     }
     .stars {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -38,38 +48,94 @@
         400px 100px white, 300px 400px white, 150px 180px white,
         450px 320px white, 80px 420px white, 320px 50px white,
         500px 250px white, 250px 500px white, 420px 450px white,
-        550px 150px white, 600px 350px white, 700px 200px white;
+        550px 150px white, 600px 350px white, 700px 200px white,
+        130px 520px white, 380px 580px white, 520px 80px white,
+        620px 480px white, 750px 300px white, 280px 620px white;
       animation: twinkle 4s ease-in-out infinite alternate;
     }
     .stars::after {
       width: 1px; height: 1px;
       box-shadow:
-        75px 150px rgba(255,255,255,0.6), 250px 220px rgba(255,255,255,0.6),
-        450px 50px rgba(255,255,255,0.6), 120px 400px rgba(255,255,255,0.6),
-        500px 380px rgba(255,255,255,0.6), 300px 150px rgba(255,255,255,0.6);
+        75px 150px rgba(255,255,255,0.5), 250px 220px rgba(255,255,255,0.5),
+        450px 50px rgba(255,255,255,0.5), 120px 400px rgba(255,255,255,0.5),
+        500px 380px rgba(255,255,255,0.5), 300px 150px rgba(255,255,255,0.5),
+        650px 250px rgba(255,255,255,0.4), 170px 480px rgba(255,255,255,0.4);
       animation: twinkle 3s ease-in-out infinite alternate-reverse;
     }
     @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    /* Shooting star */
+    @keyframes shootingStar {
+      0% { transform: translateX(-100px) translateY(-100px); opacity: 0; }
+      5% { opacity: 1; }
+      15% { opacity: 1; }
+      30% { transform: translateX(400px) translateY(200px); opacity: 0; }
+      100% { opacity: 0; }
+    }
+    .shooting-star {
+      position: fixed;
+      width: 80px; height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+      pointer-events: none; z-index: 0;
+      opacity: 0;
+    }
+    .shooting-star:nth-child(1) { top: 15%; left: 30%; animation: shootingStar 6s ease-in-out infinite; animation-delay: 2s; }
+    .shooting-star:nth-child(2) { top: 40%; left: 60%; animation: shootingStar 8s ease-in-out infinite; animation-delay: 5s; }
 
     .container {
       max-width: 600px; margin: 0 auto; padding: 40px 20px;
       position: relative; z-index: 1;
     }
 
-    .header { text-align: center; margin-bottom: 32px; }
+    /* Header */
+    .header { text-align: center; margin-bottom: 36px; }
+    .header-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
     .header h1 {
       font-size: 2rem;
-      background: linear-gradient(135deg, #f5c842, #ff6b6b, #c56cf0);
+      background: linear-gradient(135deg, #c8b6ff, #b8e0ff, #ffd6e0);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
     }
-    .header p { color: #888; font-size: 0.9rem; }
+    .header p {
+      color: rgba(200, 200, 230, 0.6);
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+    }
+
+    /* Ritual prompt */
+    .ritual {
+      text-align: center;
+      margin-bottom: 28px;
+      padding: 18px 20px;
+      background: rgba(200, 182, 255, 0.04);
+      border: 1px solid rgba(200, 182, 255, 0.1);
+      border-radius: 16px;
+    }
+    .ritual p {
+      font-size: 0.85rem;
+      color: rgba(200, 200, 230, 0.7);
+      line-height: 1.8;
+    }
+    .ritual .highlight {
+      color: #c8b6ff;
+      font-weight: 600;
+    }
 
     .counter {
       text-align: center; margin-bottom: 24px;
-      font-size: 0.85rem; color: #666;
+      font-size: 0.82rem; color: rgba(200, 200, 230, 0.4);
+      letter-spacing: 1px;
     }
-    .counter span { color: #f5c842; font-weight: 700; }
+    .counter span { color: #c8b6ff; font-weight: 700; }
 
     /* Card grid */
     .card-grid {
@@ -90,66 +156,74 @@
 
     .flip-inner {
       position: relative; width: 100%; height: 100%;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
       transform-style: preserve-3d;
     }
 
     .flip-front, .flip-back {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       backface-visibility: hidden;
-      border-radius: 14px;
+      border-radius: 16px;
       display: flex; align-items: center; justify-content: center;
       padding: 12px;
     }
 
-    /* Front: mystery card */
+    /* Front: cosmic card */
     .flip-front {
-      background: linear-gradient(135deg, rgba(197,108,240,0.15), rgba(108,92,231,0.15));
-      border: 1px solid rgba(197,108,240,0.3);
+      background: linear-gradient(135deg, rgba(200, 182, 255, 0.08), rgba(100, 140, 255, 0.06));
+      border: 1px solid rgba(200, 182, 255, 0.15);
+      flex-direction: column;
+      gap: 6px;
     }
-    .flip-front::before {
-      content: '?';
-      font-size: 2.4rem; font-weight: 800;
-      color: rgba(197,108,240,0.4);
+    .flip-front .card-symbol {
+      font-size: 1.8rem;
+      opacity: 0.5;
+    }
+    .flip-front .card-label {
+      font-size: 0.65rem;
+      color: rgba(200, 182, 255, 0.4);
+      letter-spacing: 2px;
     }
     .flip-card:not(.flipped):hover .flip-front {
-      border-color: rgba(245,200,66,0.5);
-      box-shadow: 0 0 20px rgba(245,200,66,0.15);
+      border-color: rgba(200, 182, 255, 0.35);
+      box-shadow: 0 0 30px rgba(200, 182, 255, 0.08);
     }
     .flip-card:not(.flipped):active .flip-front {
       transform: scale(0.96);
     }
 
-    /* Back: quote */
+    /* Back: message */
     .flip-back {
       transform: rotateY(180deg);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(200, 182, 255, 0.12);
       flex-direction: column;
       text-align: center;
       gap: 8px;
     }
     .flip-back .quote {
       font-size: 0.82rem;
-      line-height: 1.7;
+      line-height: 1.8;
       color: #eee;
       font-weight: 500;
     }
     .flip-back .card-tag {
-      font-size: 0.65rem;
-      color: #c56cf0;
-      opacity: 0.7;
+      font-size: 0.62rem;
+      color: rgba(200, 182, 255, 0.6);
+      letter-spacing: 1px;
     }
 
-    /* Color variants for backs */
-    .flip-card[data-color="warm"] .flip-back { border-color: rgba(245,200,66,0.2); background: rgba(245,200,66,0.04); }
-    .flip-card[data-color="warm"] .flip-back .quote { color: #f5e6c8; }
-    .flip-card[data-color="cool"] .flip-back { border-color: rgba(108,92,231,0.2); background: rgba(108,92,231,0.04); }
-    .flip-card[data-color="cool"] .flip-back .quote { color: #d0c8f0; }
-    .flip-card[data-color="pink"] .flip-back { border-color: rgba(255,107,107,0.2); background: rgba(255,107,107,0.04); }
-    .flip-card[data-color="pink"] .flip-back .quote { color: #f5c8c8; }
-    .flip-card[data-color="mint"] .flip-back { border-color: rgba(0,184,148,0.2); background: rgba(0,184,148,0.04); }
-    .flip-card[data-color="mint"] .flip-back .quote { color: #c8f0e8; }
+    /* Color variants */
+    .flip-card[data-color="stardust"] .flip-back { border-color: rgba(200, 182, 255, 0.18); background: rgba(200, 182, 255, 0.03); }
+    .flip-card[data-color="stardust"] .flip-back .quote { color: #e0d6ff; }
+    .flip-card[data-color="moonlight"] .flip-back { border-color: rgba(184, 224, 255, 0.18); background: rgba(184, 224, 255, 0.03); }
+    .flip-card[data-color="moonlight"] .flip-back .quote { color: #d6ecff; }
+    .flip-card[data-color="aurora"] .flip-back { border-color: rgba(180, 255, 220, 0.18); background: rgba(180, 255, 220, 0.03); }
+    .flip-card[data-color="aurora"] .flip-back .quote { color: #d0ffe8; }
+    .flip-card[data-color="nebula"] .flip-back { border-color: rgba(255, 180, 220, 0.18); background: rgba(255, 180, 220, 0.03); }
+    .flip-card[data-color="nebula"] .flip-back .quote { color: #ffe0ee; }
+    .flip-card[data-color="cosmic"] .flip-back { border-color: rgba(255, 220, 180, 0.18); background: rgba(255, 220, 180, 0.03); }
+    .flip-card[data-color="cosmic"] .flip-back .quote { color: #fff0dc; }
 
     /* Reveal animation */
     @keyframes cardReveal {
@@ -158,7 +232,15 @@
     }
     .flip-card.flipped .flip-back { animation: cardReveal 0.3s ease-out 0.3s both; }
 
-    /* All flipped CTA */
+    /* Glow pulse on flip */
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 20px rgba(200, 182, 255, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(200, 182, 255, 0.3); }
+      100% { box-shadow: 0 0 20px rgba(200, 182, 255, 0.1); }
+    }
+    .flip-card.flipped .flip-back { animation: cardReveal 0.3s ease-out 0.3s both, glowPulse 2s ease-in-out 0.6s; }
+
+    /* Result section */
     .result-section {
       display: none;
       text-align: center;
@@ -176,7 +258,7 @@
       margin-bottom: 8px; font-weight: 600;
     }
     .result-section .result-sub {
-      font-size: 0.85rem; color: #999;
+      font-size: 0.85rem; color: rgba(200, 200, 230, 0.6);
       margin-bottom: 24px; line-height: 1.6;
     }
 
@@ -184,37 +266,22 @@
 
     .cta-btn {
       display: inline-block; padding: 14px 32px;
-      background: linear-gradient(135deg, #f5c842, #ff6b6b);
-      color: #1a1a2e; border-radius: 12px; text-decoration: none;
+      background: linear-gradient(135deg, #c8b6ff, #88b4ff);
+      color: #0a0a2e; border-radius: 12px; text-decoration: none;
       font-weight: 700; font-size: 0.95rem; transition: all 0.3s;
       border: none; cursor: pointer;
     }
-    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,200,66,0.3); }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(200, 182, 255, 0.3); }
 
     .shuffle-btn {
       display: inline-block; padding: 14px 32px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(200, 182, 255, 0.15);
       color: #ccc; border-radius: 12px;
       font-weight: 600; font-size: 0.95rem; transition: all 0.3s;
       cursor: pointer;
     }
-    .shuffle-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
-
-    /* Card inline CTA */
-    .card-cta {
-      font-size: 0.6rem;
-      color: #f5c842;
-      text-decoration: none;
-      opacity: 0;
-      transition: opacity 0.4s ease 0.6s;
-      pointer-events: none;
-    }
-    .flip-card.flipped .card-cta {
-      opacity: 0.8;
-      pointer-events: auto;
-    }
-    .flip-card.flipped .card-cta:hover { opacity: 1; }
+    .shuffle-btn:hover { background: rgba(200, 182, 255, 0.08); color: #fff; }
 
     /* Resonance button */
     .resonance-row {
@@ -228,27 +295,27 @@
     }
     .resonate-btn {
       background: none; border: none; cursor: pointer;
-      font-size: 0.72rem; color: #ff6b6b; padding: 2px 6px;
+      font-size: 0.72rem; color: #c8b6ff; padding: 2px 6px;
       border-radius: 12px; transition: all 0.3s;
       display: flex; align-items: center; gap: 3px;
     }
-    .resonate-btn:hover { background: rgba(255,107,107,0.12); }
-    .resonate-btn.active { color: #ff6b6b; }
-    .resonate-btn.active .heart-icon { transform: scale(1.3); }
-    .heart-icon { transition: transform 0.3s; display: inline-block; }
-    .resonate-count { font-size: 0.6rem; color: #888; }
+    .resonate-btn:hover { background: rgba(200, 182, 255, 0.1); }
+    .resonate-btn.active { color: #c8b6ff; }
+    .resonate-btn.active .star-icon { transform: scale(1.3); }
+    .star-icon { transition: transform 0.3s; display: inline-block; }
+    .resonate-count { font-size: 0.6rem; color: rgba(200, 200, 230, 0.4); }
 
     /* Save card button */
     .save-card-btn {
       background: none; border: none; cursor: pointer;
-      font-size: 0.6rem; color: #888; padding: 2px 6px;
+      font-size: 0.6rem; color: rgba(200, 200, 230, 0.4); padding: 2px 6px;
       border-radius: 12px; transition: all 0.3s;
       opacity: 0; pointer-events: none;
     }
     .flip-card.flipped .save-card-btn {
       opacity: 0.7; pointer-events: auto;
     }
-    .save-card-btn:hover { color: #f5c842; opacity: 1; }
+    .save-card-btn:hover { color: #c8b6ff; opacity: 1; }
 
     /* Hidden canvas for card export */
     #exportCanvas { display: none; }
@@ -259,7 +326,7 @@
       bottom: 0; left: 0; right: 0;
       z-index: 100;
       padding: 14px 20px;
-      background: linear-gradient(to top, rgba(10,10,26,0.98) 60%, transparent);
+      background: linear-gradient(to top, rgba(5,5,26,0.98) 60%, transparent);
       text-align: center;
       transform: translateY(100%);
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -268,67 +335,79 @@
     .floating-cta a {
       display: inline-block;
       padding: 12px 28px;
-      background: linear-gradient(135deg, #f5c842, #ff6b6b);
-      color: #1a1a2e;
+      background: linear-gradient(135deg, #c8b6ff, #88b4ff);
+      color: #0a0a2e;
       border-radius: 30px;
       text-decoration: none;
       font-weight: 700;
       font-size: 0.9rem;
       transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(245,200,66,0.3);
+      box-shadow: 0 4px 15px rgba(200, 182, 255, 0.2);
     }
-    .floating-cta a:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,200,66,0.4); }
+    .floating-cta a:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(200, 182, 255, 0.3); }
 
     .footer {
       text-align: center; margin-top: 40px; padding-bottom: 70px;
-      color: #555; font-size: 0.8rem;
+      color: rgba(200, 200, 230, 0.3); font-size: 0.8rem;
     }
-    .footer a { color: #f5c842; text-decoration: none; }
+    .footer a { color: rgba(200, 182, 255, 0.5); text-decoration: none; }
+    .footer a:hover { color: #c8b6ff; }
 
     @media (max-width: 380px) {
       .card-grid { gap: 10px; }
       .flip-back .quote { font-size: 0.75rem; }
-      .card-cta { font-size: 0.55rem; }
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div class="cosmos"></div>
   <div class="stars"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+
   <div class="container">
     <div class="header">
-      <h1>失戀語錄牌</h1>
-      <p>翻開每一張，看看哪句話說中了你</p>
+      <div class="header-icon">&#10024;</div>
+      <h1>宇宙的一句話</h1>
+      <p>此刻，宇宙想對你說些什麼</p>
     </div>
 
-    <div class="counter">已翻開 <span id="flippedCount">0</span> / <span id="totalCount">9</span></div>
+    <div class="ritual">
+      <p>
+        深呼吸，閉上眼<br>
+        在心裡默念你的 <span class="highlight">問題</span> 或 <span class="highlight">想念的人</span><br>
+        然後翻開一張牌
+      </p>
+    </div>
+
+    <div class="counter">已接收 <span id="flippedCount">0</span> / <span id="totalCount">9</span> 則訊息</div>
 
     <div class="card-grid" id="cardGrid"></div>
 
     <div class="result-section" id="resultSection">
-      <p class="result-text">每一句，都是某個人深夜寫下的真心話。</p>
-      <p class="result-sub">如果有一句說中了你，也許你心裡還住著那個人。</p>
+      <p class="result-text">宇宙已經把話說完了。</p>
+      <p class="result-sub">這些訊息是此刻專屬於你的。<br>如果某句話觸動了你，那就是宇宙的回答。</p>
       <div class="btn-row">
-        <a href="/" class="cta-btn">測你的挽回指數</a>
-        <button class="shuffle-btn" onclick="reshuffle()">再抽一輪</button>
+        <a href="/" class="cta-btn">探索你的命運</a>
+        <button class="shuffle-btn" onclick="reshuffle()">再接收一輪</button>
       </div>
     </div>
 
     <!-- Ad slot -->
-    <div style="margin:28px 0 24px;padding:20px;background:linear-gradient(135deg,rgba(197,108,240,0.06),rgba(108,92,231,0.06));border:1px solid rgba(197,108,240,0.15);border-radius:14px;text-align:center">
-      <div style="font-size:0.65rem;color:#555;margin-bottom:6px;letter-spacing:1px">SPONSORED</div>
+    <div style="margin:28px 0 24px;padding:20px;background:rgba(200,182,255,0.03);border:1px solid rgba(200,182,255,0.1);border-radius:16px;text-align:center">
+      <div style="font-size:0.6rem;color:rgba(200,200,230,0.3);margin-bottom:6px;letter-spacing:2px">SPONSORED</div>
       <a href="/blog.html" style="text-decoration:none">
-        <div style="font-size:1rem;font-weight:700;color:#c56cf0;margin-bottom:6px">看更多感情文章</div>
-        <div style="color:#aaa;font-size:0.82rem;line-height:1.4">斷聯法則、星座復合排名、社群經營術</div>
-        <div style="display:inline-block;margin-top:10px;padding:8px 20px;background:rgba(197,108,240,0.15);border:1px solid rgba(197,108,240,0.3);color:#c56cf0;border-radius:10px;font-size:0.85rem">閱讀文章 &rarr;</div>
+        <div style="font-size:1rem;font-weight:700;color:#c8b6ff;margin-bottom:6px">更深入的宇宙指引</div>
+        <div style="color:rgba(200,200,230,0.5);font-size:0.82rem;line-height:1.4">感情文章、星座分析、命運解讀</div>
+        <div style="display:inline-block;margin-top:10px;padding:8px 20px;background:rgba(200,182,255,0.08);border:1px solid rgba(200,182,255,0.15);color:#c8b6ff;border-radius:10px;font-size:0.85rem">閱讀更多 &rarr;</div>
       </a>
     </div>
 
-    <!-- LetMeUse ad injection point -->
     <div id="letmeuse-ad"></div>
 
     <div class="footer">
-      <a href="/blog.html">失戀急診室</a> &middot; <a href="/">挽回分析</a>
+      <a href="/blog.html">失戀急診室</a> &middot; <a href="/">挽回分析</a> &middot; <a href="/fortune.html">觀音靈籤</a>
       <p style="margin-top:12px">Can We Back? &copy; 2026</p>
     </div>
   </div>
@@ -336,40 +415,41 @@
   <canvas id="exportCanvas" width="1080" height="1350"></canvas>
 
   <div class="floating-cta" id="floatingCta">
-    <a href="/">說中你了？測測挽回指數 &rarr;</a>
+    <a href="/">感受到了嗎？讓宇宙分析你的命運 &rarr;</a>
   </div>
 
   <script>
-    const allQuotes = [
-      { text: '我很想念的\n是剛認識的你\n跟剛認識你的我自己', tag: '想念', color: 'warm' },
-      { text: '愛 不用改變自己 委屈自己\n把自己塑造成和以前不一樣的人\n應該是要一起變得更強大', tag: '成長', color: 'mint' },
-      { text: '愛是找一個人來分享生活\n而不是找一個人來填補生活', tag: '領悟', color: 'cool' },
-      { text: '後來我才明白\n不是所有的喜歡\n都能等到一個結果', tag: '釋懷', color: 'pink' },
-      { text: '你走以後\n我學會了一個人吃飯\n卻還是會點兩個人的份量', tag: '習慣', color: 'warm' },
-      { text: '我不是不會笑了\n只是笑的時候\n不再第一個想跟你分享', tag: '失落', color: 'pink' },
-      { text: '最難過的不是你離開了\n是我還在用你教我的方式\n去愛下一個人', tag: '印記', color: 'cool' },
-      { text: '我刪了你的聊天記錄\n卻刪不掉\n打字時還想找你的本能', tag: '本能', color: 'pink' },
-      { text: '分手那天你說的每句話\n我都記得\n包括你說的「你會找到更好的」', tag: '記憶', color: 'warm' },
-      { text: '我以為時間會治癒一切\n結果時間只是讓我\n更擅長假裝沒事', tag: '偽裝', color: 'cool' },
-      { text: '你知道最殘忍的是什麼嗎\n是我還在等\n而你已經不會來了', tag: '等待', color: 'pink' },
-      { text: '我把你的東西都還了\n只留下了\n看到情侶就心酸的毛病', tag: '後遺症', color: 'warm' },
-      { text: '那些說「分手後可以做朋友」的人\n大概沒有真正愛過吧', tag: '愛過', color: 'pink' },
-      { text: '如果可以回到那天\n我不會說沒關係\n我會說 拜託你留下來', tag: '如果', color: 'cool' },
-      { text: '我終於知道\n為什麼深夜的歌\n每一首都像在唱我的故事', tag: '深夜', color: 'warm' },
-      { text: '你離開以後\n我才發現\n原來一個人的房間可以這麼安靜', tag: '安靜', color: 'mint' },
-      { text: '我不怕一個人\n我怕的是\n在人群中想起你的那種孤獨', tag: '孤獨', color: 'cool' },
-      { text: '你說我們不適合\n但你有沒有想過\n也許只是我們還不夠努力', tag: '不甘', color: 'pink' },
-      { text: '愛一個人最卑微的樣子\n就是他已讀不回\n你還在想是不是自己說錯話了', tag: '卑微', color: 'warm' },
-      { text: '我把對你的思念\n藏進每一個加班的夜晚\n假裝是因為工作才睡不著', tag: '藏匿', color: 'mint' },
-      { text: '分手後我最怕聽到的一句話\n不是他有新對象了\n而是「你還好嗎」', tag: '崩潰', color: 'pink' },
-      { text: '我以為放下是一瞬間的事\n原來放下\n是每天都要做一次的決定', tag: '放下', color: 'cool' },
-      { text: '謝謝你讓我知道\n原來心真的會痛\n不是比喻 是真的會痛', tag: '心痛', color: 'pink' },
-      { text: '最諷刺的是\n教會我什麼是愛的人\n也教會了我什麼是失去', tag: '諷刺', color: 'cool' },
-      { text: '你離開的那天下著雨\n後來我每次聽到雨聲\n都以為你要回來了', tag: '錯覺', color: 'mint' },
-      { text: '我不是放不下你\n我是放不下\n那個為你全力以赴的自己', tag: '自己', color: 'warm' },
-      { text: '你轉身的時候\n我以為你會回頭\n結果連影子都沒留給我', tag: '轉身', color: 'pink' },
+    const allMessages = [
+      { text: '你現在經歷的\n不是結束\n是宇宙在重新排列', tag: '重生', color: 'stardust' },
+      { text: '那個人沒有消失\n只是你們的頻率\n暫時錯開了', tag: '頻率', color: 'moonlight' },
+      { text: '放手不代表放棄\n有時候鬆開\n才能讓愛找到回來的路', tag: '放手', color: 'aurora' },
+      { text: '你以為是你在想念\n其實是宇宙在提醒你\n那段緣分還沒走完', tag: '緣分', color: 'nebula' },
+      { text: '痛苦是因為你愛得深\n而愛得深\n是你最美的能力', tag: '力量', color: 'cosmic' },
+      { text: '你不需要變成別人\n你只需要回到\n最真實的自己', tag: '回歸', color: 'stardust' },
+      { text: '宇宙不會給你\n承受不了的考驗\n你比自己想的更強大', tag: '堅強', color: 'moonlight' },
+      { text: '有些相遇\n不是為了在一起\n是為了教會你如何愛', tag: '成長', color: 'aurora' },
+      { text: '你深夜的眼淚\n宇宙都收到了\n答案正在路上', tag: '回應', color: 'nebula' },
+      { text: '不要急著找答案\n有時候 允許自己迷路\n才能找到真正的方向', tag: '迷路', color: 'cosmic' },
+      { text: '你值得被全心全意地愛\n不是因為你完美\n是因為你值得', tag: '價值', color: 'stardust' },
+      { text: '每一次心碎\n都是宇宙在你心裡\n打開更大的空間', tag: '空間', color: 'moonlight' },
+      { text: '那些沒有說出口的話\n對方的靈魂\n其實都聽見了', tag: '感應', color: 'aurora' },
+      { text: '你害怕的不是失去\n你害怕的是\n再也找不到同樣的溫暖', tag: '恐懼', color: 'nebula' },
+      { text: '一段關係的結束\n是宇宙在告訴你\n你已經準備好接受更好的', tag: '升級', color: 'cosmic' },
+      { text: '思念一個人不丟臉\n那是你的心\n在證明它還活著', tag: '思念', color: 'stardust' },
+      { text: '你現在的孤獨\n是宇宙為你騰出的時間\n和自己好好相處', tag: '獨處', color: 'moonlight' },
+      { text: '如果一段緣分是真的\n無論繞多遠\n最後都會回來', tag: '歸途', color: 'aurora' },
+      { text: '停止追問「為什麼」\n有些事的答案\n要在很久以後才會浮現', tag: '耐心', color: 'nebula' },
+      { text: '你以為的最壞結局\n可能是宇宙為你安排的\n最好的開始', tag: '轉折', color: 'cosmic' },
+      { text: '真正屬於你的\n不需要拼命抓住\n它會自己留下來', tag: '歸屬', color: 'stardust' },
+      { text: '宇宙說\n你今天可以不堅強\n可以好好哭一場', tag: '允許', color: 'moonlight' },
+      { text: '所有的遺憾\n都是下一段幸福\n必經的橋', tag: '橋', color: 'aurora' },
+      { text: '你送出去的愛\n從來沒有浪費\n宇宙會用另一種方式還給你', tag: '回報', color: 'nebula' },
+      { text: '深呼吸\n你現在所在的地方\n就是你該在的地方', tag: '當下', color: 'cosmic' },
+      { text: '那個人也許離開了\n但你因為這段愛\n成為了更好的人', tag: '蛻變', color: 'stardust' },
+      { text: '宇宙的時間表\n和你的不一樣\n但它從不遲到', tag: '時機', color: 'moonlight' },
     ]
 
+    const cardSymbols = ['&#9734;', '&#9790;', '&#10022;', '&#9672;', '&#10038;', '&#9683;', '&#10048;', '&#9753;', '&#10070;']
     const CARD_COUNT = 9
     let flippedCount = 0
 
@@ -384,7 +464,8 @@
 
     function renderCards() {
       const grid = document.getElementById('cardGrid')
-      const selected = shuffle(allQuotes).slice(0, CARD_COUNT)
+      const selected = shuffle(allMessages).slice(0, CARD_COUNT)
+      const symbols = shuffle(cardSymbols)
       flippedCount = 0
       document.getElementById('flippedCount').textContent = '0'
       document.getElementById('totalCount').textContent = String(CARD_COUNT)
@@ -395,33 +476,34 @@
         const card = document.createElement('div')
         card.className = 'flip-card'
         card.setAttribute('data-color', q.color)
-        const fakeCount = Math.floor(Math.random() * 4000) + 1200
+        const fakeCount = Math.floor(Math.random() * 6000) + 2000
         card.innerHTML = `
           <div class="flip-inner">
-            <div class="flip-front"></div>
+            <div class="flip-front">
+              <div class="card-symbol">${symbols[i]}</div>
+              <div class="card-label">UNIVERSE</div>
+            </div>
             <div class="flip-back">
               <div class="quote">${q.text.replace(/\n/g, '<br>')}</div>
-              <div class="card-tag">#${q.tag}</div>
+              <div class="card-tag">${q.tag}</div>
               <div class="resonance-row">
                 <button class="resonate-btn" onclick="event.stopPropagation();resonateCard(this)" data-count="${fakeCount}">
-                  <span class="heart-icon">&hearts;</span> 說中我了
+                  <span class="star-icon">&#10024;</span> 說到我心裡了
                 </button>
-                <span class="resonate-count">${fakeCount.toLocaleString()} 人也是</span>
+                <span class="resonate-count">${fakeCount.toLocaleString()} 人共鳴</span>
               </div>
-              <button class="save-card-btn" onclick="event.stopPropagation();saveCard(this, '${q.text.replace(/'/g, "\\'")}', '${q.tag}', '${q.color}')">保存這張卡</button>
-              <a href="/" class="card-cta">測挽回指數 &rarr;</a>
+              <button class="save-card-btn" onclick="event.stopPropagation();saveCard(this, '${q.text.replace(/'/g, "\\'")}', '${q.tag}', '${q.color}')">保存這張牌</button>
             </div>
           </div>
         `
         card.addEventListener('click', () => flipCard(card))
-        // Stagger entrance
         card.style.opacity = '0'
         card.style.transform = 'translateY(20px)'
         setTimeout(() => {
           card.style.transition = 'opacity 0.4s ease, transform 0.4s ease'
           card.style.opacity = '1'
           card.style.transform = 'translateY(0)'
-        }, i * 60)
+        }, i * 80)
         grid.appendChild(card)
       })
     }
@@ -432,7 +514,6 @@
       flippedCount++
       document.getElementById('flippedCount').textContent = String(flippedCount)
 
-      // Show floating CTA after first flip
       if (flippedCount === 1) {
         setTimeout(() => {
           document.getElementById('floatingCta').classList.add('show')
@@ -458,10 +539,9 @@
       const count = parseInt(btn.dataset.count) + 1
       btn.dataset.count = count
       const countEl = btn.parentElement.querySelector('.resonate-count')
-      countEl.textContent = count.toLocaleString() + ' 人也是'
-      // Little pulse animation
-      btn.querySelector('.heart-icon').style.transform = 'scale(1.5)'
-      setTimeout(() => { btn.querySelector('.heart-icon').style.transform = 'scale(1.3)' }, 200)
+      countEl.textContent = count.toLocaleString() + ' 人共鳴'
+      btn.querySelector('.star-icon').style.transform = 'scale(1.5)'
+      setTimeout(() => { btn.querySelector('.star-icon').style.transform = 'scale(1.3)' }, 200)
     }
 
     function saveCard(btn, text, tag, color) {
@@ -469,14 +549,14 @@
       const ctx = canvas.getContext('2d')
       const w = 1080, h = 1350
 
-      // Background gradient based on color
       const gradients = {
-        warm: ['#1a1008', '#2a1a0a'],
-        cool: ['#0a0a1a', '#12102a'],
-        pink: ['#1a0a10', '#2a0a15'],
-        mint: ['#0a1a14', '#0a2a1e'],
+        stardust: ['#0a0520', '#15082e'],
+        moonlight: ['#050a1a', '#081228'],
+        aurora: ['#050f0a', '#081a12'],
+        nebula: ['#100518', '#1a0822'],
+        cosmic: ['#100a05', '#1e1008'],
       }
-      const [c1, c2] = gradients[color] || gradients.cool
+      const [c1, c2] = gradients[color] || gradients.stardust
       const grad = ctx.createLinearGradient(0, 0, 0, h)
       grad.addColorStop(0, c1)
       grad.addColorStop(1, c2)
@@ -484,15 +564,22 @@
       ctx.fillRect(0, 0, w, h)
 
       // Stars
-      ctx.fillStyle = 'rgba(255,255,255,0.3)'
-      for (let i = 0; i < 60; i++) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)'
+      for (let i = 0; i < 80; i++) {
         const x = Math.random() * w
         const y = Math.random() * h
-        const r = Math.random() * 1.5 + 0.5
+        const r = Math.random() * 1.5 + 0.3
         ctx.beginPath()
         ctx.arc(x, y, r, 0, Math.PI * 2)
         ctx.fill()
       }
+
+      // Subtle glow in center
+      const glow = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 400)
+      glow.addColorStop(0, 'rgba(200, 182, 255, 0.06)')
+      glow.addColorStop(1, 'transparent')
+      ctx.fillStyle = glow
+      ctx.fillRect(0, 0, w, h)
 
       // Quote text
       const lines = text.split('\\n')
@@ -502,42 +589,47 @@
       ctx.textBaseline = 'middle'
 
       const colorMap = {
-        warm: '#f5e6c8', cool: '#d0c8f0',
-        pink: '#f5c8c8', mint: '#c8f0e8'
+        stardust: '#e0d6ff', moonlight: '#d6ecff',
+        aurora: '#d0ffe8', nebula: '#ffe0ee', cosmic: '#fff0dc'
       }
       ctx.fillStyle = colorMap[color] || '#eee'
 
-      const totalHeight = lines.length * (fontSize + 20)
+      const totalHeight = lines.length * (fontSize + 24)
       const startY = (h / 2) - (totalHeight / 2) + fontSize / 2
 
       lines.forEach((line, i) => {
-        ctx.fillText(line, w / 2, startY + i * (fontSize + 20))
+        ctx.fillText(line, w / 2, startY + i * (fontSize + 24))
       })
 
       // Tag
       ctx.font = '400 28px "Noto Sans TC", sans-serif'
-      ctx.fillStyle = 'rgba(197,108,240,0.6)'
-      ctx.fillText('#' + tag, w / 2, startY + lines.length * (fontSize + 20) + 40)
+      ctx.fillStyle = 'rgba(200, 182, 255, 0.5)'
+      ctx.fillText(tag, w / 2, startY + lines.length * (fontSize + 24) + 40)
+
+      // Title
+      ctx.font = '600 26px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = 'rgba(200, 182, 255, 0.3)'
+      ctx.fillText('宇宙的一句話', w / 2, h - 100)
 
       // Watermark
-      ctx.font = '600 32px "Noto Sans TC", sans-serif'
-      ctx.fillStyle = 'rgba(245,200,66,0.25)'
-      ctx.fillText('Can We Back?', w / 2, h - 60)
+      ctx.font = '400 22px "Noto Sans TC", sans-serif'
+      ctx.fillStyle = 'rgba(200, 200, 230, 0.2)'
+      ctx.fillText('canweback.com', w / 2, h - 60)
 
       // Download
       canvas.toBlob(function(blob) {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'canweback-quote.png'
+        a.download = 'universe-message.png'
         a.click()
         URL.revokeObjectURL(url)
       }, 'image/png')
 
-      btn.textContent = '已保存!'
-      btn.style.color = '#f5c842'
+      btn.textContent = '已保存 &#10024;'
+      btn.style.color = '#c8b6ff'
       setTimeout(() => {
-        btn.textContent = '保存這張卡'
+        btn.textContent = '保存這張牌'
         btn.style.color = ''
       }, 2000)
     }

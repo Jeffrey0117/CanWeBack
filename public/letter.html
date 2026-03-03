@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宇宙來信 | Can We Back?</title>
+  <meta name="description" content="透過宇宙，把你的心意送給那個人。寫一封信，讓宇宙幫你傳達。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="宇宙來信 — 有人透過宇宙寫了一封信給你">
+  <meta property="og:description" content="有一封來自宇宙的信正在等你打開。">
+  <meta property="og:url" content="https://canweback.com/letter.html">
+  <meta property="og:image" content="https://canweback.com/og-image.png">
+  <meta property="og:locale" content="zh_TW">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans TC', -apple-system, sans-serif;
+      background: #05051a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .cosmos {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(88, 40, 180, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(40, 100, 200, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(180, 60, 120, 0.06) 0%, transparent 50%);
+    }
+    .stars {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 0;
+    }
+    .stars::before, .stars::after {
+      content: ''; position: absolute;
+      width: 2px; height: 2px; border-radius: 50%; background: white;
+      box-shadow:
+        25px 50px white, 100px 120px white, 200px 80px white,
+        350px 200px white, 50px 300px white, 180px 350px white,
+        400px 100px white, 300px 400px white, 150px 180px white,
+        450px 320px white, 80px 420px white, 320px 50px white,
+        500px 250px white, 250px 500px white, 420px 450px white;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    .stars::after {
+      width: 1px; height: 1px;
+      box-shadow:
+        75px 150px rgba(255,255,255,0.5), 250px 220px rgba(255,255,255,0.5),
+        450px 50px rgba(255,255,255,0.5), 120px 400px rgba(255,255,255,0.5),
+        500px 380px rgba(255,255,255,0.5), 300px 150px rgba(255,255,255,0.5);
+      animation: twinkle 3s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+    .container {
+      max-width: 520px; margin: 0 auto; padding: 40px 20px;
+      position: relative; z-index: 1;
+    }
+
+    .header { text-align: center; margin-bottom: 36px; }
+    .header-icon {
+      font-size: 3rem; margin-bottom: 12px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .header h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #c8b6ff, #ffd6e0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: rgba(200, 200, 230, 0.5);
+      font-size: 0.85rem;
+    }
+
+    /* Steps indicator */
+    .steps {
+      display: flex; justify-content: center; gap: 8px;
+      margin-bottom: 32px;
+    }
+    .step-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(200, 182, 255, 0.2);
+      transition: all 0.3s;
+    }
+    .step-dot.active { background: #c8b6ff; box-shadow: 0 0 10px rgba(200, 182, 255, 0.4); }
+    .step-dot.done { background: rgba(200, 182, 255, 0.5); }
+
+    /* Form sections */
+    .form-section {
+      display: none;
+      animation: fadeUp 0.5s ease-out;
+    }
+    .form-section.active { display: block; }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: rgba(200, 200, 230, 0.6);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(200, 182, 255, 0.04);
+      border: 1px solid rgba(200, 182, 255, 0.15);
+      border-radius: 12px;
+      color: #e0e0e0;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s;
+      margin-bottom: 20px;
+    }
+    input:focus, textarea:focus {
+      border-color: rgba(200, 182, 255, 0.4);
+    }
+    input::placeholder, textarea::placeholder {
+      color: rgba(200, 200, 230, 0.3);
+    }
+
+    textarea {
+      min-height: 200px;
+      resize: vertical;
+      line-height: 1.8;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.75rem;
+      color: rgba(200, 200, 230, 0.3);
+      margin-top: -16px;
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #c8b6ff, #88b4ff);
+      color: #0a0a2e;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 1px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(200, 182, 255, 0.3); }
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 14px;
+      background: rgba(200, 182, 255, 0.06);
+      border: 1px solid rgba(200, 182, 255, 0.15);
+      color: #c8b6ff;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 12px;
+    }
+    .btn-secondary:hover { background: rgba(200, 182, 255, 0.1); }
+
+    /* Sending animation */
+    .sending-scene {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .sending-scene.active { display: block; }
+
+    @keyframes envelopeFly {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      30% { transform: translateY(-60px) scale(1.1); opacity: 1; }
+      60% { transform: translateY(-150px) scale(0.8) rotate(10deg); opacity: 0.8; }
+      100% { transform: translateY(-300px) scale(0.3) rotate(20deg); opacity: 0; }
+    }
+    .envelope-fly {
+      font-size: 4rem;
+      display: inline-block;
+      animation: envelopeFly 2.5s ease-in forwards;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+    .sparkles {
+      position: relative;
+      height: 100px;
+      margin-top: -40px;
+    }
+    .sparkles span {
+      position: absolute;
+      font-size: 1.2rem;
+      animation: sparkle 1s ease-in-out forwards;
+    }
+
+    .sending-text {
+      font-size: 1rem;
+      color: rgba(200, 200, 230, 0.6);
+      margin-top: 20px;
+      animation: fadeUp 0.5s ease-out 2s both;
+    }
+
+    /* Success */
+    .success-section {
+      display: none;
+      text-align: center;
+      animation: fadeUp 0.5s ease-out;
+    }
+    .success-section.active { display: block; }
+
+    .success-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    .success-section h2 {
+      font-size: 1.3rem;
+      color: #c8b6ff;
+      margin-bottom: 12px;
+    }
+    .success-section p {
+      color: rgba(200, 200, 230, 0.6);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .share-link-box {
+      background: rgba(200, 182, 255, 0.04);
+      border: 1px solid rgba(200, 182, 255, 0.15);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .share-link-box input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #c8b6ff;
+      font-size: 0.82rem;
+      padding: 0;
+      margin: 0;
+    }
+    .copy-btn {
+      background: rgba(200, 182, 255, 0.15);
+      border: none;
+      color: #c8b6ff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.3s;
+    }
+    .copy-btn:hover { background: rgba(200, 182, 255, 0.25); }
+
+    .hint {
+      font-size: 0.78rem;
+      color: rgba(200, 200, 230, 0.35);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      text-align: center; margin-top: 50px; padding-bottom: 40px;
+      color: rgba(200, 200, 230, 0.3); font-size: 0.8rem;
+    }
+    .footer a { color: rgba(200, 182, 255, 0.5); text-decoration: none; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="cosmos"></div>
+  <div class="stars"></div>
+
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">&#9993;</div>
+      <h1>宇宙來信</h1>
+      <p>透過宇宙，把你的心意傳給那個人</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+    </div>
+
+    <!-- Step 1: Names -->
+    <div class="form-section active" id="step1">
+      <label>你的名字（或暱稱）</label>
+      <input type="text" id="senderName" placeholder="宇宙知道你是誰" maxlength="20">
+
+      <label>對方的名字（或暱稱）</label>
+      <input type="text" id="receiverName" placeholder="你想把信送給誰？" maxlength="20">
+
+      <button class="btn-primary" onclick="goStep(2)">下一步</button>
+    </div>
+
+    <!-- Step 2: Write letter -->
+    <div class="form-section" id="step2">
+      <label>寫下你想說的話</label>
+      <textarea id="letterContent" placeholder="親愛的，&#10;&#10;我一直想跟你說..." maxlength="500"></textarea>
+      <div class="char-count"><span id="charCount">0</span> / 500</div>
+
+      <button class="btn-primary" onclick="goStep(3)">預覽信件</button>
+      <button class="btn-secondary" onclick="goStep(1)">上一步</button>
+    </div>
+
+    <!-- Step 3: Preview & Send -->
+    <div class="form-section" id="step3">
+      <div style="background:rgba(200,182,255,0.03);border:1px solid rgba(200,182,255,0.12);border-radius:16px;padding:24px;margin-bottom:24px">
+        <div style="text-align:center;font-size:0.72rem;color:rgba(200,182,255,0.4);letter-spacing:2px;margin-bottom:16px">&#10024; 來自宇宙的信 &#10024;</div>
+        <div style="font-size:0.82rem;color:rgba(200,200,230,0.5);margin-bottom:12px">親愛的 <span id="previewReceiver" style="color:#c8b6ff"></span>，</div>
+        <div id="previewContent" style="font-size:0.92rem;line-height:1.9;color:#e8e4f0;white-space:pre-wrap;margin-bottom:16px"></div>
+        <div style="text-align:right;font-size:0.82rem;color:rgba(200,200,230,0.5)">— <span id="previewSender" style="color:#c8b6ff"></span></div>
+      </div>
+
+      <button class="btn-primary" onclick="sendLetter()">&#10024; 交給宇宙傳送</button>
+      <button class="btn-secondary" onclick="goStep(2)">修改內容</button>
+    </div>
+
+    <!-- Sending animation -->
+    <div class="sending-scene" id="sendingScene">
+      <div class="envelope-fly">&#9993;</div>
+      <div class="sparkles">
+        <span style="left:30%;top:20%;animation-delay:0.5s">&#10024;</span>
+        <span style="left:50%;top:10%;animation-delay:0.8s">&#10022;</span>
+        <span style="left:70%;top:30%;animation-delay:1.1s">&#10024;</span>
+        <span style="left:40%;top:0%;animation-delay:1.4s">&#10022;</span>
+      </div>
+      <div class="sending-text">宇宙正在傳遞你的心意...</div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-section" id="successSection">
+      <div class="success-icon">&#10024;</div>
+      <h2>信已交給宇宙了</h2>
+      <p>把下面的連結傳給對方<br>對方需要<strong style="color:#c8b6ff">回信</strong>才能打開你的信</p>
+
+      <div class="share-link-box">
+        <input type="text" id="shareLink" readonly>
+        <button class="copy-btn" onclick="copyLink()">複製</button>
+      </div>
+
+      <button class="btn-primary" onclick="shareLetter()">分享給對方</button>
+
+      <div class="hint">
+        &#128274; 對方看到信封後，必須也寫一封信給你（或付費解鎖），才能讀到你的內容。<br>
+        這樣你們就都有一封來自宇宙的信了。
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="/">挽回分析</a> &middot; <a href="/cards.html">宇宙的一句話</a> &middot; <a href="/fortune.html">觀音靈籤</a>
+      <p style="margin-top:12px">Can We Back? &copy; 2026</p>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1
+
+    document.getElementById('letterContent').addEventListener('input', function() {
+      document.getElementById('charCount').textContent = this.value.length
+    })
+
+    function goStep(step) {
+      const senderName = document.getElementById('senderName').value.trim()
+      const receiverName = document.getElementById('receiverName').value.trim()
+      const content = document.getElementById('letterContent').value.trim()
+
+      if (step === 2 && (!senderName || !receiverName)) {
+        document.getElementById('senderName').style.borderColor = senderName ? '' : 'rgba(255,100,100,0.5)'
+        document.getElementById('receiverName').style.borderColor = receiverName ? '' : 'rgba(255,100,100,0.5)'
+        return
+      }
+      if (step === 3 && !content) {
+        document.getElementById('letterContent').style.borderColor = 'rgba(255,100,100,0.5)'
+        return
+      }
+
+      if (step === 3) {
+        document.getElementById('previewReceiver').textContent = receiverName
+        document.getElementById('previewContent').textContent = content
+        document.getElementById('previewSender').textContent = senderName
+      }
+
+      document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'))
+      document.getElementById('step' + step).classList.add('active')
+
+      document.querySelectorAll('.step-dot').forEach((d, i) => {
+        d.classList.remove('active', 'done')
+        if (i + 1 === step) d.classList.add('active')
+        else if (i + 1 < step) d.classList.add('done')
+      })
+
+      currentStep = step
+    }
+
+    async function sendLetter() {
+      const senderName = document.getElementById('senderName').value.trim()
+      const receiverName = document.getElementById('receiverName').value.trim()
+      const content = document.getElementById('letterContent').value.trim()
+
+      // Hide form, show sending animation
+      document.getElementById('step3').classList.remove('active')
+      document.querySelector('.steps').style.display = 'none'
+      document.getElementById('sendingScene').classList.add('active')
+
+      try {
+        const res = await fetch('/api/letter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ senderName, receiverName, content }),
+        })
+        const data = await res.json()
+
+        if (data.letterId) {
+          const link = window.location.origin + '/letter-read.html?id=' + data.letterId
+          document.getElementById('shareLink').value = link
+
+          // Wait for animation to finish
+          setTimeout(() => {
+            document.getElementById('sendingScene').classList.remove('active')
+            document.getElementById('successSection').classList.add('active')
+          }, 3000)
+        } else {
+          throw new Error(data.error || '傳送失敗')
+        }
+      } catch (err) {
+        alert('傳送失敗：' + err.message)
+        document.getElementById('sendingScene').classList.remove('active')
+        document.getElementById('step3').classList.add('active')
+        document.querySelector('.steps').style.display = 'flex'
+      }
+    }
+
+    function copyLink() {
+      const input = document.getElementById('shareLink')
+      input.select()
+      navigator.clipboard.writeText(input.value).then(() => {
+        const btn = document.querySelector('.copy-btn')
+        btn.textContent = '已複製!'
+        setTimeout(() => { btn.textContent = '複製' }, 2000)
+      })
+    }
+
+    function shareLetter() {
+      const link = document.getElementById('shareLink').value
+      const receiverName = document.getElementById('receiverName').value.trim()
+      const text = `${receiverName}，有一封來自宇宙的信在等你 ✨\n${link}`
+
+      if (navigator.share) {
+        navigator.share({ title: '宇宙來信', text, url: link }).catch(() => {})
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('已複製到剪貼簿！')
+        })
+      }
+    }
+  </script>
+</body>
+</html>

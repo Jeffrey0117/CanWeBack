@@ -7,3 +7,4 @@ Sitemap: https://canweback.com/sitemap.xml
 Disallow: /checkout-success.html
 Disallow: /report.html
 Disallow: /plan.html
+Disallow: /letter-read.html

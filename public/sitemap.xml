@@ -16,6 +16,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://canweback.com/letter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://canweback.com/articles/signs-he-still-loves-you.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

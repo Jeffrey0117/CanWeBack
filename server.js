@@ -6,6 +6,7 @@ const crypto = require('crypto')
 const PORT = process.env.PORT || 3000
 const orders = new Map()
 const EMAILS_FILE = path.join(__dirname, 'data', 'emails.json')
+const LETTERS_FILE = path.join(__dirname, 'data', 'letters.json')
 
 function loadEmails() {
   try {
@@ -21,6 +22,32 @@ function saveEmail(entry) {
   const emails = loadEmails()
   emails.push(entry)
   fs.writeFileSync(EMAILS_FILE, JSON.stringify(emails, null, 2))
+}
+
+function loadLetters() {
+  try {
+    return JSON.parse(fs.readFileSync(LETTERS_FILE, 'utf-8'))
+  } catch {
+    return []
+  }
+}
+
+function saveLetter(letter) {
+  const dir = path.dirname(LETTERS_FILE)
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  const letters = loadLetters()
+  letters.push(letter)
+  fs.writeFileSync(LETTERS_FILE, JSON.stringify(letters, null, 2))
+}
+
+function updateLetter(letterId, updates) {
+  const letters = loadLetters()
+  const idx = letters.findIndex(l => l.id === letterId)
+  if (idx === -1) return null
+  const updated = { ...letters[idx], ...updates }
+  letters[idx] = updated
+  fs.writeFileSync(LETTERS_FILE, JSON.stringify(letters, null, 2))
+  return updated
 }
 
 // LetMeUse checkout integration
@@ -498,6 +525,140 @@ const server = http.createServer(async (req, res) => {
     } catch {}
 
     return sendJson(res, { success: true })
+  }
+
+  // ── Letter API ──────────────────────────────────
+
+  // Create a letter
+  if (pathname === '/api/letter' && req.method === 'POST') {
+    const body = await parseBody(req)
+    const senderName = (body.senderName || '').trim()
+    const receiverName = (body.receiverName || '').trim()
+    const content = (body.content || '').trim()
+
+    if (!senderName || !receiverName || !content) {
+      return sendJson(res, { error: '請填寫完整' }, 400)
+    }
+    if (content.length > 500) {
+      return sendJson(res, { error: '內容超過 500 字' }, 400)
+    }
+
+    const letter = {
+      id: crypto.randomUUID(),
+      senderName,
+      receiverName,
+      content,
+      unlocked: false,
+      reply: null,
+      createdAt: new Date().toISOString(),
+    }
+    saveLetter(letter)
+    return sendJson(res, { letterId: letter.id })
+  }
+
+  // Get letter info (content hidden if locked)
+  if (pathname.match(/^\/api\/letter\/[^/]+$/) && req.method === 'GET') {
+    const letterId = pathname.split('/')[3]
+    const letters = loadLetters()
+    const letter = letters.find(l => l.id === letterId)
+    if (!letter) return sendJson(res, { error: '找不到這封信' }, 404)
+
+    if (letter.unlocked) {
+      return sendJson(res, {
+        senderName: letter.senderName,
+        receiverName: letter.receiverName,
+        content: letter.content,
+        reply: letter.reply,
+        unlocked: true,
+        createdAt: letter.createdAt,
+      })
+    }
+
+    return sendJson(res, {
+      senderName: letter.senderName,
+      receiverName: letter.receiverName,
+      unlocked: false,
+      createdAt: letter.createdAt,
+    })
+  }
+
+  // Reply to a letter (unlocks both)
+  if (pathname.match(/^\/api\/letter\/[^/]+\/reply$/) && req.method === 'POST') {
+    const letterId = pathname.split('/')[3]
+    const body = await parseBody(req)
+    const content = (body.content || '').trim()
+
+    if (!content) return sendJson(res, { error: '請寫下你的回信' }, 400)
+    if (content.length > 500) return sendJson(res, { error: '內容超過 500 字' }, 400)
+
+    const letters = loadLetters()
+    const letter = letters.find(l => l.id === letterId)
+    if (!letter) return sendJson(res, { error: '找不到這封信' }, 404)
+    if (letter.unlocked) return sendJson(res, { error: '信已經打開了' }, 400)
+
+    const updated = updateLetter(letterId, {
+      unlocked: true,
+      reply: {
+        content,
+        from: letter.receiverName,
+        createdAt: new Date().toISOString(),
+      },
+    })
+
+    return sendJson(res, { success: true })
+  }
+
+  // Pay to unlock a letter
+  if (pathname.match(/^\/api\/letter\/[^/]+\/pay$/) && req.method === 'POST') {
+    const letterId = pathname.split('/')[3]
+    const letters = loadLetters()
+    const letter = letters.find(l => l.id === letterId)
+    if (!letter) return sendJson(res, { error: '找不到這封信' }, 404)
+    if (letter.unlocked) return sendJson(res, { success: true })
+
+    try {
+      const checkoutRes = await fetch(`${LETMEUSE_BASE_URL}/api/billing/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appId: LETMEUSE_APP_ID,
+          appSecret: LETMEUSE_APP_SECRET,
+          mode: 'one_time',
+          productId: 'letter_unlock',
+          productName: '宇宙來信解鎖',
+          amount: 49,
+          currency: 'TWD',
+          metadata: { letterId, type: 'letter' },
+          successUrl: `${CANWEBACK_BASE_URL}/letter-read.html?id=${letterId}&unlocked=1`,
+          cancelUrl: `${CANWEBACK_BASE_URL}/letter-read.html?id=${letterId}`,
+        }),
+      })
+      const result = await checkoutRes.json()
+
+      if (result.success) {
+        return sendJson(res, {
+          success: true,
+          checkoutUrl: `${LETMEUSE_BASE_URL}${result.data.checkoutUrl}`,
+        })
+      }
+      // Fallback: unlock directly in dev
+      updateLetter(letterId, { unlocked: true })
+      return sendJson(res, { success: true })
+    } catch {
+      // Dev mode: unlock directly
+      updateLetter(letterId, { unlocked: true })
+      return sendJson(res, { success: true })
+    }
+  }
+
+  // Webhook callback for letter unlock payment
+  if (pathname === '/api/webhook/letter' && req.method === 'POST') {
+    const body = await parseBody(req)
+    const letterId = body.letterId || (body.metadata && body.metadata.letterId)
+    if (letterId) {
+      updateLetter(letterId, { unlocked: true })
+    }
+    return sendJson(res, { received: true })
   }
 
   // Called by checkout-success page to mark order as paid
